@@ -7,7 +7,7 @@ init <- function() {
 
 #' @export
 dependency <- htmltools::htmlDependency("crosstalk", "0.0",
-  src = system.file(package = "crosstalk"),
+  src = system.file(package = "crosstalk/www"),
   script = "js/crosstalk.js"
 )
 

@@ -11,6 +11,37 @@ dependency <- htmltools::htmlDependency("crosstalk", "0.0",
   script = "js/crosstalk.js"
 )
 
+
+#' @import R6
+#' @export
+ClientValue <- R6Class(
+  "ClientValue",
+  private = list(
+    .session = "ANY",
+    .name = "ANY",
+    .qualifiedName = "ANY",
+    .rv = "ANY"
+  ),
+  public = list(
+    initialize = function(name, session = shiny::getDefaultReactiveDomain()) {
+      private$.session <- session
+      private$.name <- name
+      private$.qualifiedName <- paste0(".clientValue-", name)
+    },
+    get = function() {
+      private$.session$input[[private$.qualifiedName]]
+    },
+    sendUpdate = function(value) {
+      private$.session$sendCustomMessage("update-client-value", list(
+        name = private$.name,
+        value = value
+      ))
+    }
+  )
+)
+
+
+
 #' @import R6
 #' @export
 SharedData <- R6Class(

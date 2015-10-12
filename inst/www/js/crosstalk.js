@@ -56,6 +56,9 @@
 
   var stampSeq = 1;
   function stamp(el) {
+    if (el === null) {
+      return "";
+    }
     if (!el.__crosstalkStamp) {
       el.__crosstalkStamp = "ct" + stampSeq++;
     }
@@ -66,26 +69,30 @@
 
   function GroupController(name) {
     this._name = name;
-    this._events = new Events();
     this._eventId = 0;
-    this._selection = null;
+    this._selection = getNamedValue("crosstalk-selection-" + name);
+
+    this.setSelection(null, null);
   }
 
-  GroupController.prototype.clearSelection = function() {
-    this._selection = null;
-    this._events.trigger("selection", null, this);
+  GroupController.prototype.clearSelection = function(el) {
+    this._selection.set({
+      ownerId: stamp(el),
+      eventId: this._eventId++
+    });
     return this;
   };
 
-  GroupController.prototype.selection = function(x) {
-    if (!arguments.length) {
-      return this._selection;
-    }
-    this._selection = x;
-    this._events.trigger("selection", x, this);
-    if (window.Shiny) {
-      Shiny.onInputChange(this._name + "-crosstalk-selection", x);
-    }
+  GroupController.prototype.getSelection = function() {
+    return this._selection.get();
+  };
+
+  GroupController.prototype.setSelection = function(el, observations) {
+    this._selection.set({
+      ownerId: stamp(el),
+      eventId: this._eventId++,
+      observations: observations
+    });
     return this;
   };
 
@@ -96,7 +103,7 @@
     var elId = stamp(el);
 
     var obs = null;
-    if (this._selection && this._selection.ownerId === elId) {
+    if (this._selection && this._selection.get().ownerId === elId) {
       obs = this._selection.observations;
     }
     if (!obs) {
@@ -117,10 +124,11 @@
     }
 
     if (obs.length === 0) {
-      return this.clearSelection();
+      return this.clearSelection(el);
     } else {
       return this.selection({
         ownerId: elId,
+        eventId: this._eventId++,
         observations: obs
       });
     }
@@ -147,16 +155,49 @@
 
   crosstalk.group = group;
 
+  var NamedValue = function(name, /*optional*/ value) {
+    this._name = name;
+    this._value = value;
+    this._events = new Events();
+  };
+  NamedValue.prototype.get = function() {
+    return this._value;
+  };
+  NamedValue.prototype.set = function(value) {
+    var oldValue = this._value;
+    this._value = value;
+    // Alert JavaScript listeners that the value has changed
+    this._events.trigger("change", {
+      oldValue: oldValue,
+      value: value
+    }, this);
+
+    // TODO: Make this extensible, to let arbitrary back-ends know that
+    // something has changed
+    if (window.Shiny) {
+      Shiny.onInputChange(".clientValue-" + this._name, value);
+    }
+  };
+  NamedValue.prototype.onChange = function(listener) {
+    return this._events.on("change", listener);
+  };
+  NamedValue.prototype.removeChangeListener = function(listener) {
+    return this._events.off("change", listener);
+  };
+
+  var namedValues = {};
+  function getNamedValue(name) {
+    var result = namedValues[name];
+    if (!result) {
+      result = namedValues[name] = new NamedValue(name);
+    }
+    return result;
+  }
+
   if (window.Shiny) {
-    Shiny.addCustomMessageHandler("crosstalk-selection",
-      function(message) {
-        var g = group(message.group);
-        g.selection({
-          ownerId: message.ownerId,
-          observations: message.observations
-        });
-      }
-    );
+    Shiny.addCustomMessageHandler("update-client-value", function(message) {
+      getNamedValue(message.name).set(message.value);
+    });
   }
 
 })();

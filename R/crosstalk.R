@@ -6,8 +6,8 @@ init <- function() {
 }
 
 #' @export
-dependency <- htmltools::htmlDependency("crosstalk", "0.0",
-  src = system.file(package = "crosstalk/www"),
+dependency <- htmltools::htmlDependency("crosstalk", packageVersion("crosstalk"),
+  src = system.file("www", package = "crosstalk"),
   script = "js/crosstalk.js"
 )
 
@@ -76,6 +76,9 @@ SharedData <- R6Class(
           }
         })
       }
+    },
+    groupName = function() {
+      private$.group
     },
     data = function(withSelection = FALSE) {
       df <- if (shiny::is.reactive(private$.data)) {

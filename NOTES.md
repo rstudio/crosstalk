@@ -1,4 +1,19 @@
-# What interface do clients want?
+# Crosstalk
+
+A testing ground for ideas about cross-widget communication that should eventually make their way into htmlwidgets and Shiny (probably).
+
+Abstract goals:
+
+- Allow easy, or even automatic, orchestration between htmlwidgets on the same page, without Shiny. No JavaScript should need to be written by user.
+- Allow easy orchestration between htmlwidgets and Shiny reactivity.
+- Widget authors will need custom code in their widget JS to work with crosstalk--this won't just magically work with existing widgets.
+- Crosstalk will provide a communication layer, but in order for the messages to be useful, the widgets all have to agree on what they mean.
+- We'll promote an "official" vocabulary of messages, complete with guidelines for widget authors, and also allow arbitrary messages. Over time, the official list can grow.
+
+Concrete goals:
+
+- Linked brushing demos (this is basically just a "selected points" message).
+- Ad-hoc messaging demo (i.e. Ramnath decides three of his widgets should communicate in a certain way).
 
 
 ## High-level discrete selection API

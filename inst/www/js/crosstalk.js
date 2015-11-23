@@ -79,14 +79,24 @@
   Var.prototype.get = function() {
     return this._value;
   };
-  Var.prototype.set = function(value) {
+  Var.prototype.set = function(value, /*optional*/ event) {
+    if (this._value === value) {
+      // Do nothing; the value hasn't changed
+      return;
+    }
     var oldValue = this._value;
     this._value = value;
     // Alert JavaScript listeners that the value has changed
-    this._events.trigger("change", {
-      oldValue: oldValue,
-      value: value
-    }, this);
+    var evt = {};
+    if (event && typeof(event) === "object") {
+      for (var k in event) {
+        if (event.hasOwnProperty(k))
+          evt[k] = event[k];
+      }
+    }
+    evt.oldValue = oldValue;
+    evt.value = value;
+    this._events.trigger("change", evt, this);
 
     // TODO: Make this extensible, to let arbitrary back-ends know that
     // something has changed

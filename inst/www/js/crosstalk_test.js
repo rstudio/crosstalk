@@ -22,14 +22,22 @@ if (a !== a1) {
 
 a.on("change", function(e) {
   count++;
+  if (e.extraInfo !== "yes") {
+    throw new Error("Extra info wasn't found");
+  }
 });
-a.set("foo");
+a.set("foo", {extraInfo: "yes"});
 
 if (count !== 2) {
   throw new Error("Unexpected click count 2");
 }
 if (a.get() !== "foo") {
   throw new Error("Unexpected value of a");
+}
+
+a.set("foo");
+if (count !== 2) {
+  throw new Error("Click count changed when no-op set was performed");
 }
 
 var success = false;

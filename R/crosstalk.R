@@ -1,16 +1,18 @@
 #' @import htmltools
 init <- function() {
   htmltools::attachDependencies(
-    list(dependency),
+    list(),
+    dependencies
   )
 }
 
 #' @export
-dependency <- htmltools::htmlDependency("crosstalk", packageVersion("crosstalk"),
-  src = system.file("www", package = "crosstalk"),
-  script = "js/crosstalk.js"
+dependencies <- list(
+  htmltools::htmlDependency("crosstalk", packageVersion("crosstalk"),
+    src = system.file("www", package = "crosstalk"),
+    script = "js/crosstalk.js"
+  )
 )
-
 
 #' @import R6
 #' @export

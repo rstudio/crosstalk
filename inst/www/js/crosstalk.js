@@ -1,11 +1,14 @@
 (function() {
   var crosstalk;
+  var shinyMode;
   if (typeof(window) !== "undefined") {
     // Only use global object if in browser
     crosstalk = window.crosstalk = {};
+    shinyMode = !!window.Shiny;
   } else {
     // Use exports for node.js testing
     crosstalk = exports;
+    shinyMode = false;
   }
 
   function Events() {
@@ -66,104 +69,17 @@
   }
   crosstalk.stamp = stamp;
 
-
-  function GroupController(name) {
-    this._name = name;
-    this._eventId = 0;
-    this._selection = getNamedValue("crosstalk-selection-" + name);
-
-    this.setSelection(null, null);
-  }
-
-  GroupController.prototype.clearSelection = function(el) {
-    this._selection.set({
-      ownerId: stamp(el),
-      eventId: this._eventId++
-    });
-    return this;
-  };
-
-  GroupController.prototype.getSelection = function() {
-    return this._selection.get();
-  };
-
-  GroupController.prototype.setSelection = function(el, observations) {
-    this._selection.set({
-      ownerId: stamp(el),
-      eventId: this._eventId++,
-      observations: observations
-    });
-    return this;
-  };
-
-  GroupController.prototype.toggleSelection = function(el, id) {
-    if (typeof(id) === "string")
-      id = [id];
-
-    var elId = stamp(el);
-
-    var obs = null;
-    if (this._selection && this._selection.get().ownerId === elId) {
-      obs = this._selection.observations;
-    }
-    if (!obs) {
-      obs = [];
-    }
-
-    for (var i = 0; i < id.length; i++) {
-      var idx = obs.indexOf(id[i]);
-      if (idx >= 0) {
-        do {
-          obs.splice(idx, 1);
-          idx = obs.indexOf(id[i]);
-        }
-        while (idx >= 0);
-      } else {
-        obs.push(id[i]);
-      }
-    }
-
-    if (obs.length === 0) {
-      return this.clearSelection(el);
-    } else {
-      return this.selection({
-        ownerId: elId,
-        eventId: this._eventId++,
-        observations: obs
-      });
-    }
-  };
-
-  GroupController.prototype.on = function() {
-    return this._events.on.apply(this._events, arguments);
-  };
-  GroupController.prototype.off = function() {
-    return this._events.off.apply(this._events, arguments);
-  };
-  GroupController.prototype.trigger = function() {
-    return this._events.trigger.apply(this._events, arguments);
-  };
-
-  var groups = {};
-
-  function group(name) {
-    if (!groups.hasOwnProperty(name)) {
-      groups[name] = new GroupController(name);
-    }
-    return groups[name];
-  }
-
-  crosstalk.group = group;
-
-  var NamedValue = function(name, /*optional*/ value) {
+  function Var(scope, name, /*optional*/ value) {
+    this._scope = scope;
     this._name = name;
     this._value = value;
     this._events = new Events();
-  };
-  NamedValue.prototype.get = function() {
+  }
+  crosstalk.Var = Var;
+  Var.prototype.get = function() {
     return this._value;
   };
-  NamedValue.prototype.set = function(value) {
+  Var.prototype.set = function(value) {
     var oldValue = this._value;
     this._value = value;
     // Alert JavaScript listeners that the value has changed
@@ -174,29 +90,65 @@
 
     // TODO: Make this extensible, to let arbitrary back-ends know that
     // something has changed
-    if (window.Shiny) {
-      Shiny.onInputChange(".clientValue-" + this._name, value);
+    if (shinyMode) {
+      Shiny.onInputChange(
+        ".clientValue-" +
+          (this._scope.name !== null ? this._scope.name + "-" : "") +
+          this._name,
+        value
+      );
     }
   };
-  NamedValue.prototype.onChange = function(listener) {
-    return this._events.on("change", listener);
+  Var.prototype.on = function(eventType, listener) {
+    return this._events.on(eventType, listener);
   };
-  NamedValue.prototype.removeChangeListener = function(listener) {
-    return this._events.off("change", listener);
+  Var.prototype.removeChangeListener = function(eventType, listener) {
+    return this._events.off(eventType, listener);
   };
 
-  var namedValues = {};
-  function getNamedValue(name) {
-    var result = namedValues[name];
-    if (!result) {
-      result = namedValues[name] = new NamedValue(name);
-    }
-    return result;
+  function Scope(name) {
+    this.name = name;
+    this._vars = {};
   }
+  Scope.prototype.var = function(name) {
+    if (typeof(name) !== "string") {
+      throw new Error("Invalid var name");
+    }
 
-  if (window.Shiny) {
+    if (!this._vars.hasOwnProperty(name))
+      this._vars[name] = new Var(this, name);
+    return this._vars[name];
+  };
+  Scope.prototype.has = function(name) {
+    if (typeof(name) !== "string") {
+      throw new Error("Invalid var name");
+    }
+
+    return this._vars.hasOwnProperty(name);
+  };
+
+  crosstalk.defaultScope = new Scope(null);
+  crosstalk.var = function(name) {
+    return crosstalk.defaultScope.var(name);
+  };
+  crosstalk.has = function(name) {
+    return crosstalk.defaultScope.has(name);
+  };
+  var scopes = {};
+  crosstalk.scope = function(scopeName) {
+    if (!scopes.hasOwnProperty(scopeName)) {
+      scopes[scopeName] = new Scope(scopeName);
+    }
+    return scopes[scopeName];
+  };
+
+  if (shinyMode) {
     Shiny.addCustomMessageHandler("update-client-value", function(message) {
-      getNamedValue(message.name).set(message.value);
+      if (typeof(message.scope) === "string") {
+        crosstalk.scope(message.scope).var(message.name).set(message.value);
+      } else {
+        crosstalk.var(message.name).set(message.value);
+      }
     });
   }
 

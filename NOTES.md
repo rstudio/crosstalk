@@ -21,23 +21,10 @@ Concrete goals:
 - Ad-hoc messaging demo (i.e. Ramnath decides three of his widgets should communicate in a certain way).
 
 
-## High-level discrete selection API
-Selection is scoped to a group.
-"Discrete" as opposed to a range-selection.
-
-### Manipulation
-- A data point was clicked, toggle its selection
-- A set of data points was selected, use it to set (P0) or add/remove to (P2) or xor (P3) selection
-- Clear the selection
-
-### Linking
-- Tell me when the selection changes
-  - Tell me who made the changes
-
-
 ## Low-level shared value API
 Shared values have an identifier (name) and a value. (Should namespaces be a first-class property of a shared value, or make them convention-based like in Shiny?)
 
+```javascript
 crosstalk.var("myvar1").get()
 crosstalk.var("myvar1").set(value)
 crosstalk.var("myvar1").onChange(callback)
@@ -45,6 +32,7 @@ crosstalk.var("myvar1").onChange(callback)
 // One of these two alternatives for scoping?
 crosstalk.var("scope1.myvar1").get()
 crosstalk.scope("scope1").var("myvar1").get()
+```
 
 Note that there is no provision for tracking changes to a collection (onItemAdded, onItemRemoved, etc.), only for wholesale setting of a variable.
 
@@ -52,6 +40,9 @@ I'd kind of like to add a way for participating widgets to know whether a change
 
 
 ## Target-Action binding API
+
+Very speculative!
+
 - A widget can advertise (via docs) what unique events it emits.
 - A widget can advertise (via docs) what "actions" (methods) on it can be called.
 - You can specify that certain events can be routed to certain actions.
@@ -63,7 +54,7 @@ A temporal-spatial choropleth widget has a `setYear(year)` action.
 `bind(source = "slider.onValueChanged", target = "choropleth.setYear")`
   (or maybe `bind(srcObj = slider, srcEvent = "changed", destObj = choropleth, destAction = "setYear")`)
 will basically result in
-```
+```javascript
 slider.on("changed", function(e) {
   choropleth.setYear(e.value);
 });
@@ -72,3 +63,18 @@ more or less. Will need to have built in support for simple transformations like
 
 Does this actually solve any nontrivial problems?
 Can we be sure that at the time that this bind() call runs, both slider and choropleth exist, and we can get references to them? Do they even have IDs or handles that we can use??
+
+
+## High-level discrete selection API
+Selection is scoped to a group.  
+"Discrete" as opposed to a range-selection.
+
+### Manipulation
+- A data point was clicked, toggle its selection
+- A set of data points was selected, use it to set (P0) or add/remove to (P2) or xor (P3) selection
+- Clear the selection
+
+### Linking
+- Tell me when the selection changes
+  - Tell me who made the changes
+

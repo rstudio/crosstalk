@@ -69,8 +69,8 @@
   }
   crosstalk.stamp = stamp;
 
-  function Var(scope, name, /*optional*/ value) {
-    this._scope = scope;
+  function Var(group, name, /*optional*/ value) {
+    this._group = group;
     this._name = name;
     this._value = value;
     this._events = new Events();
@@ -103,7 +103,7 @@
     if (shinyMode) {
       Shiny.onInputChange(
         ".clientValue-" +
-          (this._scope.name !== null ? this._scope.name + "-" : "") +
+          (this._group.name !== null ? this._group.name + "-" : "") +
           this._name,
         value
       );
@@ -116,11 +116,11 @@
     return this._events.off(eventType, listener);
   };
 
-  function Scope(name) {
+  function Group(name) {
     this.name = name;
     this._vars = {};
   }
-  Scope.prototype.var = function(name) {
+  Group.prototype.var = function(name) {
     if (typeof(name) !== "string") {
       throw new Error("Invalid var name");
     }
@@ -129,7 +129,7 @@
       this._vars[name] = new Var(this, name);
     return this._vars[name];
   };
-  Scope.prototype.has = function(name) {
+  Group.prototype.has = function(name) {
     if (typeof(name) !== "string") {
       throw new Error("Invalid var name");
     }
@@ -137,25 +137,25 @@
     return this._vars.hasOwnProperty(name);
   };
 
-  crosstalk.defaultScope = new Scope(null);
   crosstalk.var = function(name) {
-    return crosstalk.defaultScope.var(name);
+    return crosstalk.defaultGroup.var(name);
   };
   crosstalk.has = function(name) {
-    return crosstalk.defaultScope.has(name);
+    return crosstalk.defaultGroup.has(name);
   };
-  var scopes = {};
-  crosstalk.scope = function(scopeName) {
-    if (!scopes.hasOwnProperty(scopeName)) {
-      scopes[scopeName] = new Scope(scopeName);
+  var groups = {};
+  crosstalk.group = function(groupName) {
+    if (!groups.hasOwnProperty(groupName)) {
+      groups[groupName] = new Group(groupName);
     }
-    return scopes[scopeName];
+    return groups[groupName];
   };
+  crosstalk.defaultGroup = crosstalk.group("default");
 
   if (shinyMode) {
     Shiny.addCustomMessageHandler("update-client-value", function(message) {
-      if (typeof(message.scope) === "string") {
-        crosstalk.scope(message.scope).var(message.name).set(message.value);
+      if (typeof(message.group) === "string") {
+        crosstalk.group(message.group).var(message.name).set(message.value);
       } else {
         crosstalk.var(message.name).set(message.value);
       }

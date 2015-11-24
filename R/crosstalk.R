@@ -21,14 +21,16 @@ ClientValue <- R6Class(
   private = list(
     .session = "ANY",
     .name = "ANY",
+    .group = "ANY",
     .qualifiedName = "ANY",
     .rv = "ANY"
   ),
   public = list(
-    initialize = function(name, session = shiny::getDefaultReactiveDomain()) {
+    initialize = function(name, group = "default", session = shiny::getDefaultReactiveDomain()) {
       private$.session <- session
       private$.name <- name
-      private$.qualifiedName <- paste0(".clientValue-", name)
+      private$.group <- group
+      private$.qualifiedName <- paste0(".clientValue-", group, "-", name)
     },
     get = function() {
       private$.session$input[[private$.qualifiedName]]
@@ -36,6 +38,7 @@ ClientValue <- R6Class(
     sendUpdate = function(value) {
       private$.session$sendCustomMessage("update-client-value", list(
         name = private$.name,
+        group = private$.group,
         value = value
       ))
     }
@@ -50,13 +53,15 @@ SharedData <- R6Class(
   "SharedData",
   private = list(
     .data = "ANY",
+    .selectionCV = "ANY",
     .rv = "ANY",
     .group = "ANY"
   ),
   public = list(
     initialize = function(data, key, interactionMode = "select", group = "default") {
       private$.data <- data
-      private$.rv <- shiny::reactiveValues()
+      private$.selectionCV <- ClientValue$new("selection", group)
+      private$.rv <- reactiveValues()
       private$.group <- group
 
       if (shiny::is.reactive(private$.data)) {
@@ -68,13 +73,11 @@ SharedData <- R6Class(
       domain <- shiny::getDefaultReactiveDomain()
       if (!is.null(domain)) {
         observe({
-          selection <- domain$input[[paste0(group, "-crosstalk-selection")]]
-          if (!is.null(selection)) {
-            if (length(selection$observations) > 0) {
-              self$.updateSelection(isolate(self$data(FALSE))[[key]] %in% selection$observations)
-            } else {
-              self$.updateSelection(NULL)
-            }
+          selection <- private$.selectionCV$get()
+          if (!is.null(selection) && length(selection) > 0) {
+            self$.updateSelection(isolate(self$data(FALSE))[[key]] %in% selection)
+          } else {
+            self$.updateSelection(NULL)
           }
         })
       }
@@ -91,10 +94,10 @@ SharedData <- R6Class(
 
       if (withSelection) {
         if (is.null(private$.rv$selected) || length(private$.rv$selected) == 0) {
-          df <- cbind(df, `_selected` = NA)
+          df <- cbind(df, selected_ = NA)
         } else {
           # TODO: Warn if the length of _selected is different?
-          df <- cbind(df, `_selected` = private$.rv$selected)
+          df <- cbind(df, selected_ = private$.rv$selected)
         }
       }
 
@@ -110,14 +113,7 @@ SharedData <- R6Class(
         # force all such events to originate in the client (much like
         # updateXXXInput)?
         self$.updateSelection(value)
-        domain <- shiny::getDefaultReactiveDomain()
-        if (!is.null(domain)) {
-          domain$sendCustomMessage("crosstalk-selection", list(
-            group = private$.group,
-            ownerId = ownerId,
-            observations = value
-          ))
-        }
+        private$.selectionCV$sendUpdate(value)
       }
     },
     clearSelection = function(ownerId = "") {

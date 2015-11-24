@@ -30,8 +30,8 @@ crosstalk.var("myvar1").set(value)
 crosstalk.var("myvar1").onChange(callback)
 
 // One of these two alternatives for scoping?
-crosstalk.var("scope1.myvar1").get()
-crosstalk.scope("scope1").var("myvar1").get()
+crosstalk.var("group1.myvar1").get()
+crosstalk.group("group1").var("myvar1").get()
 ```
 
 Note that there is no provision for tracking changes to a collection (onItemAdded, onItemRemoved, etc.), only for wholesale setting of a variable.

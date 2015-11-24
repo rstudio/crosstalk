@@ -53,6 +53,7 @@ SharedData <- R6Class(
   "SharedData",
   private = list(
     .data = "ANY",
+    .key = "ANY",
     .selectionCV = "ANY",
     .rv = "ANY",
     .group = "ANY"
@@ -60,6 +61,7 @@ SharedData <- R6Class(
   public = list(
     initialize = function(data, key, interactionMode = "select", group = "default") {
       private$.data <- data
+      private$.key <- key
       private$.selectionCV <- ClientValue$new("selection", group)
       private$.rv <- reactiveValues()
       private$.group <- group
@@ -112,8 +114,24 @@ SharedData <- R6Class(
         # TODO: Should we even update the server at this time? Or do we
         # force all such events to originate in the client (much like
         # updateXXXInput)?
-        self$.updateSelection(value)
-        private$.selectionCV$sendUpdate(value)
+
+        # .updateSelection needs logical array of length nrow(data)
+        # .selectionCV$sendUpdate needs character array of keys
+        isolate({
+          if (is.null(value)) {
+            self$.updateSelection(NULL)
+            private$.selectionCV$sendUpdate(NULL)
+          } else if (is.character(value)) {
+            self$.updateSelection(self$data(FALSE)[[private$.key]] %in% value)
+            private$.selectionCV$sendUpdate(value)
+          } else if (is.logical(value)) {
+            self$.updateSelection(value)
+            private$.selectionCV$sendUpdate(self$data(FALSE)[[private$.key]][value])
+          } else if (is.numeric(value)) {
+            self$selection(1:nrow(self$data(FALSE)) %in% value)
+            private$.selectionCV$sendUpdate(self$data(FALSE)[[private$.key]][value])
+          }
+        })
       }
     },
     clearSelection = function(ownerId = "") {

@@ -1,18 +1,16 @@
 # Crosstalk
 
-A testing ground for ideas about cross-widget communication that should eventually make their way into htmlwidgets and Shiny (probably).
+Provides low-level abstractions to support coordinated visualizations, initially designed for use with htmlwidgets and/or Shiny (but potentially extensible to other frameworks--RCloud? Bokeh.js? Plotly?).
 
-Abstract goals:
+## Goals
 
 - Allow easy, or even automatic, orchestration between htmlwidgets on the same page, without Shiny. No JavaScript should need to be written by user. The definition of "orchestration" is going to be pretty constrained though, we're not talking about arbitrary behavior here, but coordinating behaviors that are hard coded into the htmlwidgets.
 
-- Allow easy orchestration between htmlwidgets and Shiny reactivity.
+- Allow easy orchestration between htmlwidgets and Shiny reactivity. Linked brushing between JavaScript widgets and ggplot2, for example.
 
-- Widget authors will need custom code in their widget JS to work with crosstalk--this won't just magically work with existing widgets.
+- Widget authors will need custom code in their widget JS to work with crosstalk--this won't just magically work with existing widgets. Risk: If the JS library behind a widget doesn't have notions of selection, opacity, etc., this may be quite difficult without deep knowledge of JS and the library code in question.
 
-- Crosstalk will provide a communication layer, but in order for the messages to be useful, the widgets all have to agree on what they mean.
-
-- We'll promote an "official" vocabulary of messages, complete with guidelines for widget authors, and also allow arbitrary messages. Over time, the official list can grow.
+- Crosstalk will provide a communication layer, but in order for the messages to be useful, the widgets all have to agree on what they mean. We'll promote an "official" vocabulary of messages, complete with guidelines for widget authors, and also allow arbitrary messages. Over time, the official list can grow.
 
 Concrete goals:
 
@@ -25,13 +23,17 @@ Concrete goals:
 Shared values have an identifier (name) and a value. (Should namespaces be a first-class property of a shared value, or make them convention-based like in Shiny?)
 
 ```javascript
+// Use variables in the "default"" group
 crosstalk.var("myvar1").get()
 crosstalk.var("myvar1").set(value)
 crosstalk.var("myvar1").onChange(callback)
 
-// One of these two alternatives for scoping?
-crosstalk.var("group1.myvar1").get()
-crosstalk.group("group1").var("myvar1").get()
+// You can scope variables using groups. This allows
+// us to have distinct groups of widgets that do
+// linked brushing just with the other widgets in
+// their own group.
+var group1 = crosstalk.group("group1");
+group1.var("myvar1").get()
 ```
 
 Note that there is no provision for tracking changes to a collection (onItemAdded, onItemRemoved, etc.), only for wholesale setting of a variable.

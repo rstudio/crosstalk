@@ -20,58 +20,71 @@ Concrete goals:
 
 
 ## Low-level shared value API
-Shared values have an identifier (name) and a value. (Should namespaces be a first-class property of a shared value, or make them convention-based like in Shiny?)
+Shared values have an identifier (name) and a value.
 
 ```javascript
 // Use variables in the "default"" group
 crosstalk.var("myvar1").get()
 crosstalk.var("myvar1").set(value)
-crosstalk.var("myvar1").onChange(callback)
+crosstalk.var("myvar1").on("change", function(e) {
+  // Access e.value and e.oldValue properties
+});
+crosstalk.var("myvar1").off("change", callback);
+```
 
-// You can scope variables using groups. This allows
-// us to have distinct groups of widgets that do
-// linked brushing just with the other widgets in
-// their own group.
+### Event handling
+
+The `off()` method can take either the callback object that was passed into `on()`, or the return value of `on()`.
+
+Note that there is no provision for tracking changes to a collection (onItemAdded, onItemRemoved, etc.), only for wholesale setting of a variable.
+
+The `Var.set` method normally takes just a value, but you can also add a second argument `event`, which can be an object whose properties will be copied to the event that is triggered as a result of the set. (By default, the event object only contains `value` and `oldValue` properties.) These properties won't be available via `Var.get`--they are only included in the object that's passed to the event handler callbacks. One possible use for this is for a widget to ignore events that are a result of its own `set()` calls. For example:
+
+### Scoping with groups
+
+You can scope variables using groups. This allows us to have distinct groups of widgets that only link within their group.
+
+```r
 var group1 = crosstalk.group("group1");
 group1.var("myvar1").get()
 ```
 
-Note that there is no provision for tracking changes to a collection (onItemAdded, onItemRemoved, etc.), only for wholesale setting of a variable.
+All calls to `crosstalk.group(name)` with the same name argument, will return the exact same object. The same is true of `crosstalk.var(name)` and `group.var(name)`.
 
-I'd kind of like to add a way for participating widgets to know whether a changed-event they receive is due to something they did, or someone else; i.e. for each event to indicate who made the change. (The notion of identity for htmlwidgets can come from the HTML element that the widget is rendering on, for example. It's less clear what to do for Shiny reactive participants--maybe nothing?)
+```r
+// Example widget initialization code
 
+// Listen for when a d3 brush changes
+brush.on("brush", function(e) {
+  crosstalk.var("selection").set(e.getSelectedPoints(), {
+    // Attach a sender property to the event
+    sender: el
+  });
+});
 
-## Target-Action binding API
-
-Very speculative!
-
-- A widget can advertise (via docs) what unique events it emits.
-- A widget can advertise (via docs) what "actions" (methods) on it can be called.
-- You can specify that certain events can be routed to certain actions.
-
-Example:
-
-A slider widget emits an event when its value changes.
-A temporal-spatial choropleth widget has a `setYear(year)` action.
-`bind(source = "slider.onValueChanged", target = "choropleth.setYear")`
-  (or maybe `bind(srcObj = slider, srcEvent = "changed", destObj = choropleth, destAction = "setYear")`)
-will basically result in
-```javascript
-slider.on("changed", function(e) {
-  choropleth.setYear(e.value);
+crosstalk.var("selection").on("change", function(e) {
+  if (e.sender === el) {
+    // We were the ones who made this change to selection.
+    // We don't need to update ourselves, so just return.
+    return;
+  }
+  updateSelection(e.value);
 });
 ```
-more or less. Will need to have built in support for simple transformations like the `e => e.value` in this case.
 
-Does this actually solve any nontrivial problems?
-Can we be sure that at the time that this bind() call runs, both slider and choropleth exist, and we can get references to them? Do they even have IDs or handles that we can use??
+### Communication with Shiny via ClientValue
 
+Shiny applications can access Crosstalk variables using an R object API: `cv <- crosstalk::ClientValue$new(name, group)`. (Hmmm, should this be `ClientVar`? Ugh, names are hard.) The `ClientValue` class has `get()` and `sendUpdate(value)` methods. Notice that it's `sendUpdate(value)`, not `set(value)`; this is intended to emphasize that the value is serialized and sent to the client to update the "master" copy in the browser first, which will then send the value back to the server.
 
-## High-level discrete selection API
-Selection is scoped to a group.  
-"Discrete" as opposed to a range-selection.
+The `ClientValue$get()` method is a reactive operation; that is, you'll get an error if it's not performed within an observer, reactive expression, output, isolate, etc. This is the same behavior as reading a normal reactive value or reactive expression.
 
-### Manipulation
+## High-level discrete selection/brushing API [TODO]
+
+- Selection is scoped to a Crosstalk group.
+- Within a group, the selection is kept in the Crosstalk var named `selection`.
+- Selections are sets of discrete rows/observations, as opposed to e.g. a range specification.
+
+### Manipulation [TODO]
 - A data point was clicked, toggle its selection
 - A set of data points was selected, use it to set (P0) or add/remove to (P2) or xor (P3) selection
 - Clear the selection

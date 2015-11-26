@@ -19,8 +19,8 @@ Concrete goals:
 - Ad-hoc messaging demo (i.e. Ramnath decides three of his widgets should communicate in a certain way).
 
 
-## Low-level shared value API
-Shared values have an identifier (name) and a value.
+## Low-level shared variable API
+Shared variables have an identifier (name) and a value. They belong to a group (one of which is the `"default"` group).
 
 ```javascript
 // Use variables in the "default"" group
@@ -78,18 +78,29 @@ Shiny applications can access Crosstalk variables using an R object API: `cv <- 
 
 The `ClientValue$get()` method is a reactive operation; that is, you'll get an error if it's not performed within an observer, reactive expression, output, isolate, etc. This is the same behavior as reading a normal reactive value or reactive expression.
 
-## High-level discrete selection/brushing API [TODO]
 
-- Selection is scoped to a Crosstalk group.
-- Within a group, the selection is kept in the Crosstalk var named `selection`.
-- Selections are sets of discrete rows/observations, as opposed to e.g. a range specification.
+## Shared variable definitions
 
-### Manipulation [TODO]
-- A data point was clicked, toggle its selection
-- A set of data points was selected, use it to set (P0) or add/remove to (P2) or xor (P3) selection
-- Clear the selection
+The existence of a shared variable API doesn't add much value unless we attach some semantics to particular variables, and ask widget authors to follow those semantics.
 
-### Linking
-- Tell me when the selection changes
-  - Tell me who made the changes
+So far we are just defining a single variable: `selection`. It can be used for linked brushing over discrete data points/observations (as opposed to over continuous ranges).
 
+### `'selection'`: Discrete selection/brushing
+
+The first variable we will define is `'selection'`. This variable will hold either `null` (no selection/brush is active) or an array of **keys** of the rows/observations that are currently selected.
+
+A **key** is a string that uniquely identifies a single row/observation among the other rows/observations in the data set it's a member of. If the data set (data frame) has a column that can be used for this purpose, then that is ideal; otherwise, the row numbers (coerced to strings) can be used for this purpose.
+
+The nice thing about using a natural key (like employee ID, zip code, country name, gene symbol, etc.) instead of a row number, is that natural keys can be used to create nice transitions as the data set changes; whereas row numbers are only sensible in the face of data set changes if the rows don't change their position in the data set.
+
+In general, it's not possible for general purpose widgets to "know" what column (if any) should be used as the key. This information generally needs to be provided by the user of the widget. It's essential that the user use the same underlying data, and the same key, for each widget in a crosstalk group (though each widget can show different dimensions of the data).
+
+#### Helper functions [TODO]
+
+The `keys` argument in the following functions can be either a single key (string) or an array of keys.
+
+- `crosstalk.select.add(group, keys)` - add the keys to the selection
+- `crosstalk.select.remove(group, keys)` - remove the keys from the selection
+- `crosstalk.select.toggle(group, keys)` - any keys that are selected should be unselected, and vice versa. Useful for click-point-to-(un)select types of interaction.
+
+Setting/getting the selection, and listening for changes, is done via the `Var` interface of `group.var("selection")`. (Q: Should we facade those operations behind `crosstalk.select` functions, too?)

@@ -104,3 +104,7 @@ The `keys` argument in the following functions can be either a single key (strin
 - `crosstalk.select.toggle(group, keys)` - any keys that are selected should be unselected, and vice versa. Useful for click-point-to-(un)select types of interaction.
 
 Setting/getting the selection, and listening for changes, is done via the `Var` interface of `group.var("selection")`. (Q: Should we facade those operations behind `crosstalk.select` functions, too?)
+
+## Open issues
+
+- Should the Var class do defensive cloning of arrays/objects on get/set?

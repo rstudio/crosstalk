@@ -15,6 +15,7 @@ dependencies <- list(
 )
 
 #' @import R6
+#' @importFrom shiny is.reactive getDefaultReactiveDomain
 #' @export
 ClientValue <- R6Class(
   "ClientValue",
@@ -63,7 +64,7 @@ SharedData <- R6Class(
       private$.data <- data
       private$.key <- key
       private$.selectionCV <- ClientValue$new("selection", group)
-      private$.rv <- reactiveValues()
+      private$.rv <- shiny::reactiveValues()
       private$.group <- group
 
       if (shiny::is.reactive(private$.data)) {

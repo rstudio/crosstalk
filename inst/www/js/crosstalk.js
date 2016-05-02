@@ -270,4 +270,100 @@
     });
   }
 
+
+  crosstalk.FilterSet = FilterSet;
+  function FilterSet() {
+    this.reset();
+  }
+
+  FilterSet.prototype.reset = function() {
+    // Key: handle ID, Value: array of selected keys, or null
+    this._handles = {};
+    // Key: key string, Value: count of handles that include it
+    this._keys = {};
+    this._value = null;
+    this._activeHandles = 0;
+  };
+
+  FilterSet.prototype.acquireKeys = function(keys) {
+    var newlyAdded = [];
+    for (var i = 0; i < keys.length; i++) {
+      var count = this._keys[keys[i]];
+      if (!count) {
+        this._keys[keys[i]] = 1;
+        newlyAdded.push(keys[i]);
+      } else {
+        this._keys[keys[i]]++;
+      }
+    }
+
+    this._value = this._value.concat(newlyAdded);
+    this._value.sort();
+  };
+  FilterSet.prototype.releaseKeys = function(keys) {
+    var newlyRemoved = [];
+    for (var i = 0; i < keys.length; i++) {
+      var count = --this._keys[keys[i]];
+      if (!count) {
+        delete this._keys[keys[i]];
+        newlyRemoved.push(keys[i]);
+      }
+    }
+
+    // Remove newlyRemoved from this._value, and what's left is
+    // the remaining keys.
+    var diff = diffSortedLists(this._value, newlyRemoved);
+    // This looks unintuitive (setting the value to .removed) but
+    // it's only because of diffSortedLists' semantics being a bit
+    // backwards to what we're using it for here. diff.removed is
+    // all of the entries that are present in this._value but not
+    // in newlyRemoved.
+    this._value = diff.removed;
+  };
+
+  FilterSet.prototype.update = function(handleId, keys) {
+    if (keys !== null) {
+      keys = keys.slice(0); // clone before sorting
+      keys.sort();
+    }
+
+    var diff = diffSortedLists(this._handles[handleId], keys);
+    this._handles[handleId] = keys;
+
+    this.acquireKeys(diff.added);
+    this.releaseKeys(diff.removed);
+  };
+
+  function diffSortedLists(a, b) {
+    var i_a = 0;
+    var i_b = 0;
+
+    a = a || [];
+    b = b || [];
+
+    var a_only = [];
+    var b_only = [];
+
+    while (i_a < a.length && i_b < b.length) {
+      if (a[i_a] === b[i_b]) {
+        i_a++;
+        i_b++;
+      }
+      if (a[i_a] < b[i_b]) {
+        a_only.push(a[i_a++]);
+      } else {
+        b_only.push(b[i_b++]);
+      }
+    }
+
+    if (i_a < a.length)
+      a_only = a_only.concat(a.slice(i_a));
+    if (i_b < b.length)
+      b_only = b_only.concat(b.slice(i_b));
+    return {
+      removed: a_only,
+      added: b_only
+    };
+  }
+
 })();

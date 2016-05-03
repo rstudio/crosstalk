@@ -44,14 +44,14 @@ export default class FilterSet {
       this._keys[removed[i]]--;
     }
 
-    this.updateValue(keys);
+    this._updateValue(keys);
   }
 
   /**
    * @param {string[]} keys Sorted array of strings that indicate
    * a superset of possible keys.
    */
-  updateValue(keys = this.allKeys) {
+  _updateValue(keys = this._allKeys) {
     let handleCount = Object.keys(this._handles).length;
     this._value = [];
     for (let i = 0; i < keys.length; i++) {
@@ -73,10 +73,10 @@ export default class FilterSet {
     }
     delete this._handles[handleId];
 
-    this.updateValue();
+    this._updateValue();
   }
 
-  get allKeys() {
+  get _allKeys() {
     let allKeys = Object.keys(this._keys);
     allKeys.sort(naturalComparator);
     return allKeys;

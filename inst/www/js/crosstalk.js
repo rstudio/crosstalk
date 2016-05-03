@@ -101,7 +101,6 @@ if (global.Shiny) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.FilterHandle = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -116,7 +115,13 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function getFilterSet(group) {
-  return group.var("filterset");
+  var fsVar = group.var("filterset");
+  var result = fsVar.get();
+  if (!result) {
+    result = new _filterset2.default();
+    fsVar.set(result);
+  }
+  return result;
 }
 
 var id = 1;
@@ -125,16 +130,17 @@ function nextId() {
 }
 
 function createHandle(group) {
-  return new FilterHandle(getFilterSet(group));
+  return new FilterHandle(getFilterSet(group), group.var("filter"));
 }
 
-var FilterHandle = exports.FilterHandle = function () {
-  function FilterHandle(filterSet) {
-    var handleId = arguments.length <= 1 || arguments[1] === undefined ? "filter" + nextId() : arguments[1];
+var FilterHandle = function () {
+  function FilterHandle(filterSet, filterVar) {
+    var handleId = arguments.length <= 2 || arguments[2] === undefined ? "filter" + nextId() : arguments[2];
 
     _classCallCheck(this, FilterHandle);
 
     this._filterSet = filterSet;
+    this._filterVar = filterVar;
     this._id = handleId;
   }
 
@@ -147,11 +153,23 @@ var FilterHandle = exports.FilterHandle = function () {
     key: "clear",
     value: function clear() {
       this._filterSet.clear(this._id);
+      this._onChange();
     }
   }, {
     key: "set",
     value: function set(keys) {
       this._filterSet.update(this._id, keys);
+      this._onChange();
+    }
+  }, {
+    key: "on",
+    value: function on(eventType, listener) {
+      return this._filterVar.on(eventType, listener);
+    }
+  }, {
+    key: "_onChange",
+    value: function _onChange() {
+      this._filterVar.set(this._filterSet.value);
     }
   }, {
     key: "filteredKeys",
@@ -226,7 +244,7 @@ var FilterSet = function () {
         this._keys[removed[_i]]--;
       }
 
-      this.updateValue(keys);
+      this._updateValue(keys);
     }
 
     /**
@@ -235,9 +253,9 @@ var FilterSet = function () {
      */
 
   }, {
-    key: "updateValue",
-    value: function updateValue() {
-      var keys = arguments.length <= 0 || arguments[0] === undefined ? this.allKeys : arguments[0];
+    key: "_updateValue",
+    value: function _updateValue() {
+      var keys = arguments.length <= 0 || arguments[0] === undefined ? this._allKeys : arguments[0];
 
       var handleCount = Object.keys(this._handles).length;
       this._value = [];
@@ -261,7 +279,7 @@ var FilterSet = function () {
       }
       delete this._handles[handleId];
 
-      this.updateValue();
+      this._updateValue();
     }
   }, {
     key: "value",
@@ -269,7 +287,7 @@ var FilterSet = function () {
       return this._value;
     }
   }, {
-    key: "allKeys",
+    key: "_allKeys",
     get: function get() {
       var allKeys = Object.keys(this._keys);
       allKeys.sort(naturalComparator);
@@ -292,6 +310,8 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+exports.default = group;
+
 var _var2 = require("./var");
 
 var _var3 = _interopRequireDefault(_var2);
@@ -299,6 +319,15 @@ var _var3 = _interopRequireDefault(_var2);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var groups = {};
+
+function group(groupName) {
+  if (!groups.hasOwnProperty(groupName)) {
+    groups[groupName] = new Group(groupName);
+  }
+  return groups[groupName];
+}
 
 var Group = function () {
   function Group(name) {
@@ -332,8 +361,6 @@ var Group = function () {
   return Group;
 }();
 
-exports.default = Group;
-
 
 },{"./var":8}],5:[function(require,module,exports){
 (function (global){
@@ -357,16 +384,7 @@ var _filter2 = _interopRequireDefault(_filter);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var groups = {};
-
-function group(groupName) {
-  if (!groups.hasOwnProperty(groupName)) {
-    groups[groupName] = new _group2.default(groupName);
-  }
-  return groups[groupName];
-}
-
-var defaultGroup = group("default");
+var defaultGroup = (0, _group2.default)("default");
 
 function var_(name) {
   return defaultGroup.var(name);
@@ -377,7 +395,7 @@ function has(name) {
 }
 
 var crosstalk = {
-  group: group,
+  group: _group2.default,
   var: var_,
   has: has,
   selection: _selection2.default,

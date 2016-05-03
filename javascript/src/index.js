@@ -1,16 +1,6 @@
-import Group from "./group";
+import group from "./group";
 import selection from "./selection";
 import filter from "./filter";
-
-let groups = {};
-
-function group(groupName) {
-  if (!groups.hasOwnProperty(groupName)) {
-    groups[groupName] = new Group(groupName);
-  }
-  return groups[groupName];
-}
-
 
 var defaultGroup = group("default");
 

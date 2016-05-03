@@ -1,6 +1,15 @@
 import Var from "./var";
 
-export default class Group {
+let groups = {};
+
+export default function group(groupName) {
+  if (!groups.hasOwnProperty(groupName)) {
+    groups[groupName] = new Group(groupName);
+  }
+  return groups[groupName];
+}
+
+class Group {
   constructor(name) {
     this.name = name;
     this._vars = {};

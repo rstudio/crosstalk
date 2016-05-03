@@ -1,2 +1,7 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^\.eslintrc\.json$
+^Gruntfile\.js$
+^javascript$
+^package\.json$
+^node_modules$

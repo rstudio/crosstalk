@@ -1,369 +1,636 @@
-(function() {
-  var crosstalk;
-  var shinyMode;
-  if (typeof(window) !== "undefined") {
-    // Only use global object if in browser
-    crosstalk = window.crosstalk = {};
-    shinyMode = !!window.Shiny;
-  } else {
-    // Use exports for node.js testing
-    crosstalk = exports;
-    shinyMode = false;
-  }
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function (global){
+"use strict";
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+exports.stamp = stamp;
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Events = function () {
   function Events() {
+    _classCallCheck(this, Events);
+
     this._types = {};
     this._seq = 0;
   }
 
-  Events.prototype.on = function(eventType, listener) {
-    var subs = this._types[eventType];
-    if (!subs) {
-      subs = this._types[eventType] = {};
+  _createClass(Events, [{
+    key: "on",
+    value: function on(eventType, listener) {
+      var subs = this._types[eventType];
+      if (!subs) {
+        subs = this._types[eventType] = {};
+      }
+      var sub = "sub" + this._seq++;
+      subs[sub] = listener;
+      return sub;
     }
-    var sub = "sub" + (this._seq++);
-    subs[sub] = listener;
-    return sub;
-  };
-  Events.prototype.off = function(eventType, listener) {
-    var subs = this._types[eventType];
-    if (typeof(listener) === "function") {
-      for (var key in subs) {
-        if (subs.hasOwnProperty(key)) {
-          if (subs[key] === listener) {
-            delete subs[key];
-            return;
+  }, {
+    key: "off",
+    value: function off(eventType, listener) {
+      var subs = this._types[eventType];
+      if (typeof listener === "function") {
+        for (var key in subs) {
+          if (subs.hasOwnProperty(key)) {
+            if (subs[key] === listener) {
+              delete subs[key];
+              return;
+            }
           }
         }
+      } else if (typeof listener === "string") {
+        if (subs) {
+          delete subs[listener];
+          return;
+        }
+      } else {
+        throw new Error("Unexpected type for listener");
       }
-    } else if (typeof(listener) === "string") {
-      if (subs) {
-        delete subs[listener];
-        return;
+    }
+  }, {
+    key: "trigger",
+    value: function trigger(eventType, arg, thisObj) {
+      var subs = this._types[eventType];
+      for (var key in subs) {
+        if (subs.hasOwnProperty(key)) {
+          subs[key].call(thisObj, arg);
+        }
       }
+    }
+  }]);
+
+  return Events;
+}();
+
+exports.default = Events;
+
+
+var stampSeq = 1;
+
+function stamp(el) {
+  if (el === null) {
+    return "";
+  }
+  if (!el.__crosstalkStamp) {
+    el.__crosstalkStamp = "ct" + stampSeq++;
+  }
+  return el.__crosstalkStamp;
+}
+
+if (global.Shiny) {
+  Shiny.addCustomMessageHandler("update-client-value", function (message) {
+    if (typeof message.group === "string") {
+      group(message.group).var(message.name).set(message.value);
     } else {
-      throw new Error("Unexpected type for listener");
+      var_(message.name).set(message.value);
     }
-  };
-  Events.prototype.trigger = function(eventType, arg, thisObj) {
-    var subs = this._types[eventType];
-    for (var key in subs) {
-      if (subs.hasOwnProperty(key)) {
-        subs[key].call(thisObj, arg);
-      }
-    }
-  };
-
-  // For testing only
-  crosstalk.Events = Events;
-
-  var stampSeq = 1;
-  function stamp(el) {
-    if (el === null) {
-      return "";
-    }
-    if (!el.__crosstalkStamp) {
-      el.__crosstalkStamp = "ct" + stampSeq++;
-    }
-    return el.__crosstalkStamp;
-  }
-  crosstalk.stamp = stamp;
-
-  function Var(group, name, /*optional*/ value) {
-    this._group = group;
-    this._name = name;
-    this._value = value;
-    this._events = new Events();
-  }
-  crosstalk.Var = Var;
-  Var.prototype.get = function() {
-    return this._value;
-  };
-  Var.prototype.set = function(value, /*optional*/ event) {
-    if (this._value === value) {
-      // Do nothing; the value hasn't changed
-      return;
-    }
-    var oldValue = this._value;
-    this._value = value;
-    // Alert JavaScript listeners that the value has changed
-    var evt = {};
-    if (event && typeof(event) === "object") {
-      for (var k in event) {
-        if (event.hasOwnProperty(k))
-          evt[k] = event[k];
-      }
-    }
-    evt.oldValue = oldValue;
-    evt.value = value;
-    this._events.trigger("change", evt, this);
-
-    // TODO: Make this extensible, to let arbitrary back-ends know that
-    // something has changed
-    if (shinyMode) {
-      Shiny.onInputChange(
-        ".clientValue-" +
-          (this._group.name !== null ? this._group.name + "-" : "") +
-          this._name,
-        value
-      );
-    }
-  };
-  Var.prototype.on = function(eventType, listener) {
-    return this._events.on(eventType, listener);
-  };
-  Var.prototype.removeChangeListener = function(eventType, listener) {
-    return this._events.off(eventType, listener);
-  };
-
-  function Group(name) {
-    this.name = name;
-    this._vars = {};
-  }
-  Group.prototype.var = function(name) {
-    if (typeof(name) !== "string") {
-      throw new Error("Invalid var name");
-    }
-
-    if (!this._vars.hasOwnProperty(name))
-      this._vars[name] = new Var(this, name);
-    return this._vars[name];
-  };
-  Group.prototype.has = function(name) {
-    if (typeof(name) !== "string") {
-      throw new Error("Invalid var name");
-    }
-
-    return this._vars.hasOwnProperty(name);
-  };
-
-  crosstalk.var = function(name) {
-    return crosstalk.defaultGroup.var(name);
-  };
-  crosstalk.has = function(name) {
-    return crosstalk.defaultGroup.has(name);
-  };
-  var groups = {};
-  crosstalk.group = function(groupName) {
-    if (!groups.hasOwnProperty(groupName)) {
-      groups[groupName] = new Group(groupName);
-    }
-    return groups[groupName];
-  };
-  crosstalk.defaultGroup = crosstalk.group("default");
+  });
+}
 
 
-  crosstalk.selection = {};
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],2:[function(require,module,exports){
+"use strict";
 
-  crosstalk.selection.add = function(group, keys) {
-    if (!keys || keys.length === 0) {
-      // Nothing to do
-      return this;
-    }
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.FilterHandle = undefined;
 
-    var sel = group.var("selection").get();
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-    if (!sel) {
-      // No keys to keep, but go through the machinery below anyway,
-      // to remove dupes in `keys`
-      sel = [];
-    }
+exports.createHandle = createHandle;
 
-    var result = sel.slice(0);
+var _filterset = require("./filterset");
 
-    // Populate an object with the keys to add
-    var keySet = {};
-    for (var i = 0; i < keys.length; i++) {
-      keySet[keys[i]] = true;
-    }
+var _filterset2 = _interopRequireDefault(_filterset);
 
-    // Remove any keys that are already in the set
-    for (var j = 0; j < sel.length; j++) {
-      delete keySet[sel[j]];
-    }
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-    var anyKeys = false;
-    // Add the remaining keys
-    for (var key in keySet) {
-      anyKeys = true;
-      if (keySet.hasOwnProperty(key))
-        result.push(key);
-    }
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-    if (anyKeys) {
-      group.var("selection").set(result);
-    }
+function getFilterSet(group) {
+  return group.var("filterset");
+}
 
-    return this;
-  };
+var id = 1;
+function nextId() {
+  return id++;
+}
 
-  crosstalk.selection.remove = function(group, keys) {
-    if (!keys || keys.length === 0) {
-      // Nothing to do
-      return this;
-    }
+function createHandle(group) {
+  return new FilterHandle(getFilterSet(group));
+}
 
-    var sel = group.var("selection").get();
+var FilterHandle = exports.FilterHandle = function () {
+  function FilterHandle(filterSet) {
+    var handleId = arguments.length <= 1 || arguments[1] === undefined ? "filter" + nextId() : arguments[1];
 
-    var keySet = {};
-    for (var i = 0; i < keys.length; i++) {
-      keySet[keys[i]] = true;
-    }
+    _classCallCheck(this, FilterHandle);
 
-    var anyKeys = false;
-    var result = [];
-    for (var j = 0; j < sel.length; j++) {
-      if (!keySet.hasOwnProperty(sel[j])) {
-        result.push(sel[j]);
-      } else {
-        anyKeys = true;
-      }
-    }
-
-    // Only set the selection if values actually changed
-    if (anyKeys) {
-      group.var("selection").set(result);
-    }
-
-    return this;
-  };
-
-  crosstalk.selection.toggle = function(group, keys) {
-    if (!keys || keys.length === 0) {
-      // Nothing to do
-      return this;
-    }
-
-    var sel = group.var("selection").get();
-
-    var keySet = {};
-    for (var i = 0; i < keys.length; i++) {
-      keySet[keys[i]] = true;
-    }
-
-    var result = [];
-    for (var j = 0; j < sel.length; j++) {
-      if (!keySet.hasOwnProperty(sel[j])) {
-        result.push(sel[j]);
-      } else {
-        keySet[sel[j]] = false;
-      }
-    }
-
-    for (var key in keySet) {
-      if (keySet[key]) {
-        result.push(key);
-      }
-    }
-
-    group.var("selection").set(result);
-    return this;
-  };
-
-  if (shinyMode) {
-    Shiny.addCustomMessageHandler("update-client-value", function(message) {
-      if (typeof(message.group) === "string") {
-        crosstalk.group(message.group).var(message.name).set(message.value);
-      } else {
-        crosstalk.var(message.name).set(message.value);
-      }
-    });
+    this._filterSet = filterSet;
+    this._id = handleId;
   }
 
+  _createClass(FilterHandle, [{
+    key: "close",
+    value: function close() {
+      this.clear();
+    }
+  }, {
+    key: "clear",
+    value: function clear() {
+      this._filterSet.clear(this._id);
+    }
+  }, {
+    key: "set",
+    value: function set(keys) {
+      this._filterSet.update(this._id, keys);
+    }
+  }, {
+    key: "filteredKeys",
+    get: function get() {
+      return this._filterSet.value;
+    }
+  }]);
 
-  crosstalk.FilterSet = FilterSet;
+  return FilterHandle;
+}();
+
+
+},{"./filterset":3}],3:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _util = require("./util");
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function naturalComparator(a, b) {
+  if (a === b) {
+    return 0;
+  } else if (a < b) {
+    return -1;
+  } else if (a > b) {
+    return 1;
+  }
+}
+
+var FilterSet = function () {
   function FilterSet() {
+    _classCallCheck(this, FilterSet);
+
     this.reset();
   }
 
-  FilterSet.prototype.reset = function() {
-    // Key: handle ID, Value: array of selected keys, or null
-    this._handles = {};
-    // Key: key string, Value: count of handles that include it
-    this._keys = {};
-    this._value = null;
-    this._activeHandles = 0;
-  };
-
-  FilterSet.prototype.acquireKeys = function(keys) {
-    var newlyAdded = [];
-    for (var i = 0; i < keys.length; i++) {
-      var count = this._keys[keys[i]];
-      if (!count) {
-        this._keys[keys[i]] = 1;
-        newlyAdded.push(keys[i]);
-      } else {
-        this._keys[keys[i]]++;
+  _createClass(FilterSet, [{
+    key: "reset",
+    value: function reset() {
+      // Key: handle ID, Value: array of selected keys, or null
+      this._handles = {};
+      // Key: key string, Value: count of handles that include it
+      this._keys = {};
+      this._value = null;
+      this._activeHandles = 0;
+    }
+  }, {
+    key: "update",
+    value: function update(handleId, keys) {
+      if (keys !== null) {
+        keys = keys.slice(0); // clone before sorting
+        keys.sort(naturalComparator);
       }
+
+      var _diffSortedLists = (0, _util.diffSortedLists)(this._handles[handleId], keys);
+
+      var added = _diffSortedLists.added;
+      var removed = _diffSortedLists.removed;
+
+      this._handles[handleId] = keys;
+
+      for (var i = 0; i < added.length; i++) {
+        this._keys[added[i]] = (this._keys[added[i]] || 0) + 1;
+      }
+      for (var _i = 0; _i < removed.length; _i++) {
+        this._keys[removed[_i]]--;
+      }
+
+      this.updateValue(keys);
     }
 
-    this._value = this._value.concat(newlyAdded);
-    this._value.sort();
-  };
-  FilterSet.prototype.releaseKeys = function(keys) {
-    var newlyRemoved = [];
-    for (var i = 0; i < keys.length; i++) {
-      var count = --this._keys[keys[i]];
-      if (!count) {
-        delete this._keys[keys[i]];
-        newlyRemoved.push(keys[i]);
+    /**
+     * @param {string[]} keys Sorted array of strings that indicate
+     * a superset of possible keys.
+     */
+
+  }, {
+    key: "updateValue",
+    value: function updateValue() {
+      var keys = arguments.length <= 0 || arguments[0] === undefined ? this.allKeys : arguments[0];
+
+      var handleCount = Object.keys(this._handles).length;
+      this._value = [];
+      for (var i = 0; i < keys.length; i++) {
+        var count = this._keys[keys[i]];
+        if (count === handleCount) {
+          this._value.push(keys[i]);
+        }
       }
     }
-
-    // Remove newlyRemoved from this._value, and what's left is
-    // the remaining keys.
-    var diff = diffSortedLists(this._value, newlyRemoved);
-    // This looks unintuitive (setting the value to .removed) but
-    // it's only because of diffSortedLists' semantics being a bit
-    // backwards to what we're using it for here. diff.removed is
-    // all of the entries that are present in this._value but not
-    // in newlyRemoved.
-    this._value = diff.removed;
-  };
-
-  FilterSet.prototype.update = function(handleId, keys) {
-    if (keys !== null) {
-      keys = keys.slice(0); // clone before sorting
-      keys.sort();
-    }
-
-    var diff = diffSortedLists(this._handles[handleId], keys);
-    this._handles[handleId] = keys;
-
-    this.acquireKeys(diff.added);
-    this.releaseKeys(diff.removed);
-  };
-
-  function diffSortedLists(a, b) {
-    var i_a = 0;
-    var i_b = 0;
-
-    a = a || [];
-    b = b || [];
-
-    var a_only = [];
-    var b_only = [];
-
-    while (i_a < a.length && i_b < b.length) {
-      if (a[i_a] === b[i_b]) {
-        i_a++;
-        i_b++;
+  }, {
+    key: "clear",
+    value: function clear(handleId) {
+      if (typeof this._handles[handleId] === "undefined") {
+        return;
       }
-      if (a[i_a] < b[i_b]) {
-        a_only.push(a[i_a++]);
-      } else {
-        b_only.push(b[i_b++]);
-      }
-    }
 
-    if (i_a < a.length)
-      a_only = a_only.concat(a.slice(i_a));
-    if (i_b < b.length)
-      b_only = b_only.concat(b.slice(i_b));
-    return {
-      removed: a_only,
-      added: b_only
-    };
+      var keys = this._handles[handleId] || [];
+      for (var i = 0; i < keys.length; i++) {
+        this._keys[keys[i]]--;
+      }
+      delete this._handles[handleId];
+
+      this.updateValue();
+    }
+  }, {
+    key: "value",
+    get: function get() {
+      return this._value;
+    }
+  }, {
+    key: "allKeys",
+    get: function get() {
+      var allKeys = Object.keys(this._keys);
+      allKeys.sort(naturalComparator);
+      return allKeys;
+    }
+  }]);
+
+  return FilterSet;
+}();
+
+exports.default = FilterSet;
+
+
+},{"./util":7}],4:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _var2 = require("./var");
+
+var _var3 = _interopRequireDefault(_var2);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Group = function () {
+  function Group(name) {
+    _classCallCheck(this, Group);
+
+    this.name = name;
+    this._vars = {};
   }
 
-})();
+  _createClass(Group, [{
+    key: "var",
+    value: function _var(name) {
+      if (typeof name !== "string") {
+        throw new Error("Invalid var name");
+      }
+
+      if (!this._vars.hasOwnProperty(name)) this._vars[name] = new _var3.default(this, name);
+      return this._vars[name];
+    }
+  }, {
+    key: "has",
+    value: function has(name) {
+      if (typeof name !== "string") {
+        throw new Error("Invalid var name");
+      }
+
+      return this._vars.hasOwnProperty(name);
+    }
+  }]);
+
+  return Group;
+}();
+
+exports.default = Group;
+
+
+},{"./var":8}],5:[function(require,module,exports){
+(function (global){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _group = require("./group");
+
+var _group2 = _interopRequireDefault(_group);
+
+var _selection = require("./selection");
+
+var _selection2 = _interopRequireDefault(_selection);
+
+var _filter = require("./filter");
+
+var _filter2 = _interopRequireDefault(_filter);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var groups = {};
+
+function group(groupName) {
+  if (!groups.hasOwnProperty(groupName)) {
+    groups[groupName] = new _group2.default(groupName);
+  }
+  return groups[groupName];
+}
+
+var defaultGroup = group("default");
+
+function var_(name) {
+  return defaultGroup.var(name);
+}
+
+function has(name) {
+  return defaultGroup.has(name);
+}
+
+var crosstalk = {
+  group: group,
+  var: var_,
+  has: has,
+  selection: _selection2.default,
+  filter: _filter2.default
+};
+
+exports.default = crosstalk;
+
+global.crosstalk = crosstalk;
+
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"./filter":2,"./group":4,"./selection":6}],6:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.add = add;
+exports.remove = remove;
+exports.toggle = toggle;
+function add(group, keys) {
+  if (!keys || keys.length === 0) {
+    // Nothing to do
+    return this;
+  }
+
+  var sel = group.var("selection").get();
+
+  if (!sel) {
+    // No keys to keep, but go through the machinery below anyway,
+    // to remove dupes in `keys`
+    sel = [];
+  }
+
+  var result = sel.slice(0);
+
+  // Populate an object with the keys to add
+  var keySet = {};
+  for (var i = 0; i < keys.length; i++) {
+    keySet[keys[i]] = true;
+  }
+
+  // Remove any keys that are already in the set
+  for (var j = 0; j < sel.length; j++) {
+    delete keySet[sel[j]];
+  }
+
+  var anyKeys = false;
+  // Add the remaining keys
+  for (var key in keySet) {
+    anyKeys = true;
+    if (keySet.hasOwnProperty(key)) result.push(key);
+  }
+
+  if (anyKeys) {
+    group.var("selection").set(result);
+  }
+
+  return this;
+};
+
+function remove(group, keys) {
+  if (!keys || keys.length === 0) {
+    // Nothing to do
+    return this;
+  }
+
+  var sel = group.var("selection").get();
+
+  var keySet = {};
+  for (var i = 0; i < keys.length; i++) {
+    keySet[keys[i]] = true;
+  }
+
+  var anyKeys = false;
+  var result = [];
+  for (var j = 0; j < sel.length; j++) {
+    if (!keySet.hasOwnProperty(sel[j])) {
+      result.push(sel[j]);
+    } else {
+      anyKeys = true;
+    }
+  }
+
+  // Only set the selection if values actually changed
+  if (anyKeys) {
+    group.var("selection").set(result);
+  }
+
+  return this;
+};
+
+function toggle(group, keys) {
+  if (!keys || keys.length === 0) {
+    // Nothing to do
+    return this;
+  }
+
+  var sel = group.var("selection").get();
+
+  var keySet = {};
+  for (var i = 0; i < keys.length; i++) {
+    keySet[keys[i]] = true;
+  }
+
+  var result = [];
+  for (var j = 0; j < sel.length; j++) {
+    if (!keySet.hasOwnProperty(sel[j])) {
+      result.push(sel[j]);
+    } else {
+      keySet[sel[j]] = false;
+    }
+  }
+
+  for (var key in keySet) {
+    if (keySet[key]) {
+      result.push(key);
+    }
+  }
+
+  group.var("selection").set(result);
+  return this;
+};
+
+
+},{}],7:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.checkSorted = checkSorted;
+exports.diffSortedLists = diffSortedLists;
+function checkSorted(list) {
+  for (var i = 1; i < list.length; i++) {
+    if (list[i] <= list[i - 1]) {
+      throw new Error("List is not sorted or contains duplicate");
+    }
+  }
+}
+
+function diffSortedLists(a, b) {
+  var i_a = 0;
+  var i_b = 0;
+
+  a = a || [];
+  b = b || [];
+
+  var a_only = [];
+  var b_only = [];
+
+  checkSorted(a);
+  checkSorted(b);
+
+  while (i_a < a.length && i_b < b.length) {
+    if (a[i_a] === b[i_b]) {
+      i_a++;
+      i_b++;
+    } else if (a[i_a] < b[i_b]) {
+      a_only.push(a[i_a++]);
+    } else {
+      b_only.push(b[i_b++]);
+    }
+  }
+
+  if (i_a < a.length) a_only = a_only.concat(a.slice(i_a));
+  if (i_b < b.length) b_only = b_only.concat(b.slice(i_b));
+  return {
+    removed: a_only,
+    added: b_only
+  };
+}
+
+
+},{}],8:[function(require,module,exports){
+(function (global){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _events = require("./events");
+
+var _events2 = _interopRequireDefault(_events);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Var = function () {
+  function Var(group, name, /*optional*/value) {
+    _classCallCheck(this, Var);
+
+    this._group = group;
+    this._name = name;
+    this._value = value;
+    this._events = new _events2.default();
+  }
+
+  _createClass(Var, [{
+    key: "get",
+    value: function get() {
+      return this._value;
+    }
+  }, {
+    key: "set",
+    value: function set(value, /*optional*/event) {
+      if (this._value === value) {
+        // Do nothing; the value hasn't changed
+        return;
+      }
+      var oldValue = this._value;
+      this._value = value;
+      // Alert JavaScript listeners that the value has changed
+      var evt = {};
+      if (event && (typeof event === "undefined" ? "undefined" : _typeof(event)) === "object") {
+        for (var k in event) {
+          if (event.hasOwnProperty(k)) evt[k] = event[k];
+        }
+      }
+      evt.oldValue = oldValue;
+      evt.value = value;
+      this._events.trigger("change", evt, this);
+
+      // TODO: Make this extensible, to let arbitrary back-ends know that
+      // something has changed
+      if (global.Shiny) {
+        Shiny.onInputChange(".clientValue-" + (this._group.name !== null ? this._group.name + "-" : "") + this._name, value);
+      }
+    }
+  }, {
+    key: "on",
+    value: function on(eventType, listener) {
+      return this._events.on(eventType, listener);
+    }
+  }, {
+    key: "removeChangeListenerfunction",
+    value: function removeChangeListenerfunction(eventType, listener) {
+      return this._events.off(eventType, listener);
+    }
+  }]);
+
+  return Var;
+}();
+
+exports.default = Var;
+
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"./events":1}]},{},[5]);

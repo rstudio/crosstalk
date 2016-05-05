@@ -1,6 +1,6 @@
 import group from "./group";
-import selection from "./selection";
-import filter from "./filter";
+import * as selection from "./selection";
+import * as filter from "./filter";
 
 var defaultGroup = group("default");
 

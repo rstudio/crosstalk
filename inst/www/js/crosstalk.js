@@ -376,11 +376,13 @@ var _group2 = _interopRequireDefault(_group);
 
 var _selection = require("./selection");
 
-var _selection2 = _interopRequireDefault(_selection);
+var selection = _interopRequireWildcard(_selection);
 
 var _filter = require("./filter");
 
-var _filter2 = _interopRequireDefault(_filter);
+var filter = _interopRequireWildcard(_filter);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -398,8 +400,8 @@ var crosstalk = {
   group: _group2.default,
   var: var_,
   has: has,
-  selection: _selection2.default,
-  filter: _filter2.default
+  selection: selection,
+  filter: filter
 };
 
 exports.default = crosstalk;

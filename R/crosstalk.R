@@ -107,6 +107,7 @@ SharedData <- R6Class(
   private = list(
     .data = "ANY",
     .key = "ANY",
+    .filterCV = "ANY",
     .selectionCV = "ANY",
     .rv = "ANY",
     .group = "ANY"
@@ -115,6 +116,7 @@ SharedData <- R6Class(
     initialize = function(data, key, interactionMode = "select", group = "default") {
       private$.data <- data
       private$.key <- key
+      private$.filterCV <- ClientValue$new("filter", group)
       private$.selectionCV <- ClientValue$new("selection", group)
       private$.rv <- reactiveValues()
       private$.group <- group
@@ -130,7 +132,7 @@ SharedData <- R6Class(
         observe({
           selection <- private$.selectionCV$get()
           if (!is.null(selection) && length(selection) > 0) {
-            self$.updateSelection(isolate(self$data(FALSE))[[key]] %in% selection)
+            self$.updateSelection(self$data(FALSE, FALSE)[[key]] %in% selection)
           } else {
             self$.updateSelection(NULL)
           }
@@ -140,7 +142,7 @@ SharedData <- R6Class(
     groupName = function() {
       private$.group
     },
-    data = function(withSelection = FALSE) {
+    data = function(withSelection = FALSE, withFilter = TRUE) {
       df <- if (shiny::is.reactive(private$.data)) {
         private$.data()
       } else {
@@ -153,6 +155,12 @@ SharedData <- R6Class(
         } else {
           # TODO: Warn if the length of _selected is different?
           df <- cbind(df, selected_ = private$.rv$selected)
+        }
+      }
+
+      if (withFilter) {
+        if (!is.null(private$.filterCV$get())) {
+          df <- df[df[[private$.key]] %in% private$.filterCV$get(),]
         }
       }
 

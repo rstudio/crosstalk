@@ -17,12 +17,7 @@ selectizeLib <- function(bootstrap = TRUE) {
     "selectize", "0.11.2",
     system.file("www/lib/selectize", package = "crosstalk"),
     stylesheet = if (bootstrap) "css/selectize.bootstrap3.css",
-    head = format(tagList(
-      HTML('<!--[if lt IE 9]>'),
-      tags$script(src = 'shared/selectize/js/es5-shim.min.js'),
-      HTML('<![endif]-->'),
-      tags$script(src = 'shared/selectize/js/selectize.min.js')
-    ))
+    script = "js/selectize.min.js"
   )
 }
 
@@ -50,13 +45,10 @@ filter_select <- function(id, label, sharedData, group, allLevels = FALSE,
 
   if (is.factor(df$g) && allLevels) {
     labels <- as.character(levels(df$g))
-    values <- as.character(as.numeric(levels(df$g)))
+    values <- as.character(levels(df$g))
   } else {
     labels <- as.character(df$g)
     values <- as.character(df$g)
-    if (is.factor(df$g)) {
-      values <- as.character(as.numeric(df$g))
-    }
   }
 
   options <- list(

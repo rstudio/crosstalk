@@ -416,6 +416,37 @@ global.crosstalk = crosstalk;
 (function (global){
 "use strict";
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.register = register;
+var $ = global.jQuery;
+
+var bindings = {};
+
+function register(reg) {
+  bindings[reg.className] = reg;
+  setTimeout(bind, 100);
+}
+
+function bind() {
+  Object.keys(bindings).forEach(function (className) {
+    var binding = bindings[className];
+    $("." + binding.className).not(".crosstalk-input-bound").each(function (i, el) {
+      bindInstance(binding, el);
+    });
+  });
+}
+
+function bindInstance(binding, el) {
+  var jsonEl = $(el).find("script[type='application/json']");
+  var data = JSON.parse(jsonEl[0].innerText);
+
+  var instance = binding.factory(el, data);
+  $(el).data("crosstalk-instance", instance);
+  $(el).addClass("crosstalk-input-bound");
+}
+
 if (global.Shiny) {
   (function () {
     var inputBinding = new global.Shiny.InputBinding();
@@ -424,7 +455,9 @@ if (global.Shiny) {
       find: function find(scope) {
         return $(scope).find(".crosstalk-input");
       },
-      getId: function getId(el) {},
+      getId: function getId(el) {
+        return el.id;
+      },
       getValue: function getValue(el) {},
       setValue: function setValue(el, value) {},
       receiveMessage: function receiveMessage(el, data) {},
@@ -447,17 +480,15 @@ if (global.Shiny) {
 (function (global){
 "use strict";
 
+var _input = require("./input");
+
+var input = _interopRequireWildcard(_input);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
 var $ = global.jQuery;
 
-function registerFilterInput(reg) {
-  setTimeout(function () {
-    $(".crosstalk-input-select").each(function (i, el) {
-      reg.factory(el, null);
-    });
-  }, 100);
-}
-
-registerFilterInput({
+input.register({
   className: "crosstalk-input-select",
 
   factory: function factory(el, data) {
@@ -467,13 +498,10 @@ registerFilterInput({
      * group: "ct-groupname"
      */
 
-    // This should be pulled out
-    var jsonEl = $(el).find("script[type='application/json']");
-    data = JSON.parse(jsonEl[0].innerText);
-
-    var first = { value: "", label: "(All)" };
+    var first = [{ value: "", label: "(All)" }];
+    var items = global.HTMLWidgets.dataframeToD3(data.items);
     var opts = {
-      options: [first].concat(global.HTMLWidgets.dataframeToD3(data.items)),
+      options: first.concat(items),
       valueField: "value",
       labelField: "label"
     };
@@ -507,7 +535,7 @@ registerFilterInput({
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],8:[function(require,module,exports){
+},{"./input":6}],8:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {

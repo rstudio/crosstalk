@@ -1,14 +1,8 @@
+import * as input from "./input";
+
 let $ = global.jQuery;
 
-function registerFilterInput(reg) {
-  setTimeout(function() {
-    $(".crosstalk-input-select").each(function(i, el) {
-      reg.factory(el, null);
-    });
-  }, 100);
-}
-
-registerFilterInput({
+input.register({
   className: "crosstalk-input-select",
 
   factory: function(el, data) {
@@ -18,13 +12,10 @@ registerFilterInput({
      * group: "ct-groupname"
      */
 
-    // This should be pulled out
-    var jsonEl = $(el).find("script[type='application/json']");
-    data = JSON.parse(jsonEl[0].innerText);
-
-    let first = {value: "", label: "(All)"};
+    let first = [{value: "", label: "(All)"}];
+    let items = global.HTMLWidgets.dataframeToD3(data.items);
     let opts = {
-      options: [first].concat(global.HTMLWidgets.dataframeToD3(data.items)),
+      options: first.concat(items),
       valueField: "value",
       labelField: "label"
     };

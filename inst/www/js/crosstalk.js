@@ -1,5 +1,4 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-(function (global){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -83,18 +82,7 @@ function stamp(el) {
   return el.__crosstalkStamp;
 }
 
-if (global.Shiny) {
-  Shiny.addCustomMessageHandler("update-client-value", function (message) {
-    if (typeof message.group === "string") {
-      group(message.group).var(message.name).set(message.value);
-    } else {
-      var_(message.name).set(message.value);
-    }
-  });
-}
 
-
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],2:[function(require,module,exports){
 "use strict";
 
@@ -301,7 +289,7 @@ var FilterSet = function () {
 exports.default = FilterSet;
 
 
-},{"./util":7}],4:[function(require,module,exports){
+},{"./util":9}],4:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -362,7 +350,7 @@ var Group = function () {
 }();
 
 
-},{"./var":8}],5:[function(require,module,exports){
+},{"./var":10}],5:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -382,6 +370,10 @@ var _filter = require("./filter");
 
 var filter = _interopRequireWildcard(_filter);
 
+require("./input");
+
+require("./input_selectize");
+
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -394,6 +386,16 @@ function var_(name) {
 
 function has(name) {
   return defaultGroup.has(name);
+}
+
+if (global.Shiny) {
+  global.Shiny.addCustomMessageHandler("update-client-value", function (message) {
+    if (typeof message.group === "string") {
+      (0, _group2.default)(message.group).var(message.name).set(message.value);
+    } else {
+      var_(message.name).set(message.value);
+    }
+  });
 }
 
 var crosstalk = {
@@ -410,7 +412,102 @@ global.crosstalk = crosstalk;
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./filter":2,"./group":4,"./selection":6}],6:[function(require,module,exports){
+},{"./filter":2,"./group":4,"./input":6,"./input_selectize":7,"./selection":8}],6:[function(require,module,exports){
+(function (global){
+"use strict";
+
+if (global.Shiny) {
+  (function () {
+    var inputBinding = new global.Shiny.InputBinding();
+    var $ = global.jQuery;
+    $.extend(inputBinding, {
+      find: function find(scope) {
+        return $(scope).find(".crosstalk-input");
+      },
+      getId: function getId(el) {},
+      getValue: function getValue(el) {},
+      setValue: function setValue(el, value) {},
+      receiveMessage: function receiveMessage(el, data) {},
+      subscribe: function subscribe(el, callback) {
+        $(el).on("crosstalk-value-change.crosstalk", function (event) {
+          callback(false);
+        });
+      },
+      unsubscribe: function unsubscribe(el) {
+        $(el).off(".crosstalk");
+      }
+    });
+    global.Shiny.inputBindings.register(inputBinding, "crosstalk.inputBinding");
+  })();
+}
+
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],7:[function(require,module,exports){
+(function (global){
+"use strict";
+
+var $ = global.jQuery;
+
+function registerFilterInput(reg) {
+  setTimeout(function () {
+    $(".crosstalk-input-select").each(function (i, el) {
+      reg.factory(el, null);
+    });
+  }, 100);
+}
+
+registerFilterInput({
+  className: "crosstalk-input-select",
+
+  factory: function factory(el, data) {
+    /*
+     * items: {value: [...], label: [...]}
+     * map: {"groupA": ["keyA", "keyB", ...], ...}
+     * group: "ct-groupname"
+     */
+
+    // This should be pulled out
+    var jsonEl = $(el).find("script[type='application/json']");
+    data = JSON.parse(jsonEl[0].innerText);
+
+    var first = { value: "", label: "(All)" };
+    var opts = {
+      options: [first].concat(global.HTMLWidgets.dataframeToD3(data.items)),
+      valueField: "value",
+      labelField: "label"
+    };
+
+    var selectize = $(el).find("select").selectize(opts)[0].selectize;
+
+    var ctGroup = global.crosstalk.group(data.group);
+    var ctHandle = global.crosstalk.filter.createHandle(ctGroup);
+
+    selectize.on("change", function () {
+      if (selectize.items.length === 0) {
+        ctHandle.clear();
+      } else {
+        (function () {
+          var keys = {};
+          selectize.items.forEach(function (group) {
+            data.map[group].forEach(function (key) {
+              keys[key] = true;
+            });
+          });
+          var keyArray = Object.keys(keys);
+          keyArray.sort();
+          ctHandle.set(keyArray);
+        })();
+      }
+    });
+
+    return selectize;
+  }
+});
+
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],8:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -458,7 +555,7 @@ function add(group, keys) {
   }
 
   return this;
-};
+}
 
 function remove(group, keys) {
   if (!keys || keys.length === 0) {
@@ -489,7 +586,7 @@ function remove(group, keys) {
   }
 
   return this;
-};
+}
 
 function toggle(group, keys) {
   if (!keys || keys.length === 0) {
@@ -521,10 +618,10 @@ function toggle(group, keys) {
 
   group.var("selection").set(result);
   return this;
-};
+}
 
 
-},{}],7:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -573,7 +670,7 @@ function diffSortedLists(a, b) {
 }
 
 
-},{}],8:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -630,8 +727,8 @@ var Var = function () {
 
       // TODO: Make this extensible, to let arbitrary back-ends know that
       // something has changed
-      if (global.Shiny) {
-        Shiny.onInputChange(".clientValue-" + (this._group.name !== null ? this._group.name + "-" : "") + this._name, value);
+      if (global.Shiny && global.Shiny.onInputChange) {
+        global.Shiny.onInputChange(".clientValue-" + (this._group.name !== null ? this._group.name + "-" : "") + this._name, value);
       }
     }
   }, {

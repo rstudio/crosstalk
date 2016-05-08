@@ -118,7 +118,7 @@ SharedData <- R6Class(
       private$.key <- key
       private$.filterCV <- ClientValue$new("filter", group)
       private$.selectionCV <- ClientValue$new("selection", group)
-      private$.rv <- reactiveValues()
+      private$.rv <- shiny::reactiveValues()
       private$.group <- group
 
       if (shiny::is.reactive(private$.data)) {
@@ -142,7 +142,7 @@ SharedData <- R6Class(
     groupName = function() {
       private$.group
     },
-    data = function(withSelection = FALSE, withFilter = TRUE) {
+    data = function(withSelection = FALSE, withFilter = TRUE, withKey = FALSE) {
       df <- if (shiny::is.reactive(private$.data)) {
         private$.data()
       } else {
@@ -162,6 +162,10 @@ SharedData <- R6Class(
         if (!is.null(private$.filterCV$get())) {
           df <- df[df[[private$.key]] %in% private$.filterCV$get(),]
         }
+      }
+
+      if (withKey) {
+        df <- cbind(df, key_ = df[[private$.key]])
       }
 
       df

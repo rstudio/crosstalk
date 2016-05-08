@@ -3,6 +3,7 @@
 export(ClientValue)
 export(SharedData)
 export(dependencies)
+export(filter_select)
 export(is.SharedData)
 import(R6)
 import(htmltools)

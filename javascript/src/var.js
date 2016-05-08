@@ -33,8 +33,8 @@ export default class Var {
 
     // TODO: Make this extensible, to let arbitrary back-ends know that
     // something has changed
-    if (global.Shiny) {
-      Shiny.onInputChange(
+    if (global.Shiny && global.Shiny.onInputChange) {
+      global.Shiny.onInputChange(
         ".clientValue-" +
           (this._group.name !== null ? this._group.name + "-" : "") +
           this._name,

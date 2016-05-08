@@ -38,7 +38,7 @@ export function add(group, keys) {
   }
 
   return this;
-};
+}
 
 export function remove(group, keys) {
   if (!keys || keys.length === 0) {
@@ -69,7 +69,7 @@ export function remove(group, keys) {
   }
 
   return this;
-};
+}
 
 export function toggle(group, keys) {
   if (!keys || keys.length === 0) {
@@ -101,4 +101,4 @@ export function toggle(group, keys) {
 
   group.var("selection").set(result);
   return this;
-};
+}

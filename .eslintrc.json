@@ -26,7 +26,8 @@
         ],
         "no-undef": [
             "error"
-        ]
+        ],
+        "no-unused-vars": ["error", {"args": "none"}]
     },
     "globals": {
         "global": true

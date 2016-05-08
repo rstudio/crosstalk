@@ -26,6 +26,11 @@ module.exports = function (grunt) {
       }
     },
     browserify: {
+      options: {
+        browserifyOptions: {
+          //debug: true
+        }
+      },
       dist: {
         files: {
           // if the source file has an extension of es6 then
@@ -36,7 +41,7 @@ module.exports = function (grunt) {
       }
     },
     eslint: {
-      target: ["./javascript/src/index.js"]
+      target: ["./javascript/src/*.js"]
     },
     mochaTest: {
       test: {

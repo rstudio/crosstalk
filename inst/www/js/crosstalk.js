@@ -438,8 +438,14 @@ function bind() {
   });
 }
 
+// Escape jQuery identifier
+function $escape(val) {
+  return val.replace(/([!"#$%&'()*+,.\/:;<=>?@\[\\\]^`{|}~])/g, "\\$1");
+}
+
 function bindInstance(binding, el) {
-  var jsonEl = $(el).find("script[type='application/json']");
+  // TODO: Fix el.parent hack
+  var jsonEl = $(el).parent().find("script[type='application/json'][data-for='" + $escape(el.id) + "']");
   var data = JSON.parse(jsonEl[0].innerText);
 
   var instance = binding.factory(el, data);
@@ -506,7 +512,7 @@ input.register({
       labelField: "label"
     };
 
-    var selectize = $(el).find("select").selectize(opts)[0].selectize;
+    var selectize = $(el).selectize(opts)[0].selectize;
 
     var ctGroup = global.crosstalk.group(data.group);
     var ctHandle = global.crosstalk.filter.createHandle(ctGroup);

@@ -16,8 +16,14 @@ function bind() {
   });
 }
 
+// Escape jQuery identifier
+function $escape(val) {
+  return val.replace(/([!"#$%&'()*+,.\/:;<=>?@\[\\\]^`{|}~])/g, "\\$1");
+}
+
 function bindInstance(binding, el) {
-  let jsonEl = $(el).find("script[type='application/json']");
+  // TODO: Fix el.parent hack
+  let jsonEl = $(el).parent().find("script[type='application/json'][data-for='" + $escape(el.id) + "']");
   let data = JSON.parse(jsonEl[0].innerText);
 
   let instance = binding.factory(el, data);

@@ -139,8 +139,23 @@ SharedData <- R6Class(
         })
       }
     },
+    origData = function() {
+      if (shiny::is.reactive(private$.data)) {
+        private$.data()
+      } else {
+        private$.data
+      }
+    },
     groupName = function() {
       private$.group
+    },
+    key = function() {
+      df <- if (shiny::is.reactive(private$.data)) {
+        private$.data()
+      } else {
+        private$.data
+      }
+      df[[private$.key]]
     },
     data = function(withSelection = FALSE, withFilter = TRUE, withKey = FALSE) {
       df <- if (shiny::is.reactive(private$.data)) {

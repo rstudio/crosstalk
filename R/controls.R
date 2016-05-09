@@ -53,23 +53,17 @@ filter_select <- function(id, label, sharedData, group, allLevels = FALSE,
 
   options <- list(
     items = data.frame(value = values, label = labels, stringsAsFactors = FALSE),
-    map = setNames(as.list(df$key), df$g),
+    map = setNames(as.list(df$key), as.character(df$g)),
     group = sharedData$groupName()
   )
 
   attachDependencies(
-    tagList(
-      tags$div(id = id, class = "crosstalk-input-select crosstalk-input",
-        tags$select(multiple = if (multiple) NA else NULL,
-          # HTML(paste0(
-          #   "<option value=\"",
-          #   htmltools::htmlEscape(values, TRUE),
-          #   "\">",
-          #   htmltools::htmlEscape(labels, FALSE),
-          #   "</option>",
-          #   collapse = "\n"
-          # )),
-          NULL
+    tags$div(class = "form-group",
+      tags$label(class = "control-label", `for` = id, label),
+      tags$div(
+        tags$select(id = id,
+          class = "crosstalk-input-select crosstalk-input",
+          multiple = if (multiple) NA else NULL
         ),
         tags$script(type = "application/json",
           `data-for` = id,

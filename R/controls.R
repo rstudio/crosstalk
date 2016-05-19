@@ -30,7 +30,7 @@ jqueryLib <- function() {
 }
 
 #' @export
-filter_select <- function(id, label, sharedData, group, allLevels = FALSE,
+filter_select <- function(id, label, sharedData, group = "default", allLevels = FALSE,
   multiple = TRUE) {
 
   df <- sharedData$data(
@@ -39,9 +39,8 @@ filter_select <- function(id, label, sharedData, group, allLevels = FALSE,
     withKey = TRUE
   )
 
-  df <- df %>%
-    dplyr::group_by_(group = group) %>%
-    dplyr::summarise(key = list(key_))
+  # TODO: should this package really depend on dplyr?
+  df <- dplyr::summarise(dplyr::group_by(df, g = group), key = list(key_))
 
   if (is.factor(df$g) && allLevels) {
     labels <- as.character(levels(df$g))
@@ -57,6 +56,7 @@ filter_select <- function(id, label, sharedData, group, allLevels = FALSE,
     group = sharedData$groupName()
   )
 
+  # TODO: should this be spitting out an HTMLwidget?
   attachDependencies(
     tags$div(class = "form-group",
       tags$label(class = "control-label", `for` = id, label),

@@ -5,8 +5,12 @@ Version: 0.1.0
 Author: Who wrote it
 Maintainer: Who to complain to <yourfault@somewhere.net>
 Description: More about what it does (maybe more than one line)
-License: What license is it under?
-LazyData: MIT
+License: GPL-3
+LazyData: true
 Imports:
-    htmltools
+    htmltools,
+    htmlwidgets,
+    shiny
+Suggests:
+    rmarkdown
 RoxygenNote: 5.0.1

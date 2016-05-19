@@ -114,6 +114,9 @@ SharedData <- R6Class(
   ),
   public = list(
     initialize = function(data, key, interactionMode = "select", group = "default") {
+      if (!missing(key) && length(key) == 1 && !key %in% names(data)) {
+        warning("key argument not found in names of data", call. = FALSE)
+      }
       private$.data <- data
       private$.key <- key
       private$.filterCV <- ClientValue$new("filter", group)
@@ -158,6 +161,7 @@ SharedData <- R6Class(
       df[[private$.key]]
     },
     data = function(withSelection = FALSE, withFilter = TRUE, withKey = FALSE) {
+
       df <- if (shiny::is.reactive(private$.data)) {
         private$.data()
       } else {

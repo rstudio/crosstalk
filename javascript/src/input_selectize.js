@@ -20,7 +20,9 @@ input.register({
       labelField: "label"
     };
 
-    let selectize = $(el).selectize(opts)[0].selectize;
+    let select = $(el).find("select")[0];
+
+    let selectize = $(select).selectize(opts)[0].selectize;
 
     let ctGroup = global.crosstalk.group(data.group);
     let ctHandle = global.crosstalk.filter.createHandle(ctGroup);

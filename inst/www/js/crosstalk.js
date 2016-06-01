@@ -246,11 +246,15 @@ var FilterSet = function () {
       var keys = arguments.length <= 0 || arguments[0] === undefined ? this._allKeys : arguments[0];
 
       var handleCount = Object.keys(this._handles).length;
-      this._value = [];
-      for (var i = 0; i < keys.length; i++) {
-        var count = this._keys[keys[i]];
-        if (count === handleCount) {
-          this._value.push(keys[i]);
+      if (handleCount === 0) {
+        this._value = null;
+      } else {
+        this._value = [];
+        for (var i = 0; i < keys.length; i++) {
+          var count = this._keys[keys[i]];
+          if (count === handleCount) {
+            this._value.push(keys[i]);
+          }
         }
       }
     }
@@ -289,7 +293,7 @@ var FilterSet = function () {
 exports.default = FilterSet;
 
 
-},{"./util":9}],4:[function(require,module,exports){
+},{"./util":10}],4:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -350,7 +354,7 @@ var Group = function () {
 }();
 
 
-},{"./var":10}],5:[function(require,module,exports){
+},{"./var":11}],5:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -373,6 +377,8 @@ var filter = _interopRequireWildcard(_filter);
 require("./input");
 
 require("./input_selectize");
+
+require("./input_checkboxgroup");
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -412,7 +418,7 @@ global.crosstalk = crosstalk;
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./filter":2,"./group":4,"./input":6,"./input_selectize":7,"./selection":8}],6:[function(require,module,exports){
+},{"./filter":2,"./group":4,"./input":6,"./input_checkboxgroup":7,"./input_selectize":8,"./selection":9}],6:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -426,7 +432,13 @@ var bindings = {};
 
 function register(reg) {
   bindings[reg.className] = reg;
-  setTimeout(bind, 100);
+  if (global.document && global.document.readyState !== "complete") {
+    $(function () {
+      bind();
+    });
+  } else {
+    setTimeout(bind, 100);
+  }
 }
 
 function bind() {
@@ -444,8 +456,7 @@ function $escape(val) {
 }
 
 function bindInstance(binding, el) {
-  // TODO: Fix el.parent hack
-  var jsonEl = $(el).parent().find("script[type='application/json'][data-for='" + $escape(el.id) + "']");
+  var jsonEl = $(el).find("script[type='application/json'][data-for='" + $escape(el.id) + "']");
   var data = JSON.parse(jsonEl[0].innerText);
 
   var instance = binding.factory(el, data);
@@ -495,6 +506,53 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 var $ = global.jQuery;
 
 input.register({
+  className: "crosstalk-input-checkboxgroup",
+
+  factory: function factory(el, data) {
+    /*
+     * map: {"groupA": ["keyA", "keyB", ...], ...}
+     * group: "ct-groupname"
+     */
+    var ctGroup = global.crosstalk.group(data.group);
+    var ctHandle = global.crosstalk.filter.createHandle(ctGroup);
+
+    var $el = $(el);
+    $el.on("change", "input[type='checkbox']", function () {
+      var checked = $el.find("input[type='checkbox']:checked");
+      if (checked.length === 0) {
+        ctHandle.clear();
+      } else {
+        (function () {
+          var keys = {};
+          checked.each(function () {
+            data.map[this.value].forEach(function (key) {
+              keys[key] = true;
+            });
+          });
+          var keyArray = Object.keys(keys);
+          keyArray.sort();
+          ctHandle.set(keyArray);
+        })();
+      }
+    });
+  }
+});
+
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"./input":6}],8:[function(require,module,exports){
+(function (global){
+"use strict";
+
+var _input = require("./input");
+
+var input = _interopRequireWildcard(_input);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+var $ = global.jQuery;
+
+input.register({
   className: "crosstalk-input-select",
 
   factory: function factory(el, data) {
@@ -512,7 +570,9 @@ input.register({
       labelField: "label"
     };
 
-    var selectize = $(el).selectize(opts)[0].selectize;
+    var select = $(el).find("select")[0];
+
+    var selectize = $(select).selectize(opts)[0].selectize;
 
     var ctGroup = global.crosstalk.group(data.group);
     var ctHandle = global.crosstalk.filter.createHandle(ctGroup);
@@ -541,7 +601,7 @@ input.register({
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./input":6}],8:[function(require,module,exports){
+},{"./input":6}],9:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -655,7 +715,7 @@ function toggle(group, keys) {
 }
 
 
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -704,7 +764,7 @@ function diffSortedLists(a, b) {
 }
 
 
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 (function (global){
 "use strict";
 

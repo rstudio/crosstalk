@@ -3,6 +3,7 @@ import * as selection from "./selection";
 import * as filter from "./filter";
 import "./input";
 import "./input_selectize";
+import "./input_checkboxgroup";
 
 var defaultGroup = group("default");
 

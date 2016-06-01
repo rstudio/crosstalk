@@ -29,10 +29,7 @@ jqueryLib <- function() {
   )
 }
 
-#' @export
-filter_select <- function(id, label, sharedData, group, allLevels = FALSE,
-  multiple = TRUE) {
-
+makeGroupOptions <- function(sharedData, group, allLevels) {
   df <- sharedData$data(
     withSelection = FALSE,
     withFilter = FALSE,
@@ -57,12 +54,20 @@ filter_select <- function(id, label, sharedData, group, allLevels = FALSE,
     group = sharedData$groupName()
   )
 
+  options
+}
+
+#' @export
+filter_select <- function(id, label, sharedData, group, allLevels = FALSE,
+  multiple = TRUE) {
+
+  options <- makeGroupOptions(sharedData, group, allLevels)
+
   attachDependencies(
-    tags$div(class = "form-group",
+    tags$div(id = id, class = "form-group crosstalk-input-select crosstalk-input",
       tags$label(class = "control-label", `for` = id, label),
       tags$div(
-        tags$select(id = id,
-          class = "crosstalk-input-select crosstalk-input",
+        tags$select(
           multiple = if (multiple) NA else NULL
         ),
         tags$script(type = "application/json",
@@ -71,6 +76,36 @@ filter_select <- function(id, label, sharedData, group, allLevels = FALSE,
         )
       )
     ),
-    list(jqueryLib(), bootstrapLib(), selectizeLib())
+    c(dependencies(), list(jqueryLib(), bootstrapLib(), selectizeLib()))
+  )
+}
+
+#' @export
+filter_checkbox <- function(id, label, sharedData, group, allLevels = FALSE) {
+  options <- makeGroupOptions(sharedData, group, allLevels)
+
+  labels <- options$items$label
+  values <- options$items$value
+  options$items <- NULL # Doesn't need to be serialized for this type of control
+
+  attachDependencies(
+    tags$div(id = id, class = "form-group crosstalk-input-checkboxgroup crosstalk-input",
+      tags$label(class = "control-label", `for` = id, label),
+      tags$div(class = "crosstalk-options-group",
+        mapply(labels, values, FUN = function(label, value) {
+          tags$div(class = "checkbox",
+            tags$label(
+              tags$input(type = "checkbox", name = id, value = value),
+              tags$span(label)
+            )
+          )
+        }, SIMPLIFY = FALSE, USE.NAMES = FALSE)
+      ),
+      tags$script(type = "application/json",
+        `data-for` = id,
+        jsonlite::toJSON(options, dataframe = "columns", pretty = TRUE)
+      )
+    ),
+    c(dependencies(), list(jqueryLib(), bootstrapLib()))
   )
 }

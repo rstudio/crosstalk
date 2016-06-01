@@ -4,7 +4,13 @@ let bindings = {};
 
 export function register(reg) {
   bindings[reg.className] = reg;
-  setTimeout(bind, 100);
+  if (global.document && global.document.readyState !== "complete") {
+    $(() => {
+      bind();
+    });
+  } else {
+    setTimeout(bind, 100);
+  }
 }
 
 function bind() {
@@ -22,8 +28,7 @@ function $escape(val) {
 }
 
 function bindInstance(binding, el) {
-  // TODO: Fix el.parent hack
-  let jsonEl = $(el).parent().find("script[type='application/json'][data-for='" + $escape(el.id) + "']");
+  let jsonEl = $(el).find("script[type='application/json'][data-for='" + $escape(el.id) + "']");
   let data = JSON.parse(jsonEl[0].innerText);
 
   let instance = binding.factory(el, data);

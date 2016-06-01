@@ -38,7 +38,16 @@ describe("FilterSet", () => {
     assert.deepEqual(fs.value, [3,5,7,9]);
   });
 
+  it("clearing all handles equals null", () => {
+    fs.clear("foo");
+    assert.equal(fs.value, null);
+  });
+
   it("can totally reset", () => {
+    fs.update("foo", [1,3,5]);
+    fs.update("bar", [1,2,3]);
+    assert.deepEqual(fs.value, [1,3]);
+
     fs.reset();
     assert.equal(fs.value, null);
   });

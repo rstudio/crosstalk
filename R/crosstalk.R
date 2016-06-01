@@ -9,6 +9,7 @@ init <- function() {
 #' @export
 dependencies <- function() {
   list(
+    jqueryLib(),
     htmltools::htmlDependency("crosstalk", packageVersion("crosstalk"),
       src = system.file("www", package = "crosstalk"),
       script = "js/crosstalk.js"
@@ -113,7 +114,7 @@ SharedData <- R6Class(
     .group = "ANY"
   ),
   public = list(
-    initialize = function(data, key, interactionMode = "select", group = "default") {
+    initialize = function(data, key = NULL, interactionMode = "select", group = "default") {
       private$.data <- data
       private$.key <- key
       private$.filterCV <- ClientValue$new("filter", group)
@@ -155,7 +156,11 @@ SharedData <- R6Class(
       } else {
         private$.data
       }
-      df[[private$.key]]
+
+      if (!is.null(private$.key))
+        df[[private$.key]]
+      else
+        rownames(df)
     },
     data = function(withSelection = FALSE, withFilter = TRUE, withKey = FALSE) {
       df <- if (shiny::is.reactive(private$.data)) {
@@ -175,12 +180,12 @@ SharedData <- R6Class(
 
       if (withFilter) {
         if (!is.null(private$.filterCV$get())) {
-          df <- df[df[[private$.key]] %in% private$.filterCV$get(),]
+          df <- df[self$key() %in% private$.filterCV$get(),]
         }
       }
 
       if (withKey) {
-        df <- cbind(df, key_ = df[[private$.key]])
+        df <- cbind(df, key_ = self$key())
       }
 
       df
@@ -201,15 +206,17 @@ SharedData <- R6Class(
           if (is.null(value)) {
             self$.updateSelection(NULL)
             private$.selectionCV$sendUpdate(NULL)
-          } else if (is.character(value)) {
-            self$.updateSelection(self$data(FALSE)[[private$.key]] %in% value)
-            private$.selectionCV$sendUpdate(value)
-          } else if (is.logical(value)) {
-            self$.updateSelection(value)
-            private$.selectionCV$sendUpdate(self$data(FALSE)[[private$.key]][value])
-          } else if (is.numeric(value)) {
-            self$selection(1:nrow(self$data(FALSE)) %in% value)
-            private$.selectionCV$sendUpdate(self$data(FALSE)[[private$.key]][value])
+          } else {
+            key <- self$key()
+            if (is.character(value)) {
+              self$.updateSelection(key %in% value)
+              private$.selectionCV$sendUpdate(value)
+            } else if (is.logical(value)) {
+              self$.updateSelection(value)
+              private$.selectionCV$sendUpdate(key[value])
+            } else if (is.numeric(value)) {
+              self$selection(1:nrow(self$data(FALSE)) %in% value)
+            }
           }
         })
       }

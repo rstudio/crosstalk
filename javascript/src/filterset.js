@@ -53,11 +53,15 @@ export default class FilterSet {
    */
   _updateValue(keys = this._allKeys) {
     let handleCount = Object.keys(this._handles).length;
-    this._value = [];
-    for (let i = 0; i < keys.length; i++) {
-      let count = this._keys[keys[i]];
-      if (count === handleCount) {
-        this._value.push(keys[i]);
+    if (handleCount === 0) {
+      this._value = null;
+    } else {
+      this._value = [];
+      for (let i = 0; i < keys.length; i++) {
+        let count = this._keys[keys[i]];
+        if (count === handleCount) {
+          this._value.push(keys[i]);
+        }
       }
     }
   }

@@ -4,6 +4,7 @@ import * as filter from "./filter";
 import "./input";
 import "./input_selectize";
 import "./input_checkboxgroup";
+import "./input_slider";
 
 var defaultGroup = group("default");
 

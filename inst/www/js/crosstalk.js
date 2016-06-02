@@ -550,6 +550,10 @@ var _input = require("./input");
 
 var input = _interopRequireWildcard(_input);
 
+var _util = require("./util");
+
+var util = _interopRequireWildcard(_util);
+
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 var $ = global.jQuery;
@@ -565,7 +569,7 @@ input.register({
      */
 
     var first = [{ value: "", label: "(All)" }];
-    var items = global.HTMLWidgets.dataframeToD3(data.items);
+    var items = util.dataframeToD3(data.items);
     var opts = {
       options: first.concat(items),
       valueField: "value",
@@ -603,7 +607,7 @@ input.register({
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./input":6}],9:[function(require,module,exports){
+},{"./input":6,"./util":11}],9:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -861,8 +865,12 @@ function toggle(group, keys) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
 exports.checkSorted = checkSorted;
 exports.diffSortedLists = diffSortedLists;
+exports.dataframeToD3 = dataframeToD3;
 function checkSorted(list) {
   for (var i = 1; i < list.length; i++) {
     if (list[i] <= list[i - 1]) {
@@ -901,6 +909,32 @@ function diffSortedLists(a, b) {
     removed: a_only,
     added: b_only
   };
+}
+
+// Convert from wide: { colA: [1,2,3], colB: [4,5,6], ... }
+// to long: [ {colA: 1, colB: 4}, {colA: 2, colB: 5}, ... ]
+function dataframeToD3(df) {
+  var names = [];
+  var length = void 0;
+  for (var name in df) {
+    if (df.hasOwnProperty(name)) names.push(name);
+    if (_typeof(df[name]) !== "object" || typeof df[name].length === "undefined") {
+      throw new Error("All fields must be arrays");
+    } else if (typeof length !== "undefined" && length !== df[name].length) {
+      throw new Error("All fields must be arrays of the same length");
+    }
+    length = df[name].length;
+  }
+  var results = [];
+  var item = void 0;
+  for (var row = 0; row < length; row++) {
+    item = {};
+    for (var col = 0; col < names.length; col++) {
+      item[names[col]] = df[names[col]][row];
+    }
+    results.push(item);
+  }
+  return results;
 }
 
 

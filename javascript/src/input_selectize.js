@@ -1,4 +1,5 @@
 import * as input from "./input";
+import * as util from "./util";
 
 let $ = global.jQuery;
 
@@ -13,7 +14,7 @@ input.register({
      */
 
     let first = [{value: "", label: "(All)"}];
-    let items = global.HTMLWidgets.dataframeToD3(data.items);
+    let items = util.dataframeToD3(data.items);
     let opts = {
       options: first.concat(items),
       valueField: "value",

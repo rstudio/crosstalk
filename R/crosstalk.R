@@ -100,6 +100,13 @@ ClientValue <- R6Class(
 )
 
 
+createUniqueId <- function (bytes, prefix = "", suffix = "") {
+  paste(prefix, paste(format(as.hexmode(sample(256, bytes,
+    replace = TRUE) - 1), width = 2), collapse = ""),
+    suffix, sep = "")
+}
+
+
 
 #' @import R6
 #' @export
@@ -114,7 +121,7 @@ SharedData <- R6Class(
     .group = "ANY"
   ),
   public = list(
-    initialize = function(data, key = NULL, interactionMode = "select", group = "default") {
+    initialize = function(data, key = NULL, group = createUniqueId(4, prefix = "SharedData")) {
       private$.data <- data
       private$.key <- key
       private$.filterCV <- ClientValue$new("filter", group)
@@ -140,6 +147,9 @@ SharedData <- R6Class(
         })
       }
     },
+    transform = function(func) {
+      SharedData$new(func(private$.data), key = private$.key, group = private$.group)
+    },
     origData = function() {
       if (shiny::is.reactive(private$.data)) {
         private$.data()
@@ -159,8 +169,12 @@ SharedData <- R6Class(
 
       if (!is.null(private$.key))
         df[[private$.key]]
+      else if (!is.null(row.names(df)))
+        row.names(df)
+      else if (nrow(df) > 0)
+        as.character(1:nrow(df))
       else
-        rownames(df)
+        character()
     },
     data = function(withSelection = FALSE, withFilter = TRUE, withKey = FALSE) {
       df <- if (shiny::is.reactive(private$.data)) {
@@ -171,10 +185,10 @@ SharedData <- R6Class(
 
       if (withSelection) {
         if (is.null(private$.rv$selected) || length(private$.rv$selected) == 0) {
-          df <- cbind(df, selected_ = NA)
+          df$selected_ = NA
         } else {
           # TODO: Warn if the length of _selected is different?
-          df <- cbind(df, selected_ = private$.rv$selected)
+          df$selected_ <- private$.rv$selected
         }
       }
 
@@ -185,7 +199,7 @@ SharedData <- R6Class(
       }
 
       if (withKey) {
-        df <- cbind(df, key_ = self$key())
+        df$key_ <- self$key()
       }
 
       df

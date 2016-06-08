@@ -205,10 +205,11 @@ filter_slider <- function(inputId, label, sharedData, column, step = NULL,
   # TODO: Handle empty data frame, NA/NaN/Inf/-Inf values
 
   df <- sharedData$data(withKey = TRUE)
-  col <- df[,column]
-  min <- min(col)
-  max <- max(col)
-  value <- range(col)
+  col <- df[[column]]
+  values <- na.omit(col)
+  min <- min(values)
+  max <- max(values)
+  value <- range(values)
 
   ord <- order(col)
   options <- list(

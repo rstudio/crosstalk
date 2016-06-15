@@ -183,6 +183,9 @@ SharedData <- R6Class(
         private$.data
       }
 
+      op <- options(shiny.suppressMissingContextError = TRUE)
+      on.exit(options(op), add = TRUE)
+
       if (withSelection) {
         if (is.null(private$.rv$selected) || length(private$.rv$selected) == 0) {
           df$selected_ = NA

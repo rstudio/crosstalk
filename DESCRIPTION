@@ -1,12 +1,19 @@
 Package: crosstalk
 Type: Package
-Title: What the Package Does (Title Case)
-Version: 0.1.0
-Author: Who wrote it
-Maintainer: Who to complain to <yourfault@somewhere.net>
-Description: More about what it does (maybe more than one line)
-License: What license is it under?
-LazyData: MIT
+Title: Inter-widget interactivity for HTML widgets
+Version: 0.2
+Authors@R: c(
+    person("Joe", "Cheng", role = c("aut", "cre"), email = "joe@rstudio.com"),
+    person(family = "RStudio", role = "cph")
+    )
+Description: Provides building blocks for allowing HTML widgets to communicate
+    with each other, with Shiny or without (i.e. static .html files). Currently
+    supports linked brushing and filtering.
+License: MIT + file LICENSE
 Imports:
-    htmltools
+    dplyr,
+    htmltools (>= 0.3.5),
+    jsonlite,
+    R6,
+    shiny (>= 0.11)
 RoxygenNote: 5.0.1

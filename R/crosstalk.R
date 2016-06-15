@@ -108,7 +108,7 @@ createUniqueId <- function (bytes, prefix = "", suffix = "") {
 
 
 
-#' @import R6
+#' @import R6 shiny
 #' @export
 SharedData <- R6Class(
   "SharedData",

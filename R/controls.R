@@ -46,6 +46,7 @@ ionrangesliderLibs <- function() {
   )
 }
 
+#' @import dplyr
 makeGroupOptions <- function(sharedData, group, allLevels) {
   df <- sharedData$data(
     withSelection = FALSE,

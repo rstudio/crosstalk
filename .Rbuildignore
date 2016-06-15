@@ -5,3 +5,7 @@
 ^javascript$
 ^package\.json$
 ^node_modules$
+^inst/examples$
+^NOTES\.md$
+^app\.R$
+^crosstalk\.gif$

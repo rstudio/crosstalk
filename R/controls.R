@@ -80,7 +80,7 @@ filter_select <- function(id, label, sharedData, group, allLevels = FALSE,
 
   options <- makeGroupOptions(sharedData, group, allLevels)
 
-  attachDependencies(
+  htmltools::browsable(attachDependencies(
     tags$div(id = id, class = "form-group crosstalk-input-select crosstalk-input",
       tags$label(class = "control-label", `for` = id, label),
       tags$div(
@@ -94,7 +94,7 @@ filter_select <- function(id, label, sharedData, group, allLevels = FALSE,
       )
     ),
     c(dependencies(), list(jqueryLib(), bootstrapLib(), selectizeLib()))
-  )
+  ))
 }
 
 #' @export
@@ -105,7 +105,7 @@ filter_checkbox <- function(id, label, sharedData, group, allLevels = FALSE) {
   values <- options$items$value
   options$items <- NULL # Doesn't need to be serialized for this type of control
 
-  attachDependencies(
+  htmltools::browsable(attachDependencies(
     tags$div(id = id, class = "form-group crosstalk-input-checkboxgroup crosstalk-input",
       tags$label(class = "control-label", `for` = id, label),
       tags$div(class = "crosstalk-options-group",
@@ -124,7 +124,7 @@ filter_checkbox <- function(id, label, sharedData, group, allLevels = FALSE) {
       )
     ),
     c(dependencies(), list(jqueryLib(), bootstrapLib()))
-  )
+  ))
 }
 
 
@@ -253,6 +253,10 @@ filter_slider <- function(inputId, label, sharedData, column, step = NULL,
   }
 
   step <- findStepSize(min, max, step)
+  # Avoid ugliness from floating point errors, e.g.
+  # findStepSize(min(quakes$mag), max(quakes$mag), NULL)
+  # was returning 0.01999999999999957 instead of 0.2
+  step <- signif(step, 14)
 
   if (dataType %in% c("date", "datetime")) {
     # For Dates, this conversion uses midnight on that date in UTC
@@ -350,9 +354,10 @@ filter_slider <- function(inputId, label, sharedData, column, step = NULL,
     )
   }
 
-  attachDependencies(sliderTag,
+  htmltools::browsable(attachDependencies(
+    sliderTag,
     c(dependencies(), ionrangesliderLibs())
-  )
+  ))
 }
 
 hasDecimals <- function(value) {

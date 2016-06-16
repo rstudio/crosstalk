@@ -90,7 +90,7 @@ plot_ly(d, x = carat, y = price, text = paste("Clarity: ", clarity),
 #### Installation
 
 ```r
-devtools::install_github("ropensci/plotly@joe/feature/crosstalk")
+devtools::install_github("rstudio/leaflet@joe/feature/crosstalk-filter")
 ```
 
 #### Example
@@ -107,6 +107,12 @@ leaflet(sd) %>% addMarkers()
 ### DT
 
 [DT](https://rstudio.github.io/DT/) supports filtering.
+
+#### Installation
+
+```r
+devtools::install_github("rstudio/DT@joe/feature/crosstalk")
+```
 
 #### Example
 

@@ -357,6 +357,13 @@ SharedData <- R6Class(
   )
 )
 
+#' Check if an object is \code{SharedData}
+#'
+#' Check if an object is an instance of \code{\link{SharedData}} or not.
+#'
+#' @param x The object that may or may not be an instance of \code{SharedData}
+#' @return logical
+#'
 #' @export
 is.SharedData <- function(x) {
   inherits(x, "SharedData")

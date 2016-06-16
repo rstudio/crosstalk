@@ -181,6 +181,8 @@ filter_checkbox <- function(id, label, sharedData, group, allLevels = FALSE) {
 #' @param animate \code{TRUE} to show simple animation controls with default
 #'   settings; \code{FALSE} not to; or a custom settings list, such as those
 #'   created using \code{\link{animationOptions}}.
+#' @param width The width of the slider control (see
+#'   \code{\link[htmltools]{validateCssUnit}} for valid formats)
 #' @param sep Separator between thousands places in numbers.
 #' @param pre A prefix string to put in front of the value.
 #' @param post A suffix string to put after the value.

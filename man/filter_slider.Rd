@@ -41,6 +41,9 @@ according to some simple heuristics.}
 settings; \code{FALSE} not to; or a custom settings list, such as those
 created using \code{\link{animationOptions}}.}
 
+\item{width}{The width of the slider control (see
+\code{\link[htmltools]{validateCssUnit}} for valid formats)}
+
 \item{sep}{Separator between thousands places in numbers.}
 
 \item{pre}{A prefix string to put in front of the value.}

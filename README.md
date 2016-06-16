@@ -129,9 +129,9 @@ datatable(sd)
 
 Currently, the following filter controls are available. These are built-in to the Crosstalk package.
 
-* `filter_slider` - A range slider that filters on a single (numeric) column.
-* `filter_checkbox` - Filter using checkboxes to select the levels of a factor column to show.
-* `filter_select` - Filter using a [Selectize](http://selectize.github.io/selectize.js/)-based control to filter based on factor levels.
+* `filter_slider` - A range slider that filters on a single (numeric, date, or date/time) variable.
+* `filter_checkbox` - List of checkboxes to filter based on a categorical variable.
+* `filter_select` - [Selectize](http://selectize.github.io/selectize.js/)-based control to filter based on a categorical variable.
 
 These widgets work almost anywhere HTML widgets themselves do: R Markdown documents, Shiny apps, from the R console.
 

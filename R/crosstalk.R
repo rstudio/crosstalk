@@ -188,11 +188,14 @@ createUniqueId <- function (bytes, prefix = "", suffix = "") {
 #'     If called with one or two arguments, expects \code{value} to be a logical
 #'     vector of \code{nrow(origData())} length, indicating which rows are
 #'     currently selected (brushed). This value is propagated to the web browser
-#'     (assumes an active Shiny app or Shiny R Markdown document). Advanced: The
-#'     \code{ownerId} argument may be set to the \code{outputId} of a widget if
+#'     (assumes an active Shiny app or Shiny R Markdown document).
+#'
+#'     Set the \code{ownerId} argument to the \code{outputId} of a widget if
 #'     conceptually that widget "initiated" the selection (prevents that widget
 #'     from clearing its visual selection box, which is normally cleared when
-#'     the selection changes).
+#'     the selection changes). For example, if setting the selection based on a
+#'     \code{\link[shiny]{plotOutput}} brush, then \code{ownerId} should be the
+#'     \code{outputId} of the \code{plotOutput}.
 #'   }
 #'   \item{\code{clearSelection(ownerId = "")}}{
 #'     Clears the selection. For the meaning of \code{ownerId}, see the

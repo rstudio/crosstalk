@@ -31,6 +31,7 @@ jqueryLib <- function() {
 
 ionrangesliderLibs <- function() {
   list(
+    jqueryLib(),
     htmlDependency("ionrangeslider", "2.1.2",
       system.file("www/lib/ionrangeslider", package = "crosstalk"),
       script = "js/ion.rangeSlider.min.js",
@@ -75,6 +76,31 @@ makeGroupOptions <- function(sharedData, group, allLevels) {
   options
 }
 
+#' Categorical filter controls
+#'
+#' Creates a select box or list of checkboxes, for filtering a
+#' \code{\link{SharedData}} object based on categorical data.
+#'
+#' @param id An HTML element ID; must be unique within the web page
+#' @param label A human-readable label
+#' @param sharedData \code{SharedData} object with the data to filter
+#' @param group A single-element character vector naming the column whose values
+#'   will populate this select box. Generally this should be a character or
+#'   factor column; if not, it will be coerced to character.
+#' @param allLevels If the column named by \code{group} is factor-based, should
+#'   all the levels be displayed as options, or only ones that are present in
+#'   the data?
+#' @param multiple Can multiple values be selected?
+#'
+#' @examples
+#' ## Only run examples in interactive R sessions
+#' if (interactive()) {
+#'
+#' sd <- SharedData$new(chickwts)
+#' filter_select("feedtype", "Feed type", sd, "feed")
+#'
+#' }
+#'
 #' @export
 filter_select <- function(id, label, sharedData, group, allLevels = FALSE,
   multiple = TRUE) {
@@ -94,10 +120,11 @@ filter_select <- function(id, label, sharedData, group, allLevels = FALSE,
         )
       )
     ),
-    c(dependencies(), list(jqueryLib(), bootstrapLib(), selectizeLib()))
+    c(list(jqueryLib(), bootstrapLib(), selectizeLib()), crosstalkLibs())
   ))
 }
 
+#' @rdname filter_select
 #' @export
 filter_checkbox <- function(id, label, sharedData, group, allLevels = FALSE) {
   options <- makeGroupOptions(sharedData, group, allLevels)
@@ -124,23 +151,22 @@ filter_checkbox <- function(id, label, sharedData, group, allLevels = FALSE) {
         jsonlite::toJSON(options, dataframe = "columns", pretty = TRUE)
       )
     ),
-    c(dependencies(), list(jqueryLib(), bootstrapLib()))
+    c(list(jqueryLib(), bootstrapLib()), crosstalkLibs())
   ))
 }
 
 
-#' Slider Input Widget
+#' Range filter control
 #'
-#' Constructs a slider widget to select a numeric value from a range.
+#' Creates a slider widget that lets users filter observations based on a range
+#' of values.
 #'
-#' @param inputId The \code{input} slot that will be used to access the value.
-#' @param label Display label for teh control, or \code{NULL} for no label.
-#' @param min The minimum value (inclusive) that can be selected.
-#' @param max The maximum value (inclusive) that can be selected.
-#' @param value The initial value of the slider. A numeric vector of length one
-#'   will create a regular slider; a numeric vector of length two will create a
-#'   double-ended range slider. A warning will be issued if the value doesn't
-#'   fit between \code{min} and \code{max}.
+#' @param id An HTML element ID; must be unique within the web page
+#' @param label A human-readable label
+#' @param sharedData \code{SharedData} object with the data to filter
+#' @param column A single-element character vector naming the column whose
+#'   values will be used for this slider. The column must be of type
+#'   \code{\link{Date}}, \code{\link{POSIXt}}, or numeric.
 #' @param step Specifies the interval between each selectable value on the
 #'   slider (if \code{NULL}, a heuristic is used to determine the step size). If
 #'   the values are dates, \code{step} is in days; if the values are times
@@ -179,25 +205,12 @@ filter_checkbox <- function(id, label, sharedData, group, allLevels = FALSE) {
 #' ## Only run examples in interactive R sessions
 #' if (interactive()) {
 #'
-#' ui <- fluidPage(
-#'   sliderInput("obs", "Number of observations:",
-#'     min = 0, max = 1000, value = 500
-#'   ),
-#'   plotOutput("distPlot")
-#' )
+#' sd <- SharedData$new(mtcars)
+#' filter_slider("mpg", "Miles per gallon", sd, "mpg")
 #'
-#' # Server logic
-#' server <- function(input, output) {
-#'   output$distPlot <- renderPlot({
-#'     hist(rnorm(input$obs))
-#'   })
-#' }
-#'
-#' # Complete app with UI and server components
-#' shinyApp(ui, server)
 #' }
 #' @export
-filter_slider <- function(inputId, label, sharedData, column, step = NULL,
+filter_slider <- function(id, label, sharedData, column, step = NULL,
   round = FALSE, ticks = TRUE, animate = FALSE, width = NULL, sep = ",",
   pre = NULL, post = NULL, timeFormat = NULL,
   timezone = NULL, dragRange = TRUE)
@@ -319,13 +332,13 @@ filter_slider <- function(inputId, label, sharedData, column, step = NULL,
   sliderTag <- div(
     class = "form-group crosstalk-input-container",
     class = "crosstalk-input-slider js-range-slider",
-    id = inputId,
+    id = id,
 
     style = if (!is.null(width)) paste0("width: ", validateCssUnit(width), ";"),
-    if (!is.null(label)) controlLabel(inputId, label),
+    if (!is.null(label)) controlLabel(id, label),
     do.call(tags$input, sliderProps),
     tags$script(type = "application/json",
-      `data-for` = inputId,
+      `data-for` = id,
       jsonlite::toJSON(options, dataframe = "columns", pretty = TRUE)
     )
   )
@@ -336,16 +349,16 @@ filter_slider <- function(inputId, label, sharedData, column, step = NULL,
 
   if (!is.null(animate) && !identical(animate, FALSE)) {
     if (is.null(animate$playButton))
-      animate$playButton <- icon('play', lib = 'glyphicon')
+      animate$playButton <- shiny::icon('play', lib = 'glyphicon')
     if (is.null(animate$pauseButton))
-      animate$pauseButton <- icon('pause', lib = 'glyphicon')
+      animate$pauseButton <- shiny::icon('pause', lib = 'glyphicon')
 
     sliderTag <- tagAppendChild(
       sliderTag,
       tags$div(class='slider-animate-container',
         tags$a(href='#',
           class='slider-animate-button',
-          'data-target-id'=inputId,
+          'data-target-id'=id,
           'data-interval'=animate$interval,
           'data-loop'=animate$loop,
           span(class = 'play', animate$playButton),
@@ -357,7 +370,7 @@ filter_slider <- function(inputId, label, sharedData, column, step = NULL,
 
   htmltools::browsable(attachDependencies(
     sliderTag,
-    c(dependencies(), ionrangesliderLibs())
+    c(ionrangesliderLibs(), crosstalkLibs())
   ))
 }
 

@@ -3,7 +3,7 @@
 export(ClientValue)
 export(SharedData)
 export(animation_options)
-export(dependencies)
+export(crosstalkLibs)
 export(filter_checkbox)
 export(filter_select)
 export(filter_slider)

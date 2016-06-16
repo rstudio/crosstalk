@@ -2,12 +2,16 @@
 init <- function() {
   htmltools::attachDependencies(
     list(),
-    dependencies()
+    crosstalkLibs()
   )
 }
 
+#' Crosstalk dependencies
+#'
+#' List of \code{\link[htmltools]{htmlDependency}} objects necessary for
+#' Crosstalk to function. Intended for widget authors.
 #' @export
-dependencies <- function() {
+crosstalkLibs <- function() {
   list(
     jqueryLib(),
     htmltools::htmlDependency("crosstalk", packageVersion("crosstalk"),
@@ -107,7 +111,112 @@ createUniqueId <- function (bytes, prefix = "", suffix = "") {
 }
 
 
-
+#' An R6 class that represents a shared data frame
+#'
+#' ...or sufficiently data frame-like object. The primary use for
+#' \code{SharedData} is to be passed to Crosstalk-compatible widgets in place
+#' of a data frame. Each \code{SharedData$new(...)} call makes a new "group"
+#' of widgets that link to each other, but not to widgets in other groups.
+#' You can also use a \code{SharedData} object from Shiny code in order to
+#' react to filtering and brushing from non-widget visualizations (like ggplot2
+#' plots).
+#'
+#' @section Constructor:
+#'
+#' \code{SharedData$new(data, key = NULL, group = createUniqueId(4, prefix = "SharedData"))}
+#'
+#' \describe{
+#'   \item{\code{data}}{
+#'     A data frame-like object, or a Shiny \link[=reactive]{reactive
+#'     expression} that returns a data frame-like object.
+#'   }
+#'   \item{\code{key}}{
+#'     Character vector that indicates the name of the column that represents
+#'     the key or ID of the data frame. These \emph{must} be unique, and ideally
+#'     will be something intrinsic to the data (a proper ID) rather than a
+#'     transient property like row index.
+#'
+#'     If \code{NULL}, then \code{row.names(data)} will be used.
+#'   }
+#'   \item{\code{group}}{
+#'     The "identity" of the Crosstalk group that widgets will join when you
+#'     pass them this \code{SharedData} object. In some cases, you will want to
+#'     have multiple independent \code{SharedData} objects link up to form a
+#'     single web of widgets that all share selection and filtering state; in
+#'     those cases, you'll give those \code{SharedData} objects the same group
+#'     name. (One example: in Shiny, ui.R and server.R might each need their own
+#'     \code{SharedData} instance, even though they're intended to represent a
+#'     single group.)
+#'   }
+#' }
+#'
+#' @section Methods:
+#'
+#' \describe{
+#'   \item{\code{data(withSelection = FALSE, withFilter = TRUE, withKey = FALSE)}}{
+#'     Return the data (or read and return the data if the data is a Shiny
+#'     reactive expression). If \code{withSelection}, add a \code{selection_}
+#'     column with logical values indicating which rows are in the current
+#'     selection, or \code{NA} if no selection is currently active. If
+#'     \code{withFilter} (the default), only return rows that are part of the
+#'     current filter settings, if any. If \code{withKey}, add a \code{key_}
+#'     column with the key values of each row (normally not needed since the
+#'     key is either one of the other columns or else just the row names).
+#'
+#'     When running in Shiny, calling \code{data()} is a reactive operation
+#'     that will invalidate if the selection or filter change (assuming that
+#'     information was requested), or if the original data is a reactive
+#'     expression that has invalidated.
+#'   }
+#'   \item{\code{origData()}}{
+#'     Return the data frame that was used to create this \code{SharedData}
+#'     instance. If a reactive expression, evaluate the reactive expression.
+#'     Equivalent to \code{data(FALSE, FALSE, FALSE)}.
+#'   }
+#'   \item{\code{groupName()}}{
+#'     Returns the value of \code{group} that was used to create this instance.
+#'   }
+#'   \item{\code{key()}}{
+#'     Returns the vector of key values. Filtering is not applied.
+#'   }
+#'   \item{\code{selection(value, ownerId = "")}}{
+#'     If called without arguments, returns a logical vector of rows that are
+#'     currently selected (brushed), or \code{NULL} if no selection exists.
+#'     Intended to be called from a Shiny reactive context, and invalidates
+#'     whenever the selection changes.
+#'
+#'     If called with one or two arguments, expects \code{value} to be a logical
+#'     vector of \code{nrow(origData())} length, indicating which rows are
+#'     currently selected (brushed). This value is propagated to the web browser
+#'     (assumes an active Shiny app or Shiny R Markdown document). Advanced: The
+#'     \code{ownerId} argument may be set to the \code{outputId} of a widget if
+#'     conceptually that widget "initiated" the selection (prevents that widget
+#'     from clearing its visual selection box, which is normally cleared when
+#'     the selection changes).
+#'   }
+#'   \item{\code{clearSelection(ownerId = "")}}{
+#'     Clears the selection. For the meaning of \code{ownerId}, see the
+#'     \code{selection} method.
+#'   }
+#'   \item{\code{transform(func)}}{
+#'     Apply a transformation function to the internal data frame, and return
+#'     a new \code{SharedData} object that \emph{shares its identity with the
+#'     original \code{SharedData} object}. The transformation function
+#'     \code{func} must have a single (data frame-like) parameter, and must
+#'     return a data frame-like object with the same number of rows, with the
+#'     same key column.
+#'
+#'     This is useful for linking different widgets that expect their data in
+#'     different data frame-like formats. For example, the DT package requires
+#'     a standard data frame but Leaflet might need a
+#'     \code{SpatialPolygonsDataFrame} (which can be converted to a standard
+#'     data frame using \code{as.data.frame}):
+#'     \preformatted{sd <- SharedData$new(polygonDataFrame)
+#' leaflet(sd) \%>\% addPolygons()
+#' datatable(sd$transform(as.data.frame))}
+#'   }
+#' }
+#'
 #' @import R6 shiny
 #' @export
 SharedData <- R6Class(
@@ -195,14 +304,14 @@ SharedData <- R6Class(
         }
       }
 
+      if (withKey) {
+        df$key_ <- self$key()
+      }
+
       if (withFilter) {
         if (!is.null(private$.filterCV$get())) {
           df <- df[self$key() %in% private$.filterCV$get(),]
         }
-      }
-
-      if (withKey) {
-        df$key_ <- self$key()
       }
 
       df

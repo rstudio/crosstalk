@@ -3,20 +3,25 @@
 \name{filter_slider}
 \alias{animation_options}
 \alias{filter_slider}
-\title{Slider Input Widget}
+\title{Range filter control}
 \usage{
-filter_slider(inputId, label, sharedData, column, step = NULL,
-  round = FALSE, ticks = TRUE, animate = FALSE, width = NULL,
-  sep = ",", pre = NULL, post = NULL, timeFormat = NULL,
-  timezone = NULL, dragRange = TRUE)
+filter_slider(id, label, sharedData, column, step = NULL, round = FALSE,
+  ticks = TRUE, animate = FALSE, width = NULL, sep = ",", pre = NULL,
+  post = NULL, timeFormat = NULL, timezone = NULL, dragRange = TRUE)
 
 animation_options(interval = 1000, loop = FALSE, playButton = NULL,
   pauseButton = NULL)
 }
 \arguments{
-\item{inputId}{The \code{input} slot that will be used to access the value.}
+\item{id}{An HTML element ID; must be unique within the web page}
 
-\item{label}{Display label for teh control, or \code{NULL} for no label.}
+\item{label}{A human-readable label}
+
+\item{sharedData}{\code{SharedData} object with the data to filter}
+
+\item{column}{A single-element character vector naming the column whose
+values will be used for this slider. The column must be of type
+\code{\link{Date}}, \code{\link{POSIXt}}, or numeric.}
 
 \item{step}{Specifies the interval between each selectable value on the
 slider (if \code{NULL}, a heuristic is used to determine the step size). If
@@ -72,39 +77,18 @@ or list of tags (using \code{\link{tag}} and friends), or raw HTML (using
 \code{\link{HTML}}).}
 
 \item{pauseButton}{Similar to \code{playButton}, but for the pause button.}
-
-\item{min}{The minimum value (inclusive) that can be selected.}
-
-\item{max}{The maximum value (inclusive) that can be selected.}
-
-\item{value}{The initial value of the slider. A numeric vector of length one
-will create a regular slider; a numeric vector of length two will create a
-double-ended range slider. A warning will be issued if the value doesn't
-fit between \code{min} and \code{max}.}
 }
 \description{
-Constructs a slider widget to select a numeric value from a range.
+Creates a slider widget that lets users filter observations based on a range
+of values.
 }
 \examples{
 ## Only run examples in interactive R sessions
 if (interactive()) {
 
-ui <- fluidPage(
-  sliderInput("obs", "Number of observations:",
-    min = 0, max = 1000, value = 500
-  ),
-  plotOutput("distPlot")
-)
+sd <- SharedData$new(mtcars)
+filter_slider("mpg", "Miles per gallon", sd, "mpg")
 
-# Server logic
-server <- function(input, output) {
-  output$distPlot <- renderPlot({
-    hist(rnorm(input$obs))
-  })
-}
-
-# Complete app with UI and server components
-shinyApp(ui, server)
 }
 }
 

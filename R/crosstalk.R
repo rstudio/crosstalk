@@ -246,6 +246,8 @@ SharedData <- R6Class(
         private$.key <- key
       } else if (is.function(key)) {
         private$.key <- key
+      } else if (is.null(key)) {
+        private$.key <- key
       } else {
         stop("Unknown key type")
       }

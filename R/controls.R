@@ -220,8 +220,12 @@ filter_slider <- function(id, label, sharedData, column, step = NULL,
   # TODO: Check that this works well with factors
   # TODO: Handle empty data frame, NA/NaN/Inf/-Inf values
 
+  if (is.character(column)) {
+    column <- lazyeval::f_new(as.symbol(column))
+  }
+
   df <- sharedData$data(withKey = TRUE)
-  col <- df[[column]]
+  col <- lazyeval::f_eval(column, df)
   values <- na.omit(col)
   min <- min(values)
   max <- max(values)

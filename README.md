@@ -32,7 +32,7 @@ library(DT)
 sd <- SharedData$new(quakes)
 
 # Create a filter input
-filter_slider("mag", "Magnitude", sd, column = "mag", step = 0.1)
+filter_slider("mag", "Magnitude", sd, column = ~mag, step = 0.1)
 
 # Use SharedData like a dataframe with Crosstalk-enabled widgets
 leaflet(sd) %>% addTiles() %>% addMarkers()

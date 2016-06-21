@@ -235,11 +235,20 @@ SharedData <- R6Class(
   public = list(
     initialize = function(data, key = NULL, group = createUniqueId(4, prefix = "SharedData")) {
       private$.data <- data
-      private$.key <- key
       private$.filterCV <- ClientValue$new("filter", group)
       private$.selectionCV <- ClientValue$new("selection", group)
       private$.rv <- shiny::reactiveValues()
       private$.group <- group
+
+      if (inherits(key, "formula")) {
+        private$.key <- key
+      } else if (is.character(key)) {
+        private$.key <- key
+      } else if (is.function(key)) {
+        private$.key <- key
+      } else {
+        stop("Unknown key type")
+      }
 
       if (shiny::is.reactive(private$.data)) {
         observeEvent(private$.data(), {
@@ -279,8 +288,13 @@ SharedData <- R6Class(
         private$.data
       }
 
-      if (!is.null(private$.key))
-        df[[private$.key]]
+      key <- private$.key
+      if (inherits(key, "formula"))
+        lazyeval::f_eval(key, df)
+      else if (is.character(key))
+        key
+      else if (is.function(key))
+        key(df)
       else if (!is.null(row.names(df)))
         row.names(df)
       else if (nrow(df) > 0)

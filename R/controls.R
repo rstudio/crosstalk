@@ -56,20 +56,20 @@ makeGroupOptions <- function(sharedData, group, allLevels) {
   )
 
   df <- df %>%
-    dplyr::group_by_(group = group) %>%
+    dplyr::group_by_(group_ = group) %>%
     dplyr::summarise(key = list(key_))
 
-  if (is.factor(df$g) && allLevels) {
-    labels <- as.character(levels(df$g))
-    values <- as.character(levels(df$g))
+  if (is.factor(df$group_) && allLevels) {
+    labels <- as.character(levels(df$group_))
+    values <- as.character(levels(df$group_))
   } else {
-    labels <- as.character(df$g)
-    values <- as.character(df$g)
+    labels <- as.character(df$group_)
+    values <- as.character(df$group_)
   }
 
   options <- list(
     items = data.frame(value = values, label = labels, stringsAsFactors = FALSE),
-    map = setNames(as.list(df$key), as.character(df$g)),
+    map = setNames(as.list(df$key), as.character(df$group_)),
     group = sharedData$groupName()
   )
 

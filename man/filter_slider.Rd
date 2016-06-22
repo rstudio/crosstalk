@@ -19,9 +19,9 @@ animation_options(interval = 1000, loop = FALSE, playButton = NULL,
 
 \item{sharedData}{\code{SharedData} object with the data to filter}
 
-\item{column}{A single-element character vector naming the column whose
-values will be used for this slider. The column must be of type
-\code{\link{Date}}, \code{\link{POSIXt}}, or numeric.}
+\item{column}{A one-sided formula whose values will be used for this slider.
+The column must be of type \code{\link{Date}}, \code{\link{POSIXt}}, or
+numeric.}
 
 \item{step}{Specifies the interval between each selectable value on the
 slider (if \code{NULL}, a heuristic is used to determine the step size). If

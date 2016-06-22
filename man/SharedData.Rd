@@ -28,10 +28,10 @@ plots).
     expression} that returns a data frame-like object.
   }
   \item{\code{key}}{
-    Character vector that indicates the name of the column that represents
-    the key or ID of the data frame. These \emph{must} be unique, and ideally
-    will be something intrinsic to the data (a proper ID) rather than a
-    transient property like row index.
+    Character vector or one-sided formula that indicates the name of the
+    column that represents the key or ID of the data frame. These \emph{must}
+    be unique, and ideally will be something intrinsic to the data (a proper
+    ID) rather than a transient property like row index.
 
     If \code{NULL}, then \code{row.names(data)} will be used.
   }

@@ -84,12 +84,12 @@ makeGroupOptions <- function(sharedData, group, allLevels) {
 #' @param id An HTML element ID; must be unique within the web page
 #' @param label A human-readable label
 #' @param sharedData \code{SharedData} object with the data to filter
-#' @param group A single-element character vector naming the column whose values
-#'   will populate this select box. Generally this should be a character or
-#'   factor column; if not, it will be coerced to character.
-#' @param allLevels If the column named by \code{group} is factor-based, should
-#'   all the levels be displayed as options, or only ones that are present in
-#'   the data?
+#' @param group A one-sided formula whose values will populate this select box.
+#'   Generally this should be a character or factor column; if not, it will be
+#'   coerced to character.
+#' @param allLevels If the vector described by \code{group} is factor-based,
+#'   should all the levels be displayed as options, or only ones that are
+#'   present in the data?
 #' @param multiple Can multiple values be selected?
 #'
 #' @examples
@@ -164,9 +164,9 @@ filter_checkbox <- function(id, label, sharedData, group, allLevels = FALSE) {
 #' @param id An HTML element ID; must be unique within the web page
 #' @param label A human-readable label
 #' @param sharedData \code{SharedData} object with the data to filter
-#' @param column A single-element character vector naming the column whose
-#'   values will be used for this slider. The column must be of type
-#'   \code{\link{Date}}, \code{\link{POSIXt}}, or numeric.
+#' @param column A one-sided formula whose values will be used for this slider.
+#'   The column must be of type \code{\link{Date}}, \code{\link{POSIXt}}, or
+#'   numeric.
 #' @param step Specifies the interval between each selectable value on the
 #'   slider (if \code{NULL}, a heuristic is used to determine the step size). If
 #'   the values are dates, \code{step} is in days; if the values are times

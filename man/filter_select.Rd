@@ -17,13 +17,13 @@ filter_checkbox(id, label, sharedData, group, allLevels = FALSE)
 
 \item{sharedData}{\code{SharedData} object with the data to filter}
 
-\item{group}{A single-element character vector naming the column whose values
-will populate this select box. Generally this should be a character or
-factor column; if not, it will be coerced to character.}
+\item{group}{A one-sided formula whose values will populate this select box.
+Generally this should be a character or factor column; if not, it will be
+coerced to character.}
 
-\item{allLevels}{If the column named by \code{group} is factor-based, should
-all the levels be displayed as options, or only ones that are present in
-the data?}
+\item{allLevels}{If the vector described by \code{group} is factor-based,
+should all the levels be displayed as options, or only ones that are
+present in the data?}
 
 \item{multiple}{Can multiple values be selected?}
 }

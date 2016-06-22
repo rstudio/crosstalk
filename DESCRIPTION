@@ -14,6 +14,7 @@ Imports:
     dplyr,
     htmltools (>= 0.3.5),
     jsonlite,
+    lazyeval,
     R6,
     shiny (>= 0.11)
 RoxygenNote: 5.0.1

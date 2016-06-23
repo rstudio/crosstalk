@@ -263,7 +263,7 @@ SharedData <- R6Class(
         observe({
           selection <- private$.selectionCV$get()
           if (!is.null(selection) && length(selection) > 0) {
-            self$.updateSelection(self$data(FALSE, FALSE)[[key]] %in% selection)
+            self$.updateSelection(self$key() %in% selection)
           } else {
             self$.updateSelection(NULL)
           }
@@ -371,6 +371,7 @@ SharedData <- R6Class(
     },
     # Update selection without sending event
     .updateSelection = function(value) {
+      force(value)
       `$<-`(private$.rv, "selected", value)
     }
   )

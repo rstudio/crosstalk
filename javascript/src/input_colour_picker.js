@@ -1,5 +1,4 @@
 import * as input from "./input";
-import * as util from "./util";
 
 let $ = global.jQuery;
 

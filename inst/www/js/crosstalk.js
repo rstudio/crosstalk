@@ -293,7 +293,7 @@ var FilterSet = function () {
 exports.default = FilterSet;
 
 
-},{"./util":11}],4:[function(require,module,exports){
+},{"./util":12}],4:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -354,7 +354,7 @@ var Group = function () {
 }();
 
 
-},{"./var":12}],5:[function(require,module,exports){
+},{"./var":13}],5:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -381,6 +381,8 @@ require("./input_selectize");
 require("./input_checkboxgroup");
 
 require("./input_slider");
+
+require("./input_colour_picker");
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -420,7 +422,7 @@ global.crosstalk = crosstalk;
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./filter":2,"./group":4,"./input":6,"./input_checkboxgroup":7,"./input_selectize":8,"./input_slider":9,"./selection":10}],6:[function(require,module,exports){
+},{"./filter":2,"./group":4,"./input":6,"./input_checkboxgroup":7,"./input_colour_picker":8,"./input_selectize":9,"./input_slider":10,"./selection":11}],6:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -550,6 +552,39 @@ var _input = require("./input");
 
 var input = _interopRequireWildcard(_input);
 
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+var $ = global.jQuery;
+
+input.register({
+  className: "crosstalk-input-colour-picker",
+
+  factory: function factory(el, data) {
+    // initiate the colourpicker
+    var $el = $(el).find("input")[0];
+    $el.colourpicker(data.settings);
+    // set the starting value
+    $el.colourpicker("value", data.value);
+
+    $el.on("change", function () {
+      var ctGroup = global.crosstalk.group(data.group);
+      ctGroup.var("colourPalette").set($el.colourpicker("value"));
+    });
+
+    return $el;
+  }
+});
+
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"./input":6}],9:[function(require,module,exports){
+(function (global){
+"use strict";
+
+var _input = require("./input");
+
+var input = _interopRequireWildcard(_input);
+
 var _util = require("./util");
 
 var util = _interopRequireWildcard(_util);
@@ -607,7 +642,7 @@ input.register({
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./input":6,"./util":11}],9:[function(require,module,exports){
+},{"./input":6,"./util":12}],10:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -745,7 +780,7 @@ function formatDateUTC(date) {
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./input":6}],10:[function(require,module,exports){
+},{"./input":6}],11:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -859,7 +894,7 @@ function toggle(group, keys) {
 }
 
 
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -938,7 +973,7 @@ function dataframeToD3(df) {
 }
 
 
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 (function (global){
 "use strict";
 

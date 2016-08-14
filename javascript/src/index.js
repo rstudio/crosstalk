@@ -5,6 +5,7 @@ import "./input";
 import "./input_selectize";
 import "./input_checkboxgroup";
 import "./input_slider";
+import "./input_colour_picker";
 
 var defaultGroup = group("default");
 

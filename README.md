@@ -50,7 +50,7 @@ Here are the results:
 
 There are inherent limitations in the current version of Crosstalk that widget authors and users need to be aware of.
 
-1. **Crosstalk currently only works for linked brushing and filtering of views that show individual data points, not aggregate or summary views** (where "observations" is defined as a single row in a data frame). For example, histograms are not supported since each bar represents multiple data points; but scatter plot points each represent a single data point, so they are supported.
+1. **In most cases, crosstalk currently only works for linked brushing and filtering of views that show individual data points, not aggregate or summary views** (where "observations" is defined as a single row in a data frame). For example, histograms are not supported since each bar represents multiple data points; but scatter plot points each represent a single data point, so they are supported. Plotly has [some limited support](https://github.com/jcheng5/plotly/blob/joe/feature/crosstalk/inst/examples/crosstalk/07-binned-target.R) for displaying aggregated selections.
 2. Because all data must be loaded into the browser, **Crosstalk is not appropriate for large data sets**. (There's no hard limit, since HTML widgets require varying amounts of CPU cycles and memory for each data point.)
 
 ## What widgets work with Crosstalk?
@@ -59,14 +59,14 @@ Crosstalk is still **experimental** (i.e. APIs may change) and is not yet availa
 
 ### Plotly
 
-[Plotly](https://plot.ly/r/) supports linked brushing and filtering for scatterplots for `plot_ly` plots. `ggplotly` is not supported.
+[Plotly](https://plot.ly/r/) supports linked brushing and filtering for scatterplots for `plot_ly` plots.
 
 *Note*: To make a selection on a Plotly plot, make sure to switch to the "Box Select" or "Lasso Select" tool, as the default is to zoom. You can change the default by adding `%>% layout(dragmode = "select")` (or `"lasso"`) to your plotly object, as in the example below.
 
 #### Installation
 
 ```r
-devtools::install_github("ropensci/plotly@joe/feature/crosstalk")
+devtools::install_github("jcheng5/plotly@joe/feature/crosstalk")
 ```
 
 #### Example
@@ -75,13 +75,14 @@ devtools::install_github("ropensci/plotly@joe/feature/crosstalk")
 library(crosstalk)
 library(plotly)
 
-set.seed(100)
-sd <- SharedData$new(diamonds[sample(nrow(diamonds), 1000), ])
 
-plot_ly(d, x = carat, y = price, text = paste("Clarity: ", clarity),
-  mode = "markers", color = carat, size = carat) %>%
-  layout(dragmode = "select")
+d <- SharedData$new(txhousing, ~city)
+p <- qplot(data = d, x = date, y = median, group = city, geom = "line")
+ggplotly(p, tooltip = "city") %>%
+  crosstalk(on = "plotly_hover", color = "red")
 ```
+
+You can see more plotly examples [here](https://github.com/jcheng5/plotly/tree/joe/feature/crosstalk/inst/examples/crosstalk)
 
 ### Leaflet
 

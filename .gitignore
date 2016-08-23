@@ -2,3 +2,5 @@
 .Rhistory
 .RData
 node_modules
+inst/www/js
+!inst/www/js/crosstalk.js

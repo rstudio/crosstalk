@@ -47,7 +47,7 @@ export default class Var {
     return this._events.on(eventType, listener);
   }
 
-  removeChangeListenerfunction(eventType, listener) {
+  off(eventType, listener) {
     return this._events.off(eventType, listener);
   }
 }

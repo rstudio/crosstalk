@@ -302,6 +302,8 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
 exports.default = group;
 
 var _var2 = require("./var");
@@ -315,10 +317,17 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var groups = {};
 
 function group(groupName) {
-  if (!groups.hasOwnProperty(groupName)) {
-    groups[groupName] = new Group(groupName);
+  if (typeof groupName === "string") {
+    if (!groups.hasOwnProperty(groupName)) {
+      groups[groupName] = new Group(groupName);
+    }
+    return groups[groupName];
+  } else if ((typeof groupName === "undefined" ? "undefined" : _typeof(groupName)) === "object" && groupName._vars && groupName.var) {
+    // Appears to already be a group object
+    return groupName;
+  } else {
+    throw new Error("Invalid groupName argument");
   }
-  return groups[groupName];
 }
 
 var Group = function () {
@@ -438,7 +447,7 @@ function register(reg) {
     $(function () {
       bind();
     });
-  } else {
+  } else if (global.document) {
     setTimeout(bind, 100);
   }
 }
@@ -751,10 +760,135 @@ function formatDateUTC(date) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.add = add;
-exports.remove = remove;
-exports.toggle = toggle;
-function add(group, keys) {
+exports.toggle = exports.remove = exports.add = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+exports.createHandle = createHandle;
+
+var _group = require("./group");
+
+var _group2 = _interopRequireDefault(_group);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+/**
+ * Use this class to get (`.value`) and set (`.set()`) the selection for
+ * a Crosstalk group. This is intended to be used for linked brushing.
+ * 
+ * Besides getting and setting, you can also use the convenience methods
+ * `add`, `remove`, and `toggle` to modify the active selection, and
+ * subscribe/unsubscribe to `"change"` events to be notified whenever the
+ * selection changes.
+ * 
+ * @constructor
+ */
+
+var SelectionHandle = function () {
+  /**
+   * @ignore
+   */
+
+  function SelectionHandle(group) {
+    var owner = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+    var options = arguments.length <= 2 || arguments[2] === undefined ? null : arguments[2];
+
+    _classCallCheck(this, SelectionHandle);
+
+    this._group = group;
+    this._var = group.var("selection");
+
+    this._extraInfo = {};
+    if (owner) {
+      this._extraInfo.sender = owner;
+    }
+
+    if (options) {
+      for (var key in options) {
+        if (options.hasOwnProperty(key)) {
+          this._extraInfo[key] = options[key];
+        }
+      }
+    }
+  }
+
+  /**
+   * Retrieves the current selection for the group represented by this
+   * `SelectionHandle`. Can be `undefined` (meaning no selection is active),
+   * an empty array (meaning a selection with no elements is active), or an
+   * array with one or more keys.
+   */
+
+
+  _createClass(SelectionHandle, [{
+    key: "set",
+
+
+    /**
+     * Overwrites the current selection for the group, and raises the `"change"`
+     * event among all of the group's '`SelectionHandle` instances (including
+     * this one).
+     * 
+     * @param {string[]} selectedKeys - `undefined`, empty array, or array of keys.
+     * @param {Object} [extraInfo] - Extra attributes to be included on the event
+     *   object that's passed to listeners. One common usage is `{sender: this}`
+     *   if the caller needs to distinguish between events raised by itself and
+     *   events raised by others. 
+     */
+    value: function set(selectedKeys, extraInfo) {
+      this._var.set(selectedKeys, extraInfo);
+    }
+  }, {
+    key: "clear",
+    value: function clear(extraInfo) {
+      this.set(void 0, extraInfo);
+    }
+  }, {
+    key: "add",
+    value: function add(keys, extraInfo) {
+      _add(this._group, keys, extraInfo);
+    }
+  }, {
+    key: "remove",
+    value: function remove(keys, extraInfo) {
+      _remove(this._group, keys, extraInfo);
+    }
+  }, {
+    key: "toggle",
+    value: function toggle(keys, extraInfo) {
+      _toggle(this._group, keys, extraInfo);
+    }
+  }, {
+    key: "on",
+    value: function on(eventType, listener) {
+      return this._var.on(eventType, listener);
+    }
+  }, {
+    key: "off",
+    value: function off(eventType, listener) {
+      return this._var.off(eventType, listener);
+    }
+  }, {
+    key: "value",
+    get: function get() {
+      return this._var.get();
+    }
+  }]);
+
+  return SelectionHandle;
+}();
+
+function createHandle(groupName) {
+  var owner = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+  var options = arguments.length <= 2 || arguments[2] === undefined ? null : arguments[2];
+
+  var grp = (0, _group2.default)(groupName);
+  return new SelectionHandle(grp);
+}
+
+function _add(group, keys, extraInfo) {
   if (!keys || keys.length === 0) {
     // Nothing to do
     return this;
@@ -789,13 +923,14 @@ function add(group, keys) {
   }
 
   if (anyKeys) {
-    group.var("selection").set(result);
+    group.var("selection").set(result, extraInfo);
   }
 
   return this;
 }
 
-function remove(group, keys) {
+exports.add = _add;
+function _remove(group, keys, extraInfo) {
   if (!keys || keys.length === 0) {
     // Nothing to do
     return this;
@@ -820,13 +955,14 @@ function remove(group, keys) {
 
   // Only set the selection if values actually changed
   if (anyKeys) {
-    group.var("selection").set(result);
+    group.var("selection").set(result, extraInfo);
   }
 
   return this;
 }
 
-function toggle(group, keys) {
+exports.remove = _remove;
+function _toggle(group, keys, extraInfo) {
   if (!keys || keys.length === 0) {
     // Nothing to do
     return this;
@@ -854,12 +990,13 @@ function toggle(group, keys) {
     }
   }
 
-  group.var("selection").set(result);
+  group.var("selection").set(result, extraInfo);
   return this;
 }
+exports.toggle = _toggle;
 
 
-},{}],11:[function(require,module,exports){
+},{"./group":4}],11:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -868,9 +1005,28 @@ Object.defineProperty(exports, "__esModule", {
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 
+exports.extend = extend;
 exports.checkSorted = checkSorted;
 exports.diffSortedLists = diffSortedLists;
 exports.dataframeToD3 = dataframeToD3;
+function extend(target) {
+  for (var _len = arguments.length, sources = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+    sources[_key - 1] = arguments[_key];
+  }
+
+  for (var i = 0; i < sources.length; i++) {
+    var src = sources[i];
+    if (typeof src === "undefined" || src === null) continue;
+
+    for (var key in src) {
+      if (src.hasOwnProperty(key)) {
+        target[key] = src[key];
+      }
+    }
+  }
+  return target;
+}
+
 function checkSorted(list) {
   for (var i = 1; i < list.length; i++) {
     if (list[i] <= list[i - 1]) {
@@ -1005,8 +1161,8 @@ var Var = function () {
       return this._events.on(eventType, listener);
     }
   }, {
-    key: "removeChangeListenerfunction",
-    value: function removeChangeListenerfunction(eventType, listener) {
+    key: "off",
+    value: function off(eventType, listener) {
       return this._events.off(eventType, listener);
     }
   }]);

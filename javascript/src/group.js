@@ -3,10 +3,17 @@ import Var from "./var";
 let groups = {};
 
 export default function group(groupName) {
-  if (!groups.hasOwnProperty(groupName)) {
-    groups[groupName] = new Group(groupName);
+  if (typeof(groupName) === "string") {
+    if (!groups.hasOwnProperty(groupName)) {
+      groups[groupName] = new Group(groupName);
+    }
+    return groups[groupName];
+  } else if (typeof(groupName) === "object" && groupName._vars && groupName.var) {
+    // Appears to already be a group object
+    return groupName;
+  } else {
+    throw new Error("Invalid groupName argument");
   }
-  return groups[groupName];
 }
 
 class Group {

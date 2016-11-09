@@ -1,4 +1,94 @@
-export function add(group, keys) {
+import group from "./group";
+
+/**
+ * Use this class to get (`.value`) and set (`.set()`) the selection for
+ * a Crosstalk group. This is intended to be used for linked brushing.
+ * 
+ * Besides getting and setting, you can also use the convenience methods
+ * `add`, `remove`, and `toggle` to modify the active selection, and
+ * subscribe/unsubscribe to `"change"` events to be notified whenever the
+ * selection changes.
+ * 
+ * @constructor
+ */
+class SelectionHandle {
+  /**
+   * @ignore
+   */
+  constructor(group, owner = null, options = null) {
+    this._group = group;
+    this._var = group.var("selection");
+
+    this._extraInfo = {};
+    if (owner) {
+      this._extraInfo.sender = owner;
+    }
+
+    if (options) {
+      for (let key in options) {
+        if (options.hasOwnProperty(key)) {
+          this._extraInfo[key] = options[key];
+        }
+      }
+    }
+  }
+
+  /**
+   * Retrieves the current selection for the group represented by this
+   * `SelectionHandle`. Can be `undefined` (meaning no selection is active),
+   * an empty array (meaning a selection with no elements is active), or an
+   * array with one or more keys.
+   */
+  get value() {
+    return this._var.get();
+  }
+
+  /**
+   * Overwrites the current selection for the group, and raises the `"change"`
+   * event among all of the group's '`SelectionHandle` instances (including
+   * this one).
+   * 
+   * @param {string[]} selectedKeys - `undefined`, empty array, or array of keys.
+   * @param {Object} [extraInfo] - Extra attributes to be included on the event
+   *   object that's passed to listeners. One common usage is `{sender: this}`
+   *   if the caller needs to distinguish between events raised by itself and
+   *   events raised by others. 
+   */
+  set(selectedKeys, extraInfo) {
+    this._var.set(selectedKeys, extraInfo);
+  }
+
+  clear(extraInfo) {
+    this.set(void 0, extraInfo);
+  }
+
+  add(keys, extraInfo) {
+    add(this._group, keys, extraInfo);
+  }
+
+  remove(keys, extraInfo) {
+    remove(this._group, keys, extraInfo);
+  }
+
+  toggle(keys, extraInfo) {
+    toggle(this._group, keys, extraInfo);
+  }
+
+  on(eventType, listener) {
+    return this._var.on(eventType, listener);
+  }
+
+  off(eventType, listener) {
+    return this._var.off(eventType, listener);
+  }
+}
+
+export function createHandle(groupName, owner = null, options = null) {
+  let grp = group(groupName);
+  return new SelectionHandle(grp);
+}
+
+export function add(group, keys, extraInfo) {
   if (!keys || keys.length === 0) {
     // Nothing to do
     return this;
@@ -34,13 +124,13 @@ export function add(group, keys) {
   }
 
   if (anyKeys) {
-    group.var("selection").set(result);
+    group.var("selection").set(result, extraInfo);
   }
 
   return this;
 }
 
-export function remove(group, keys) {
+export function remove(group, keys, extraInfo) {
   if (!keys || keys.length === 0) {
     // Nothing to do
     return this;
@@ -65,13 +155,13 @@ export function remove(group, keys) {
 
   // Only set the selection if values actually changed
   if (anyKeys) {
-    group.var("selection").set(result);
+    group.var("selection").set(result, extraInfo);
   }
 
   return this;
 }
 
-export function toggle(group, keys) {
+export function toggle(group, keys, extraInfo) {
   if (!keys || keys.length === 0) {
     // Nothing to do
     return this;
@@ -99,6 +189,6 @@ export function toggle(group, keys) {
     }
   }
 
-  group.var("selection").set(result);
+  group.var("selection").set(result, extraInfo);
   return this;
 }

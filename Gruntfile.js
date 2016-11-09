@@ -60,6 +60,16 @@ module.exports = function (grunt) {
         files: ["./javascript/src/**/*.js", "javascript/tests/**/*.js"],
         tasks: ["babel", "browserify", "eslint", "mochaTest"]
       }
+    },
+    jsdoc: {
+      dist: {
+        src: ['javascript/src/**/*.js'],
+        options: {
+          destination: 'doc',
+          template: "node_modules/ink-docstrap/template",
+          configure: "node_modules/ink-docstrap/template/jsdoc.conf.json"
+        }
+      }
     }
   });
 
@@ -67,6 +77,7 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks("grunt-browserify");
   grunt.loadNpmTasks("grunt-contrib-watch");
   grunt.loadNpmTasks("grunt-eslint");
+  grunt.loadNpmTasks("grunt-jsdoc");
   grunt.loadNpmTasks("grunt-mocha-test");
 
   grunt.registerTask("default", ["watch"]);

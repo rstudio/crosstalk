@@ -1,12 +1,35 @@
 import assert from "assert";
-import { diffSortedLists } from "./util";
+import * as util from "./util";
 
-describe("diffSortedLists", () => {
-  it("detects basic differences", function() {
+describe("util.extend", () => {
+  let target = {a: 1, b: 2};
+  let result = util.extend(target, null, void 0,
+    {a: 3, c: 4, d: 5},
+    {a: 6, c: null}
+  );
+
+  it("returns the target object", () => {
+    assert(target === result);
+  });
+  it("leaves unchanged properties alone", () => {
+    assert(result.b === 2);
+  });
+  it("uses the correct order on name collisions", () => {
+    assert(result.a === 6);
+  });
+  it("misc test", () => {
+    assert.deepEqual(result, {
+      a: 6, b: 2, c: null, d: 5
+    });
+  });
+});
+
+describe("util.diffSortedLists", () => {
+  it("detects basic differences", () => {
     let a = ["a", "b", "c"];
     let b = ["b", "d"];
 
-    let diff = diffSortedLists(a, b);
+    let diff = util.diffSortedLists(a, b);
     assert.deepEqual(diff, {
       added: ["d"],
       removed: ["a", "c"]
@@ -18,7 +41,7 @@ describe("diffSortedLists", () => {
     a.sort();
     let b = ["aa", "bb"];
 
-    let diff = diffSortedLists(a, b);
+    let diff = util.diffSortedLists(a, b);
     assert.deepEqual(diff, {
       added: ["bb"],
       removed: ["Aa", "Bb"]
@@ -26,7 +49,7 @@ describe("diffSortedLists", () => {
   });
 
   it("works with numbers", () => {
-    let diff = diffSortedLists([1, 2, 3, 11], [1, 3, 4]);
+    let diff = util.diffSortedLists([1, 2, 3, 11], [1, 3, 4]);
     assert.deepEqual(diff, {
       added: [4],
       removed: [2, 11]
@@ -34,31 +57,31 @@ describe("diffSortedLists", () => {
   });
 
   it("handles empty lists", () => {
-    let diff = diffSortedLists([], [1,2,3]);
+    let diff = util.diffSortedLists([], [1,2,3]);
     assert.deepEqual(diff, {added: [1,2,3], removed: []});
 
-    let diff2 = diffSortedLists([1,2,3], []);
+    let diff2 = util.diffSortedLists([1,2,3], []);
     assert.deepEqual(diff2, {added: [], removed: [1,2,3]});
 
-    let diff3 = diffSortedLists([1,2,3], [1,2,3]);
+    let diff3 = util.diffSortedLists([1,2,3], [1,2,3]);
     assert.deepEqual(diff3, {added: [], removed: []});
 
-    let diff4 = diffSortedLists([], []);
+    let diff4 = util.diffSortedLists([], []);
     assert.deepEqual(diff4, {added: [], removed: []});
   });
 
   it("checks that arguments are sorted, deduped", function() {
     assert.throws(() => {
-      diffSortedLists(["a", "a", "b"], []);
+      util.diffSortedLists(["a", "a", "b"], []);
     });
     assert.throws(() => {
-      diffSortedLists(["b", "a"], []);
+      util.diffSortedLists(["b", "a"], []);
     });
     assert.throws(() => {
-      diffSortedLists(["a", "a"], [1, 2]);
+      util.diffSortedLists(["a", "a"], [1, 2]);
     });
     assert.throws(() => {
-      diffSortedLists([1, 2], ["a", "a"]);
+      util.diffSortedLists([1, 2], ["a", "a"]);
     });
   });
 });

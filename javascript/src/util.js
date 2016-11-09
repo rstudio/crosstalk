@@ -1,3 +1,18 @@
+export function extend(target, ...sources) {
+  for (let i = 0; i < sources.length; i++) {
+    let src = sources[i];
+    if (typeof(src) === "undefined" || src === null)
+      continue;
+
+    for (let key in src) {
+      if (src.hasOwnProperty(key)) {
+        target[key] = src[key];
+      }
+    }
+  }
+  return target;
+}
+
 export function checkSorted(list) {
   for (let i = 1; i < list.length; i++) {
     if (list[i] <= list[i-1]) {

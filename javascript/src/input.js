@@ -8,7 +8,7 @@ export function register(reg) {
     $(() => {
       bind();
     });
-  } else {
+  } else if (global.document) {
     setTimeout(bind, 100);
   }
 }

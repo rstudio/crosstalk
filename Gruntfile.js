@@ -41,7 +41,7 @@ module.exports = function (grunt) {
       }
     },
     eslint: {
-      target: ["./javascript/src/*.js"]
+      target: ["./javascript/**/*.js"]
     },
     mochaTest: {
       test: {

@@ -1,7 +1,7 @@
 "use strict";
 
 import assert from "assert";
-import FilterSet, { diffSortedLists } from "./filterset";
+import FilterSet from "./filterset";
 
 
 describe("FilterSet", () => {

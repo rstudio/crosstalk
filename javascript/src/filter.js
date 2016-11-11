@@ -1,4 +1,5 @@
 import FilterSet from "./filterset";
+import grp from "./group";
 
 function getFilterSet(group) {
   let fsVar = group.var("filterset");
@@ -15,18 +16,20 @@ function nextId() {
   return id++;
 }
 
+/**
+ * Legacy only
+ * @ignore
+ */
 export function createHandle(group) {
-  return new FilterHandle(
-    getFilterSet(group),
-    group.var("filter")
-  );
+  return new FilterHandle(group);
 }
 
-class FilterHandle {
-  constructor(filterSet, filterVar, handleId = "filter" + nextId()) {
-    this._filterSet = filterSet;
-    this._filterVar = filterVar;
-    this._id = handleId;
+export class FilterHandle {
+  constructor(group) {
+    group = grp(group);
+    this._filterSet = getFilterSet(group);
+    this._filterVar = group.var("filter");
+    this._id = "filter" + nextId();
   }
 
   close() {

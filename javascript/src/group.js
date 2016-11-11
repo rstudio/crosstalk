@@ -1,6 +1,9 @@
 import Var from "./var";
 
-let groups = {};
+// Use a global so that multiple copies of crosstalk.js can be loaded and still
+// have groups behave as singletons across all copies.
+global.__crosstalk_groups = global.__crosstalk_groups || {};
+let groups = global.__crosstalk_groups;
 
 export default function group(groupName) {
   if (typeof(groupName) === "string") {

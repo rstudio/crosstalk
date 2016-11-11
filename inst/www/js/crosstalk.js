@@ -89,6 +89,7 @@ function stamp(el) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.FilterHandle = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -97,6 +98,10 @@ exports.createHandle = createHandle;
 var _filterset = require("./filterset");
 
 var _filterset2 = _interopRequireDefault(_filterset);
+
+var _group = require("./group");
+
+var _group2 = _interopRequireDefault(_group);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -117,19 +122,22 @@ function nextId() {
   return id++;
 }
 
+/**
+ * Legacy only
+ * @ignore
+ */
 function createHandle(group) {
-  return new FilterHandle(getFilterSet(group), group.var("filter"));
+  return new FilterHandle(group);
 }
 
-var FilterHandle = function () {
-  function FilterHandle(filterSet, filterVar) {
-    var handleId = arguments.length <= 2 || arguments[2] === undefined ? "filter" + nextId() : arguments[2];
-
+var FilterHandle = exports.FilterHandle = function () {
+  function FilterHandle(group) {
     _classCallCheck(this, FilterHandle);
 
-    this._filterSet = filterSet;
-    this._filterVar = filterVar;
-    this._id = handleId;
+    group = (0, _group2.default)(group);
+    this._filterSet = getFilterSet(group);
+    this._filterVar = group.var("filter");
+    this._id = "filter" + nextId();
   }
 
   _createClass(FilterHandle, [{
@@ -170,7 +178,7 @@ var FilterHandle = function () {
 }();
 
 
-},{"./filterset":3}],3:[function(require,module,exports){
+},{"./filterset":3,"./group":4}],3:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -192,6 +200,10 @@ function naturalComparator(a, b) {
     return 1;
   }
 }
+
+/**
+ * @private
+ */
 
 var FilterSet = function () {
   function FilterSet() {
@@ -238,6 +250,7 @@ var FilterSet = function () {
     /**
      * @param {string[]} keys Sorted array of strings that indicate
      * a superset of possible keys.
+     * @private
      */
 
   }, {
@@ -294,6 +307,7 @@ exports.default = FilterSet;
 
 
 },{"./util":11}],4:[function(require,module,exports){
+(function (global){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -314,7 +328,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var groups = {};
+// Use a global so that multiple copies of crosstalk.js can be loaded and still
+// have groups behave as singletons across all copies.
+global.__crosstalk_groups = global.__crosstalk_groups || {};
+var groups = global.__crosstalk_groups;
 
 function group(groupName) {
   if (typeof groupName === "string") {
@@ -363,6 +380,7 @@ var Group = function () {
 }();
 
 
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./var":12}],5:[function(require,module,exports){
 (function (global){
 "use strict";
@@ -419,6 +437,9 @@ var crosstalk = {
   group: _group2.default,
   var: var_,
   has: has,
+  SelectionHandle: selection.SelectionHandle,
+  FilterHandle: filter.FilterHandle,
+  // deprecated-ish
   selection: selection,
   filter: filter
 };
@@ -760,116 +781,169 @@ function formatDateUTC(date) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.toggle = exports.remove = exports.add = undefined;
+exports.SelectionHandle = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-exports.createHandle = createHandle;
 
 var _group = require("./group");
 
 var _group2 = _interopRequireDefault(_group);
 
+var _util = require("./util");
+
+var util = _interopRequireWildcard(_util);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-/**
- * Use this class to get (`.value`) and set (`.set()`) the selection for
- * a Crosstalk group. This is intended to be used for linked brushing.
- * 
- * Besides getting and setting, you can also use the convenience methods
- * `add`, `remove`, and `toggle` to modify the active selection, and
- * subscribe/unsubscribe to `"change"` events to be notified whenever the
- * selection changes.
- * 
- * @constructor
- */
+var SelectionHandle = exports.SelectionHandle = function () {
 
-var SelectionHandle = function () {
   /**
-   * @ignore
+   * Use this class to read and write (and listen for changes to) the selection
+   * for a Crosstalk group. This is intended to be used for linked brushing.
+   *
+   * Besides getting and setting, you can also use the convenience methods
+   * `add`, `remove`, and `toggle` to modify the active selection, and
+   * subscribe/unsubscribe to `"change"` events to be notified whenever the
+   * selection changes.
+   *
+   * If two (or more) `SelectionHandle` instances in the same webpage share the
+   * same group name, they will share the same state. Setting the selection using
+   * one `SelectionHandle` instance will result in the `value` property instantly
+   * changing across the others, and `"change"` event listeners on all instances
+   * (including the one that initiated the sending) will fire.
+   *
+   * @param {string} group - The name of the crosstalk group.
+   * @param {Object} [extraInfo] - An object whose properties will be copied to
+   *   the event object whenever an event is emitted.
    */
 
   function SelectionHandle(group) {
-    var owner = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
-    var options = arguments.length <= 2 || arguments[2] === undefined ? null : arguments[2];
+    var extraInfo = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
 
     _classCallCheck(this, SelectionHandle);
 
-    this._group = group;
+    this._group = group = (0, _group2.default)(group);
     this._var = group.var("selection");
 
-    this._extraInfo = {};
-    if (owner) {
-      this._extraInfo.sender = owner;
-    }
-
-    if (options) {
-      for (var key in options) {
-        if (options.hasOwnProperty(key)) {
-          this._extraInfo[key] = options[key];
-        }
-      }
-    }
+    this._extraInfo = util.extend({ sender: this }, extraInfo);
   }
 
   /**
    * Retrieves the current selection for the group represented by this
-   * `SelectionHandle`. Can be `undefined` (meaning no selection is active),
-   * an empty array (meaning a selection with no elements is active), or an
-   * array with one or more keys.
+   * `SelectionHandle`.
+   *
+   * - If no selection is active, then this value will be falsy.
+   * - If a selection is active, but no data points are selected, then this
+   *   value will be an empty array.
+   * - If a selection is active, and data points are selected, then the keys
+   *   of the selected data points will be present in the array.
    */
 
 
   _createClass(SelectionHandle, [{
-    key: "set",
+    key: "_mergeExtraInfo",
 
+
+    /**
+     * Combine the given `extraInfo` (if any) with the handle's default
+     * `_extraInfo` (if any).
+     * @private
+     */
+    value: function _mergeExtraInfo(extraInfo) {
+      if (!this._extraInfo) return extraInfo;else if (!extraInfo) return this._extraInfo;else return util.extend({}, this._extraInfo, extraInfo);
+    }
 
     /**
      * Overwrites the current selection for the group, and raises the `"change"`
      * event among all of the group's '`SelectionHandle` instances (including
      * this one).
-     * 
-     * @param {string[]} selectedKeys - `undefined`, empty array, or array of keys.
-     * @param {Object} [extraInfo] - Extra attributes to be included on the event
-     *   object that's passed to listeners. One common usage is `{sender: this}`
-     *   if the caller needs to distinguish between events raised by itself and
-     *   events raised by others. 
+     *
+     * @fires SelectionHandle#change
+     * @param {string[]} selectedKeys - Falsy, empty array, or array of keys (see
+     *   {@link SelectionHandle#value}).
+     * @param {Object} [extraInfo] - Extra properties to be included on the event
+     *   object that's passed to listeners (in addition to any options that were
+     *   passed into the `SelectionHandle` constructor).
      */
+
+  }, {
+    key: "set",
     value: function set(selectedKeys, extraInfo) {
-      this._var.set(selectedKeys, extraInfo);
+      this._var.set(selectedKeys, this._mergeExtraInfo(extraInfo));
     }
+
+    /**
+     * Overwrites the current selection for the group, and raises the `"change"`
+     * event among all of the group's '`SelectionHandle` instances (including
+     * this one).
+     *
+     * @fires SelectionHandle#change
+     * @param {Object} [extraInfo] - Extra properties to be included on the event
+     *   object that's passed to listeners (in addition to any that were passed
+     *   into the `SelectionHandle` constructor).
+     */
+
   }, {
     key: "clear",
     value: function clear(extraInfo) {
-      this.set(void 0, extraInfo);
+      this.set(void 0, this._mergeExtraInfo(extraInfo));
     }
-  }, {
-    key: "add",
-    value: function add(keys, extraInfo) {
-      _add(this._group, keys, extraInfo);
-    }
-  }, {
-    key: "remove",
-    value: function remove(keys, extraInfo) {
-      _remove(this._group, keys, extraInfo);
-    }
-  }, {
-    key: "toggle",
-    value: function toggle(keys, extraInfo) {
-      _toggle(this._group, keys, extraInfo);
-    }
+
+    /**
+     * Subscribe to events on this `SelectionHandle`.
+     *
+     * @param {string} eventType - Indicates the type of events to listen to.
+     *   Currently, only `"change"` is supported.
+     * @param {SelectionHandle~listener} listener - The callback function that
+     *   will be invoked when the event occurs.
+     * @return {string} - A token to pass to {@link SelectionHandle#off} to cancel
+     *   this subscription.
+     */
+
   }, {
     key: "on",
     value: function on(eventType, listener) {
       return this._var.on(eventType, listener);
     }
+
+    /**
+     * Cancel event subscriptions created by {@link SelectionHandle#on}.
+     *
+     * @param {string} eventType - The type of event to unsubscribe.
+     * @param {string|SelectionHandle~listener} listener - Either the callback
+     *   function previously passed into {@link SelectionHandle#on}, or the
+     *   string that was returned from {@link SelectionHandle#on}.
+     */
+
   }, {
     key: "off",
     value: function off(eventType, listener) {
       return this._var.off(eventType, listener);
     }
+
+    /**
+     * @callback SelectionHandle~listener
+     * @param {Object} event - An object containing details of the event. For
+     *   `"change"` events, this includes the properties `value` (the new
+     *   value of the selection, or `undefined` if no selection is active),
+     *   `oldValue` (the previous value of the selection), and `sender` (the
+     *   `SelectionHandle` instance that made the change).
+     */
+
+    /**
+     * @event SelectionHandle#change
+     * @type {object}
+     * @property {object} value - The new value of the selection, or `undefined`
+     *   if no selection is active.
+     * @property {object} oldValue - The previous value of the selection.
+     * @property {SelectionHandle} sender - The `SelectionHandle` instance that
+     *   changed the value.
+     */
+
   }, {
     key: "value",
     get: function get() {
@@ -880,123 +954,8 @@ var SelectionHandle = function () {
   return SelectionHandle;
 }();
 
-function createHandle(groupName) {
-  var owner = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
-  var options = arguments.length <= 2 || arguments[2] === undefined ? null : arguments[2];
 
-  var grp = (0, _group2.default)(groupName);
-  return new SelectionHandle(grp);
-}
-
-function _add(group, keys, extraInfo) {
-  if (!keys || keys.length === 0) {
-    // Nothing to do
-    return this;
-  }
-
-  var sel = group.var("selection").get();
-
-  if (!sel) {
-    // No keys to keep, but go through the machinery below anyway,
-    // to remove dupes in `keys`
-    sel = [];
-  }
-
-  var result = sel.slice(0);
-
-  // Populate an object with the keys to add
-  var keySet = {};
-  for (var i = 0; i < keys.length; i++) {
-    keySet[keys[i]] = true;
-  }
-
-  // Remove any keys that are already in the set
-  for (var j = 0; j < sel.length; j++) {
-    delete keySet[sel[j]];
-  }
-
-  var anyKeys = false;
-  // Add the remaining keys
-  for (var key in keySet) {
-    anyKeys = true;
-    if (keySet.hasOwnProperty(key)) result.push(key);
-  }
-
-  if (anyKeys) {
-    group.var("selection").set(result, extraInfo);
-  }
-
-  return this;
-}
-
-exports.add = _add;
-function _remove(group, keys, extraInfo) {
-  if (!keys || keys.length === 0) {
-    // Nothing to do
-    return this;
-  }
-
-  var sel = group.var("selection").get();
-
-  var keySet = {};
-  for (var i = 0; i < keys.length; i++) {
-    keySet[keys[i]] = true;
-  }
-
-  var anyKeys = false;
-  var result = [];
-  for (var j = 0; j < sel.length; j++) {
-    if (!keySet.hasOwnProperty(sel[j])) {
-      result.push(sel[j]);
-    } else {
-      anyKeys = true;
-    }
-  }
-
-  // Only set the selection if values actually changed
-  if (anyKeys) {
-    group.var("selection").set(result, extraInfo);
-  }
-
-  return this;
-}
-
-exports.remove = _remove;
-function _toggle(group, keys, extraInfo) {
-  if (!keys || keys.length === 0) {
-    // Nothing to do
-    return this;
-  }
-
-  var sel = group.var("selection").get();
-
-  var keySet = {};
-  for (var i = 0; i < keys.length; i++) {
-    keySet[keys[i]] = true;
-  }
-
-  var result = [];
-  for (var j = 0; j < sel.length; j++) {
-    if (!keySet.hasOwnProperty(sel[j])) {
-      result.push(sel[j]);
-    } else {
-      keySet[sel[j]] = false;
-    }
-  }
-
-  for (var key in keySet) {
-    if (keySet[key]) {
-      result.push(key);
-    }
-  }
-
-  group.var("selection").set(result, extraInfo);
-  return this;
-}
-exports.toggle = _toggle;
-
-
-},{"./group":4}],11:[function(require,module,exports){
+},{"./group":4,"./util":11}],11:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {

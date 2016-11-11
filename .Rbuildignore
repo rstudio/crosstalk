@@ -4,8 +4,10 @@
 ^Gruntfile\.js$
 ^javascript$
 ^package\.json$
+^npm-shrinkwrap\.json$
 ^node_modules$
 ^inst/examples$
 ^NOTES\.md$
 ^app\.R$
 ^crosstalk\.gif$
+^jsdoc.conf.json$

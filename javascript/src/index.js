@@ -30,6 +30,9 @@ var crosstalk = {
   group: group,
   var: var_,
   has: has,
+  SelectionHandle: selection.SelectionHandle,
+  FilterHandle: filter.FilterHandle,
+  // deprecated-ish
   selection: selection,
   filter: filter
 };

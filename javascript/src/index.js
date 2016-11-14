@@ -1,6 +1,6 @@
 import group from "./group";
-import * as selection from "./selection";
-import * as filter from "./filter";
+import { SelectionHandle } from "./selection";
+import { FilterHandle } from "./filter";
 import "./input";
 import "./input_selectize";
 import "./input_checkboxgroup";
@@ -30,11 +30,8 @@ var crosstalk = {
   group: group,
   var: var_,
   has: has,
-  SelectionHandle: selection.SelectionHandle,
-  FilterHandle: filter.FilterHandle,
-  // deprecated-ish
-  selection: selection,
-  filter: filter
+  SelectionHandle: SelectionHandle,
+  FilterHandle: FilterHandle
 };
 
 export default crosstalk;

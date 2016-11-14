@@ -7,11 +7,6 @@ export class SelectionHandle {
    * Use this class to read and write (and listen for changes to) the selection
    * for a Crosstalk group. This is intended to be used for linked brushing.
    *
-   * Besides getting and setting, you can also use the convenience methods
-   * `add`, `remove`, and `toggle` to modify the active selection, and
-   * subscribe/unsubscribe to `"change"` events to be notified whenever the
-   * selection changes.
-   *
    * If two (or more) `SelectionHandle` instances in the same webpage share the
    * same group name, they will share the same state. Setting the selection using
    * one `SelectionHandle` instance will result in the `value` property instantly

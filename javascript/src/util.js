@@ -81,3 +81,38 @@ export function dataframeToD3(df) {
   }
   return results;
 }
+
+/**
+ * Keeps track of all event listener additions/removals and lets all active
+ * listeners be removed with a single operation.
+ *
+ * @private
+ */
+export class SubscriptionTracker {
+  constructor(emitter) {
+    this._emitter = emitter;
+    this._subs = {};
+  }
+
+  on(eventType, listener) {
+    let sub = this._emitter.on(eventType, listener);
+    this._subs[sub] = eventType;
+    return sub;
+  }
+
+  off(eventType, listener) {
+    let sub = this._emitter.off(eventType, listener);
+    if (sub) {
+      delete this._subs[sub];
+    }
+    return sub;
+  }
+
+  removeAllListeners() {
+    let current_subs = this._subs;
+    this._subs = {};
+    Object.keys(current_subs).forEach((sub) => {
+      this._emitter.off(current_subs[sub], sub);
+    });
+  }
+}

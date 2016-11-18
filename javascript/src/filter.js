@@ -44,6 +44,7 @@ export class FilterHandle {
     group = grp(group);
     this._filterSet = getFilterSet(group);
     this._filterVar = group.var("filter");
+    this._emitter = new util.SubscriptionTracker(this._filterVar);
     this._id = "filter" + nextId();
 
     this._extraInfo = util.extend({ sender: this }, extraInfo);
@@ -64,14 +65,16 @@ export class FilterHandle {
   }
 
   /**
-   * Close the handle. This clears this handle's contribution to the filterset.
+   * Close the handle. This clears this handle's contribution to the filter set,
+   * and unsubscribes all event listeners.
    */
   close() {
+    this._emitter.removeAllListeners();
     this.clear();
   }
 
   /**
-   * Clear this handle's contribution to the filterset.
+   * Clear this handle's contribution to the filter set.
    *
    * @param {Object} [extraInfo] - Extra properties to be included on the event
    *   object that's passed to listeners (in addition to any options that were
@@ -83,7 +86,7 @@ export class FilterHandle {
   }
 
   /**
-   * Set this handle's contribution to the filterset. This array should consist
+   * Set this handle's contribution to the filter set. This array should consist
    * of the keys of the rows that _should_ be displayed; any keys that are not
    * present in the array will be considered _filtered out_. Note that multiple
    * `FilterHandle` instances in the group may each contribute an array of keys,
@@ -122,7 +125,7 @@ export class FilterHandle {
    *   this subscription.
    */
   on(eventType, listener) {
-    return this._filterVar.on(eventType, listener);
+    return this._emitter.on(eventType, listener);
   }
 
   /**
@@ -134,7 +137,7 @@ export class FilterHandle {
    *   string that was returned from {@link FilterHandle#on}.
    */
   off(eventType, listener) {
-    return this._filterVar.off(eventType, listener);
+    return this._emitter.off(eventType, listener);
   }
 
   _onChange(extraInfo) {

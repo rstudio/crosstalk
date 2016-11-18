@@ -1,5 +1,6 @@
 import assert from "assert";
 import { SelectionHandle } from "./selection";
+import * as test_common from "./test-common";
 
 describe("SelectionHandle", () => {
   let handle1, handle2;
@@ -116,5 +117,17 @@ describe("SelectionHandle", () => {
     assert.equal(handle3_event.interactive, void 0);
 
     handle3.off("change", sub);
+  });
+
+  it("removes all event listeners when closed", () => {
+    let handle5 = new SelectionHandle("shtest");
+    let counter = test_common.createInvokeCounter();
+    handle5.on("change", counter);
+    handle1.set(["one"]);
+    assert.equal(counter.count, 1);
+
+    handle5.close();
+    handle1.set(["two"]);
+    assert.equal(counter.count, 1);
   });
 });

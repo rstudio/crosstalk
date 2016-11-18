@@ -30,6 +30,9 @@ var Events = function () {
       subs[sub] = listener;
       return sub;
     }
+
+    // Returns false if no match, or string for sub name if matched
+
   }, {
     key: "off",
     value: function off(eventType, listener) {
@@ -39,15 +42,17 @@ var Events = function () {
           if (subs.hasOwnProperty(key)) {
             if (subs[key] === listener) {
               delete subs[key];
-              return;
+              return key;
             }
           }
         }
+        return false;
       } else if (typeof listener === "string") {
         if (subs) {
           delete subs[listener];
-          return;
+          return listener;
         }
+        return false;
       } else {
         throw new Error("Unexpected type for listener");
       }
@@ -129,13 +134,21 @@ function nextId() {
 var FilterHandle = exports.FilterHandle = function () {
   /**
    * Use this class to contribute to, and listen for changes to, the filter set
-   * for the given group of widgets.
+   * for the given group of widgets. Filter input controls should create one
+   * `FilterHandle` and only call {@link FilterHandle#set}. Output widgets that
+   * wish to displayed filtered data should create one `FilterHandle` and use
+   * the {@link FilterHandle#filteredKeys} property and listen for change
+   * events.
    *
    * If two (or more) `FilterHandle` instances in the same webpage share the
-   * same group name, they will share the same state. Setting the selection using
-   * one `SelectionHandle` instance will result in the `value` property instantly
-   * changing across the others, and `"change"` event listeners on all instances
-   * (including the one that initiated the sending) will fire.
+   * same group name, they will contribute to a single "filter set". Each
+   * `FilterHandle` starts out with a `null` value, which means they take
+   * nothing away from the set of data that should be shown. To make a
+   * `FilterHandle` actually remove data from the filter set, set its value to
+   * an array of keys which should be displayed. Crosstalk will aggregate the
+   * various key arrays by finding their intersection; only keys that are
+   * present in all non-null filter handles are considered part of the filter
+   * set.
    *
    * @param {string} group - The name of the crosstalk group.
    * @param {Object} [extraInfo] - An object whose properties will be copied to
@@ -148,6 +161,7 @@ var FilterHandle = exports.FilterHandle = function () {
     group = (0, _group2.default)(group);
     this._filterSet = getFilterSet(group);
     this._filterVar = group.var("filter");
+    this._emitter = new util.SubscriptionTracker(this._filterVar);
     this._id = "filter" + nextId();
 
     this._extraInfo = util.extend({ sender: this }, extraInfo);
@@ -167,17 +181,19 @@ var FilterHandle = exports.FilterHandle = function () {
     }
 
     /**
-     * Close the handle. This clears this handle's contribution to the filterset.
+     * Close the handle. This clears this handle's contribution to the filter set,
+     * and unsubscribes all event listeners.
      */
 
   }, {
     key: "close",
     value: function close() {
+      this._emitter.removeAllListeners();
       this.clear();
     }
 
     /**
-     * Clear this handle's contribution to the filterset.
+     * Clear this handle's contribution to the filter set.
      *
      * @param {Object} [extraInfo] - Extra properties to be included on the event
      *   object that's passed to listeners (in addition to any options that were
@@ -192,7 +208,7 @@ var FilterHandle = exports.FilterHandle = function () {
     }
 
     /**
-     * Set this handle's contribution to the filterset. This array should consist
+     * Set this handle's contribution to the filter set. This array should consist
      * of the keys of the rows that _should_ be displayed; any keys that are not
      * present in the array will be considered _filtered out_. Note that multiple
      * `FilterHandle` instances in the group may each contribute an array of keys,
@@ -235,7 +251,7 @@ var FilterHandle = exports.FilterHandle = function () {
      *   this subscription.
      */
     value: function on(eventType, listener) {
-      return this._filterVar.on(eventType, listener);
+      return this._emitter.on(eventType, listener);
     }
 
     /**
@@ -250,7 +266,7 @@ var FilterHandle = exports.FilterHandle = function () {
   }, {
     key: "off",
     value: function off(eventType, listener) {
-      return this._filterVar.off(eventType, listener);
+      return this._emitter.off(eventType, listener);
     }
   }, {
     key: "_onChange",
@@ -924,6 +940,7 @@ var SelectionHandle = exports.SelectionHandle = function () {
 
     this._group = group = (0, _group2.default)(group);
     this._var = group.var("selection");
+    this._emitter = new util.SubscriptionTracker(this._var);
 
     this._extraInfo = util.extend({ sender: this }, extraInfo);
   }
@@ -945,7 +962,7 @@ var SelectionHandle = exports.SelectionHandle = function () {
 
 
     /**
-     * Combine the given `extraInfo` (if any) with the handle's default
+     * Combines the given `extraInfo` (if any) with the handle's default
      * `_extraInfo` (if any).
      * @private
      */
@@ -990,7 +1007,7 @@ var SelectionHandle = exports.SelectionHandle = function () {
     }
 
     /**
-     * Subscribe to events on this `SelectionHandle`.
+     * Subscribes to events on this `SelectionHandle`.
      *
      * @param {string} eventType - Indicates the type of events to listen to.
      *   Currently, only `"change"` is supported.
@@ -1003,11 +1020,11 @@ var SelectionHandle = exports.SelectionHandle = function () {
   }, {
     key: "on",
     value: function on(eventType, listener) {
-      return this._var.on(eventType, listener);
+      return this._emitter.on(eventType, listener);
     }
 
     /**
-     * Cancel event subscriptions created by {@link SelectionHandle#on}.
+     * Cancels event subscriptions created by {@link SelectionHandle#on}.
      *
      * @param {string} eventType - The type of event to unsubscribe.
      * @param {string|SelectionHandle~listener} listener - Either the callback
@@ -1018,7 +1035,19 @@ var SelectionHandle = exports.SelectionHandle = function () {
   }, {
     key: "off",
     value: function off(eventType, listener) {
-      return this._var.off(eventType, listener);
+      return this._emitter.off(eventType, listener);
+    }
+
+    /**
+     * Shuts down the `SelectionHandle` object.
+     *
+     * Removes all event listeners that were added through this handle.
+     */
+
+  }, {
+    key: "close",
+    value: function close() {
+      this._emitter.removeAllListeners();
     }
 
     /**
@@ -1058,12 +1087,17 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 
 exports.extend = extend;
 exports.checkSorted = checkSorted;
 exports.diffSortedLists = diffSortedLists;
 exports.dataframeToD3 = dataframeToD3;
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
 function extend(target) {
   for (var _len = arguments.length, sources = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
     sources[_key - 1] = arguments[_key];
@@ -1147,6 +1181,53 @@ function dataframeToD3(df) {
   }
   return results;
 }
+
+/**
+ * Keeps track of all event listener additions/removals and lets all active
+ * listeners be removed with a single operation.
+ *
+ * @private
+ */
+
+var SubscriptionTracker = exports.SubscriptionTracker = function () {
+  function SubscriptionTracker(emitter) {
+    _classCallCheck(this, SubscriptionTracker);
+
+    this._emitter = emitter;
+    this._subs = {};
+  }
+
+  _createClass(SubscriptionTracker, [{
+    key: "on",
+    value: function on(eventType, listener) {
+      var sub = this._emitter.on(eventType, listener);
+      this._subs[sub] = eventType;
+      return sub;
+    }
+  }, {
+    key: "off",
+    value: function off(eventType, listener) {
+      var sub = this._emitter.off(eventType, listener);
+      if (sub) {
+        delete this._subs[sub];
+      }
+      return sub;
+    }
+  }, {
+    key: "removeAllListeners",
+    value: function removeAllListeners() {
+      var _this = this;
+
+      var current_subs = this._subs;
+      this._subs = {};
+      Object.keys(current_subs).forEach(function (sub) {
+        _this._emitter.off(current_subs[sub], sub);
+      });
+    }
+  }]);
+
+  return SubscriptionTracker;
+}();
 
 
 },{}],12:[function(require,module,exports){

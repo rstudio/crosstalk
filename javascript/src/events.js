@@ -14,6 +14,7 @@ export default class Events {
     return sub;
   }
 
+  // Returns false if no match, or string for sub name if matched
   off(eventType, listener) {
     var subs = this._types[eventType];
     if (typeof(listener) === "function") {
@@ -21,15 +22,17 @@ export default class Events {
         if (subs.hasOwnProperty(key)) {
           if (subs[key] === listener) {
             delete subs[key];
-            return;
+            return key;
           }
         }
       }
+      return false;
     } else if (typeof(listener) === "string") {
       if (subs) {
         delete subs[listener];
-        return;
+        return listener;
       }
+      return false;
     } else {
       throw new Error("Unexpected type for listener");
     }

@@ -20,6 +20,7 @@ export class SelectionHandle {
   constructor(group, extraInfo = null) {
     this._group = group = grp(group);
     this._var = group.var("selection");
+    this._emitter = new util.SubscriptionTracker(this._var);
 
     this._extraInfo = util.extend({ sender: this }, extraInfo);
   }
@@ -39,7 +40,7 @@ export class SelectionHandle {
   }
 
   /**
-   * Combine the given `extraInfo` (if any) with the handle's default
+   * Combines the given `extraInfo` (if any) with the handle's default
    * `_extraInfo` (if any).
    * @private
    */
@@ -83,7 +84,7 @@ export class SelectionHandle {
   }
 
   /**
-   * Subscribe to events on this `SelectionHandle`.
+   * Subscribes to events on this `SelectionHandle`.
    *
    * @param {string} eventType - Indicates the type of events to listen to.
    *   Currently, only `"change"` is supported.
@@ -93,11 +94,11 @@ export class SelectionHandle {
    *   this subscription.
    */
   on(eventType, listener) {
-    return this._var.on(eventType, listener);
+    return this._emitter.on(eventType, listener);
   }
 
   /**
-   * Cancel event subscriptions created by {@link SelectionHandle#on}.
+   * Cancels event subscriptions created by {@link SelectionHandle#on}.
    *
    * @param {string} eventType - The type of event to unsubscribe.
    * @param {string|SelectionHandle~listener} listener - Either the callback
@@ -105,7 +106,16 @@ export class SelectionHandle {
    *   string that was returned from {@link SelectionHandle#on}.
    */
   off(eventType, listener) {
-    return this._var.off(eventType, listener);
+    return this._emitter.off(eventType, listener);
+  }
+
+  /**
+   * Shuts down the `SelectionHandle` object.
+   *
+   * Removes all event listeners that were added through this handle.
+   */
+  close() {
+    this._emitter.removeAllListeners();
   }
 
   /**

@@ -1,6 +1,7 @@
 import assert from "assert";
 import { FilterHandle } from "./filter";
 import group from "./group";
+import * as test_common from "./test-common";
 
 describe("Filter API", () => {
   let handle1 = new FilterHandle(group("groupA"));
@@ -89,5 +90,19 @@ describe("Filter API", () => {
     assert.deepEqual(handle3.filteredKeys, ["b", "d"]);
 
     handle2.off("change", sub2);
+  });
+
+  it("removes all event listeners when closed", () => {
+    let handle4 = new FilterHandle("groupA");
+    let counter = test_common.createInvokeCounter();
+
+    handle4.on("change", counter);
+
+    handle1.set([]);
+    assert.equal(counter.count, 1);
+
+    handle4.close();
+    handle1.set(["a", "b", "c"]);
+    assert.equal(counter.count, 1);
   });
 });

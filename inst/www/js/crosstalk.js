@@ -468,6 +468,8 @@ function group(groupName) {
   } else if ((typeof groupName === "undefined" ? "undefined" : _typeof(groupName)) === "object" && groupName._vars && groupName.var) {
     // Appears to already be a group object
     return groupName;
+  } else if (Array.isArray(groupName) && groupName.length == 1 && typeof groupName[0] === "string") {
+    return group(groupName[0]);
   } else {
     throw new Error("Invalid groupName argument");
   }
@@ -523,6 +525,8 @@ var _selection = require("./selection");
 
 var _filter = require("./filter");
 
+var _widget = require("./widget");
+
 require("./input");
 
 require("./input_selectize");
@@ -558,7 +562,8 @@ var crosstalk = {
   var: var_,
   has: has,
   SelectionHandle: _selection.SelectionHandle,
-  FilterHandle: _filter.FilterHandle
+  FilterHandle: _filter.FilterHandle,
+  Widget: _widget.Widget
 };
 
 exports.default = crosstalk;
@@ -567,7 +572,7 @@ global.crosstalk = crosstalk;
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./filter":2,"./group":4,"./input":6,"./input_checkboxgroup":7,"./input_selectize":8,"./input_slider":9,"./selection":10}],6:[function(require,module,exports){
+},{"./filter":2,"./group":4,"./input":6,"./input_checkboxgroup":7,"./input_selectize":8,"./input_slider":9,"./selection":10,"./widget":13}],6:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -701,6 +706,8 @@ var _util = require("./util");
 
 var util = _interopRequireWildcard(_util);
 
+var _filter = require("./filter");
+
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 var $ = global.jQuery;
@@ -727,8 +734,7 @@ input.register({
 
     var selectize = $(select).selectize(opts)[0].selectize;
 
-    var ctGroup = global.crosstalk.group(data.group);
-    var ctHandle = global.crosstalk.filter.createHandle(ctGroup);
+    var ctHandle = new _filter.FilterHandle(data.group);
 
     selectize.on("change", function () {
       if (selectize.items.length === 0) {
@@ -754,7 +760,7 @@ input.register({
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./input":6,"./util":11}],9:[function(require,module,exports){
+},{"./filter":2,"./input":6,"./util":11}],9:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -763,6 +769,8 @@ var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = [
 var _input = require("./input");
 
 var input = _interopRequireWildcard(_input);
+
+var _filter = require("./filter");
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -777,8 +785,7 @@ input.register({
      * map: {"groupA": ["keyA", "keyB", ...], ...}
      * group: "ct-groupname"
      */
-    var ctGroup = global.crosstalk.group(data.group);
-    var ctHandle = global.crosstalk.filter.createHandle(ctGroup);
+    var ctHandle = new _filter.FilterHandle(data.group);
 
     var opts = {};
     var $el = $(el).find("input");
@@ -892,7 +899,7 @@ function formatDateUTC(date) {
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./input":6}],10:[function(require,module,exports){
+},{"./filter":2,"./input":6}],10:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1310,4 +1317,134 @@ exports.default = Var;
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./events":1}]},{},[5]);
+},{"./events":1}],13:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Widget = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _util = require("./util");
+
+var util = _interopRequireWildcard(_util);
+
+var _filter = require("./filter");
+
+var _selection = require("./selection");
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Widget = exports.Widget = function () {
+  function Widget(methods) {
+    _classCallCheck(this, Widget);
+
+    util.extend(this, methods);
+  }
+
+  _createClass(Widget, [{
+    key: "applySelection",
+    value: function applySelection(e) {}
+  }, {
+    key: "applyFilter",
+    value: function applyFilter(e) {}
+  }, {
+    key: "renderValue",
+    value: function renderValue(value) {}
+
+    /**
+     * Call from renderValue to set or modify the Crosstalk group name. This
+     * will register event handlers so that `this.applySelection` and
+     * `this.applyFilter` are called at the appropriate times. It will also
+     * unregister existing event handlers if this instance previously belonged
+     * to a different group.
+     *
+     * @param {string} group - The name of the Crosstalk group that should be
+     *   used, or a falsy value (like `null` or undefined) if none.
+     * @param {boolean} runCallbacks - If true, and the group has changed since
+     *   the last time `setCrosstalkGroup` was called, then invoke
+     *   `this.applySelection` and `this.applyFilter` before returning.
+     */
+
+  }, {
+    key: "setCrosstalkGroup",
+    value: function setCrosstalkGroup(group) {
+      var _this = this;
+
+      var runCallbacks = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
+
+      // Has nothing changed? Then just return. Don't even run callbacks.
+      if (this._crosstalk_group === group) return;
+      if (!this._crosstalk_group && !group) return;
+
+      this._crosstalk_group = group;
+
+      // If existing handles exist, close them. This unregisters event handlers.
+      if (this._crosstalk_selection) {
+        this._crosstalk_selection.close();
+        this._crosstalk_selection = null;
+      }
+      if (this._crosstalk_filter) {
+        this._crosstalk_filter.close();
+        this._crosstalk_filter = null;
+      }
+
+      if (group) {
+        // Create and save new handles, listen for events.
+        this._crosstalk_selection = new _selection.SelectionHandle(group, { sender: this });
+        this._crosstalk_selection.on("change", function (e) {
+          _this.applySelection(e);
+        });
+        this._crosstalk_filter = new _filter.FilterHandle(group, { sender: this });
+        this._crosstalk_filter.on("change", function (e) {
+          _this.applyFilter(e);
+        });
+      }
+
+      if (runCallbacks) {
+        // Immediate callbacks are desired
+        this.applySelection({ value: this.selection, sender: this });
+        this.applyFilter({ value: this.filteredKeys, sender: this });
+      }
+    }
+
+    /**
+     * The set of selected keys for the current Crosstalk group (if any group is
+     * assigned).
+     *
+     * @type {string[],null}
+     */
+
+  }, {
+    key: "selection",
+    set: function set(keys) {
+      if (this._crosstalk_selection) {
+        this._crosstalk_selection.set(keys);
+      }
+    },
+    get: function get() {
+      return this._crosstalk_selection ? this._crosstalk_selection.value : null;
+    }
+  }, {
+    key: "filter",
+    set: function set(keys) {
+      if (this._crosstalk_filter) {
+        this._crosstalk_filter.set(keys);
+      }
+    }
+  }, {
+    key: "filteredKeys",
+    get: function get() {
+      return this._crosstalk_filter ? this._crosstalk_filter.filteredKeys : null;
+    }
+  }]);
+
+  return Widget;
+}();
+
+
+},{"./filter":2,"./selection":10,"./util":11}]},{},[5]);

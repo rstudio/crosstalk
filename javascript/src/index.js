@@ -1,6 +1,7 @@
 import group from "./group";
 import { SelectionHandle } from "./selection";
 import { FilterHandle } from "./filter";
+import { Widget } from "./widget";
 import "./input";
 import "./input_selectize";
 import "./input_checkboxgroup";
@@ -31,7 +32,8 @@ var crosstalk = {
   var: var_,
   has: has,
   SelectionHandle: SelectionHandle,
-  FilterHandle: FilterHandle
+  FilterHandle: FilterHandle,
+  Widget: Widget
 };
 
 export default crosstalk;

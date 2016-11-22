@@ -14,6 +14,10 @@ export default function group(groupName) {
   } else if (typeof(groupName) === "object" && groupName._vars && groupName.var) {
     // Appears to already be a group object
     return groupName;
+  } else if (Array.isArray(groupName) &&
+      groupName.length == 1 &&
+      typeof(groupName[0]) === "string") {
+    return group(groupName[0]);
   } else {
     throw new Error("Invalid groupName argument");
   }

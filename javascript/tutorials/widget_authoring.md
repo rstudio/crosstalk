@@ -103,32 +103,132 @@ Ideally, each visualization should be capable of the following:
 
 In my experience so far, I've found 4 to be reasonably straightforward to achieve. But 1-3 can be difficult if you're building on top of a JavaScript visualization library that isn't designed to accomodate interactively selecting data points. Though it's far preferable to support all four of these features, it's possible to only support 4 to create what is essentially a "listen-only" Crosstalk participant.
 
-#### Selection API
+#### Selection JavaScript API
 
 Each Crosstalk-enabled visualization instance (i.e. each call to `renderValue`) should create a new `crosstalk.SelectionHandle` instance. Use `SelectionHandle` to read and write (and listen for changes to) the selection state for a Crosstalk group.
 
-Creating a `SelectionHandle` is easy: just instantiate with a group name. Then, listen for the `"change"` event to react to selection changes, and use the `set` method.
+Here's what the htmlwidget binding code for [d3scatter](https://github.com/jcheng5/d3scatter) looks like, without Crosstalk support:
 
 ```javascript
-renderValue: function(x) {
-  
-  // Create a selection handle
-  var ct_sel = new crosstalk.SelectionHandle(x.settings.crosstalk_group);
-  
-  // Listen for changes
-  ct_sel.on("change", function(evt) {
-    if (evt.sender === ct_sel) {
-      // Selection was set by us
-    } else {
-      // Selection was set by someone else
-    }
-  });
+HTMLWidgets.widget({
 
-  myWidget.
-}
+  name: 'd3scatter',
+
+  type: 'output',
+
+  factory: function(el, width, height) {
+
+    var firstRun = true;
+    var scatter = d3scatter(el).width(width).height(height);
+
+    return {
+      renderValue: function(x) {
+        var value = x.data;
+        scatter
+          .x_var(value.x_var)
+          .y_var(value.y_var)
+          .color_var(value.color_var)
+          .color_spec(value.color_spec)
+          .x_label(value.x_label)
+          .y_label(value.y_label)
+          .x_lim(value.x_lim)
+          .y_lim(value.y_lim);
+
+        scatter(!firstRun);
+        firstRun = false;
+      },
+      resize: function(width, height) {
+        scatter.width(width).height(height)(false);
+      }
+    };
+  }
+});
 ```
 
+The d3scatter object is created at the scope of the `factory` function. Then, during `renderValue`, it's updated with the `value` object.
 
+The first step is to create a `crosstalk.SelectionHandle` object at the `factory` function level.
+
+```javascript
+var sel_handle = new crosstalk.SelectionHandle();
+```
+
+We haven't yet specified what group this handle should belong to. In fact, we won't know the group until we receive a value via `renderValue` (and in some circumstances, `renderValue` might be called multiple times with different groups).
+
+But we do have both `scatter` and `sel_handle` objects at this point, so we can wire them together. The d3scatter object has a `"brush"` event that we can use to update the Crosstalk selection handle, and the Crosstalk selection handle has a `"change"` event we can use to highlight the d3scatter data points appropriately.
+
+```javascript
+scatter.on("brush", function(keys) {
+  sel_handle.set(keys);
+});
+
+sel_handle.on("change", function(e) {
+  if (e.sender !== sel_handle) {
+    scatter.clearBrush();
+  }
+  scatter.selection(e.value);
+});
+```
+
+With these relationships established inside of `factory`, we can now move on to `renderValue`. The only modifications we need are to pass the key data to the d3scatter object, and update the group of the `sel_handle` object.
+
+The `SelectionHandle` change event provides a `value` property that indicates the currently selected keys as a string array; or, `value` can be `null` to indicate that no selection is active.
+
+Notice the comparison `e.sender !== sel_handle`; this lets us distinguish between selection operations initiated by this widget instance versus by other instances, and to clear any active selection boundaries in the latter case.
+
+The fully selection-enabled binding code is here:
+
+```javascript
+HTMLWidgets.widget({
+
+  name: 'd3scatter',
+
+  type: 'output',
+
+  factory: function(el, width, height) {
+
+    var firstRun = true;
+    var scatter = d3scatter(el).width(width).height(height);
+
+    var sel_handle = new crosstalk.SelectionHandle();
+
+    scatter.on("brush", function(keys) {
+      sel_handle.set(keys);
+    });
+
+    sel_handle.on("change", function(e) {
+      if (e.sender !== sel_handle) {
+        scatter.clearBrush();
+      }
+      scatter.selection(e.value);
+    });
+
+    return {
+      renderValue: function(x) {
+        var value = x.data;
+        scatter
+          .x_var(value.x_var)
+          .y_var(value.y_var)
+          .color_var(value.color_var)
+          .color_spec(value.color_spec)
+          .x_label(value.x_label)
+          .y_label(value.y_label)
+          .x_lim(value.x_lim)
+          .y_lim(value.y_lim)
+          .key(x.settings.crosstalk_key);
+
+        sel_handle.setGroup(x.settings.crosstalk_group);
+
+        scatter(!firstRun);
+        firstRun = false;
+      },
+      resize: function(width, height) {
+        scatter.width(width).height(height)(false);
+      }
+    };
+  }
+});
+```
 
 ### Filtering
 

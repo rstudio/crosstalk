@@ -75,7 +75,11 @@ export default class FilterSet {
       return;
     }
 
-    let keys = this._handles[handleId] || [];
+    let keys = this._handles[handleId];
+    if (!keys) {
+      keys = [];
+    }
+
     for (let i = 0; i < keys.length; i++) {
       this._keys[keys[i]]--;
     }

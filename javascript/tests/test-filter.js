@@ -61,6 +61,19 @@ describe("Filter API", () => {
     assert.equal(callbackCount, 2);
   });
 
+  it("doesn't mind bad attempts to remove listeners", () => {
+    const sub = handle1.on("change", () => {});
+
+    assert(!handle1.off("change", "foo"));
+    assert(!handle1.off("whatever", "foo"));
+    assert(!handle1.off("change", (a,b,c) => {}));
+    assert.throws(() => {
+      handle1.off("change", null);
+    });
+
+    assert(handle1.off("change", sub));
+  });
+
   it("passes along extraInfo", () => {
     let handle3 = new FilterHandle("groupA", { a: 1, b: 2 });
 

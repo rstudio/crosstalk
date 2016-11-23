@@ -13,8 +13,14 @@ describe("FilterHandle#setGroup", () => {
     handle1.on("change", counter);
     assert.equal(counter.count, 0);
 
+    // Should be ignored because no difference
+    handle1.setGroup(null);
+    handle1.setGroup(void 0);
+    handle1.setGroup(false);
+
     // Should be ignored because no group is assigned
     handle1.set(["test"]);
+    handle1.clear();
     assert.equal(handle1.filteredKeys, null);
     assert.equal(counter.count, 0);
   });
@@ -26,6 +32,12 @@ describe("FilterHandle#setGroup", () => {
     handle1.set(["test"]);
     assert.deepEqual(handle1.filteredKeys, ["test"]);
     assert.equal(counter.count, 1);
+  });
+
+  it("rejects duplicate keys", () => {
+    assert.throws(() => {
+      handle1.set(["test", "test"]);
+    });
   });
 
   it("unsubscribes from previous group", () => {

@@ -108,12 +108,9 @@ export class FilterHandle {
    * @private
    */
   _mergeExtraInfo(extraInfo) {
-    if (!this._extraInfo)
-      return extraInfo;
-    else if (!extraInfo)
-      return this._extraInfo;
-    else
-      return util.extend({}, this._extraInfo, extraInfo);
+    return util.extend({},
+      this._extraInfo ? this._extraInfo : null,
+      extraInfo ? extraInfo : null);
   }
 
   /**

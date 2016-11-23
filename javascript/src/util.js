@@ -25,8 +25,8 @@ export function diffSortedLists(a, b) {
   let i_a = 0;
   let i_b = 0;
 
-  a = a || [];
-  b = b || [];
+  if (!a) a = [];
+  if (!b) b = [];
 
   let a_only = [];
   let b_only = [];

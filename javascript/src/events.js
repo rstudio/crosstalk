@@ -28,7 +28,7 @@ export default class Events {
       }
       return false;
     } else if (typeof(listener) === "string") {
-      if (subs) {
+      if (subs && subs[listener]) {
         delete subs[listener];
         return listener;
       }

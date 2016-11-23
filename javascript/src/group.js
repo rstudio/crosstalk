@@ -6,7 +6,7 @@ global.__crosstalk_groups = global.__crosstalk_groups || {};
 let groups = global.__crosstalk_groups;
 
 export default function group(groupName) {
-  if (typeof(groupName) === "string") {
+  if (groupName && typeof(groupName) === "string") {
     if (!groups.hasOwnProperty(groupName)) {
       groups[groupName] = new Group(groupName);
     }
@@ -30,7 +30,7 @@ class Group {
   }
 
   var(name) {
-    if (typeof(name) !== "string") {
+    if (!name || typeof(name) !== "string") {
       throw new Error("Invalid var name");
     }
 
@@ -40,7 +40,7 @@ class Group {
   }
 
   has(name) {
-    if (typeof(name) !== "string") {
+    if (!name || typeof(name) !== "string") {
       throw new Error("Invalid var name");
     }
 

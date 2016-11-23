@@ -46,7 +46,7 @@ var Events = function () {
         }
         return false;
       } else if (typeof listener === "string") {
-        if (subs) {
+        if (subs && subs[listener]) {
           delete subs[listener];
           return listener;
         }
@@ -218,7 +218,7 @@ var FilterHandle = exports.FilterHandle = function () {
   }, {
     key: "_mergeExtraInfo",
     value: function _mergeExtraInfo(extraInfo) {
-      if (!this._extraInfo) return extraInfo;else if (!extraInfo) return this._extraInfo;else return util.extend({}, this._extraInfo, extraInfo);
+      return util.extend({}, this._extraInfo ? this._extraInfo : null, extraInfo ? extraInfo : null);
     }
 
     /**
@@ -447,7 +447,11 @@ var FilterSet = function () {
         return;
       }
 
-      var keys = this._handles[handleId] || [];
+      var keys = this._handles[handleId];
+      if (!keys) {
+        keys = [];
+      }
+
       for (var i = 0; i < keys.length; i++) {
         this._keys[keys[i]]--;
       }
@@ -502,7 +506,7 @@ global.__crosstalk_groups = global.__crosstalk_groups || {};
 var groups = global.__crosstalk_groups;
 
 function group(groupName) {
-  if (typeof groupName === "string") {
+  if (groupName && typeof groupName === "string") {
     if (!groups.hasOwnProperty(groupName)) {
       groups[groupName] = new Group(groupName);
     }
@@ -528,7 +532,7 @@ var Group = function () {
   _createClass(Group, [{
     key: "var",
     value: function _var(name) {
-      if (typeof name !== "string") {
+      if (!name || typeof name !== "string") {
         throw new Error("Invalid var name");
       }
 
@@ -538,7 +542,7 @@ var Group = function () {
   }, {
     key: "has",
     value: function has(name) {
-      if (typeof name !== "string") {
+      if (!name || typeof name !== "string") {
         throw new Error("Invalid var name");
       }
 
@@ -1227,8 +1231,8 @@ function diffSortedLists(a, b) {
   var i_a = 0;
   var i_b = 0;
 
-  a = a || [];
-  b = b || [];
+  if (!a) a = [];
+  if (!b) b = [];
 
   var a_only = [];
   var b_only = [];

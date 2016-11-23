@@ -1,7 +1,7 @@
 "use strict";
 
 import assert from "assert";
-import FilterSet from "./filterset";
+import FilterSet from "../src/filterset";
 
 
 describe("FilterSet", () => {

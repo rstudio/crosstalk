@@ -1,5 +1,5 @@
 import assert from "assert";
-import crosstalk from "./index";
+import crosstalk from "../src/index";
 
 let foo = crosstalk.group("foo");
 

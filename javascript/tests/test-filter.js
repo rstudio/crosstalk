@@ -1,6 +1,6 @@
 import assert from "assert";
-import { FilterHandle } from "./filter";
-import group from "./group";
+import { FilterHandle } from "../src/filter";
+import group from "../src/group";
 import * as test_common from "./test-common";
 
 describe("Filter API", () => {

@@ -87,7 +87,6 @@ function stamp(el) {
   return el.__crosstalkStamp;
 }
 
-
 },{}],2:[function(require,module,exports){
 "use strict";
 
@@ -365,7 +364,6 @@ var FilterHandle = exports.FilterHandle = function () {
   return FilterHandle;
 }();
 
-
 },{"./events":1,"./filterset":3,"./group":4,"./util":11}],3:[function(require,module,exports){
 "use strict";
 
@@ -493,7 +491,6 @@ var FilterSet = function () {
 
 exports.default = FilterSet;
 
-
 },{"./util":11}],4:[function(require,module,exports){
 (function (global){
 "use strict";
@@ -569,8 +566,8 @@ var Group = function () {
   return Group;
 }();
 
-
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+
 },{"./var":12}],5:[function(require,module,exports){
 (function (global){
 "use strict";
@@ -629,8 +626,8 @@ exports.default = crosstalk;
 
 global.crosstalk = crosstalk;
 
-
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+
 },{"./filter":2,"./group":4,"./input":6,"./input_checkboxgroup":7,"./input_selectize":8,"./input_slider":9,"./selection":10}],6:[function(require,module,exports){
 (function (global){
 "use strict";
@@ -704,8 +701,8 @@ if (global.Shiny) {
   })();
 }
 
-
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+
 },{}],7:[function(require,module,exports){
 (function (global){
 "use strict";
@@ -751,8 +748,8 @@ input.register({
   }
 });
 
-
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+
 },{"./input":6}],8:[function(require,module,exports){
 (function (global){
 "use strict";
@@ -817,8 +814,8 @@ input.register({
   }
 });
 
-
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+
 },{"./filter":2,"./input":6,"./util":11}],9:[function(require,module,exports){
 (function (global){
 "use strict";
@@ -956,8 +953,8 @@ function formatDateUTC(date) {
   }
 }
 
-
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+
 },{"./filter":2,"./input":6}],10:[function(require,module,exports){
 "use strict";
 
@@ -1202,7 +1199,6 @@ var SelectionHandle = exports.SelectionHandle = function () {
   return SelectionHandle;
 }();
 
-
 },{"./events":1,"./group":4,"./util":11}],11:[function(require,module,exports){
 "use strict";
 
@@ -1352,7 +1348,6 @@ var SubscriptionTracker = exports.SubscriptionTracker = function () {
   return SubscriptionTracker;
 }();
 
-
 },{}],12:[function(require,module,exports){
 (function (global){
 "use strict";
@@ -1431,6 +1426,7 @@ var Var = function () {
 
 exports.default = Var;
 
-
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./events":1}]},{},[5]);
+
+},{"./events":1}]},{},[5])
+//# sourceMappingURL=crosstalk.js.map

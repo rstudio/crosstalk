@@ -1,5 +1,5 @@
 import assert from "assert";
-import { FilterHandle } from "./filter";
+import { FilterHandle } from "../src/filter";
 import * as test_common from "./test-common";
 
 describe("FilterHandle#setGroup", () => {

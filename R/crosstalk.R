@@ -16,7 +16,7 @@ crosstalkLibs <- function() {
     jqueryLib(),
     htmltools::htmlDependency("crosstalk", packageVersion("crosstalk"),
       src = system.file("www", package = "crosstalk"),
-      script = "js/crosstalk.js"
+      script = "js/crosstalk.min.js"
     )
   )
 }

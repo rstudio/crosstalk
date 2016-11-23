@@ -1,5 +1,5 @@
 import assert from "assert";
-import { SelectionHandle } from "./selection";
+import { SelectionHandle } from "../src/selection";
 import * as test_common from "./test-common";
 
 describe("SelectionHandle", () => {

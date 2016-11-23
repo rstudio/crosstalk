@@ -159,7 +159,6 @@ var FilterHandle = exports.FilterHandle = function () {
    * @param {Object} [extraInfo] - An object whose properties will be copied to
    *   the event object whenever an event is emitted.
    */
-
   function FilterHandle(group, extraInfo) {
     _classCallCheck(this, FilterHandle);
 
@@ -416,10 +415,9 @@ var FilterSet = function () {
         keys.sort(naturalComparator);
       }
 
-      var _diffSortedLists = (0, _util.diffSortedLists)(this._handles[handleId], keys);
-
-      var added = _diffSortedLists.added;
-      var removed = _diffSortedLists.removed;
+      var _diffSortedLists = (0, _util.diffSortedLists)(this._handles[handleId], keys),
+          added = _diffSortedLists.added,
+          removed = _diffSortedLists.removed;
 
       this._handles[handleId] = keys;
 
@@ -442,7 +440,7 @@ var FilterSet = function () {
   }, {
     key: "_updateValue",
     value: function _updateValue() {
-      var keys = arguments.length <= 0 || arguments[0] === undefined ? this._allKeys : arguments[0];
+      var keys = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this._allKeys;
 
       var handleCount = Object.keys(this._handles).length;
       if (handleCount === 0) {
@@ -501,7 +499,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 exports.default = group;
 
@@ -896,12 +894,10 @@ input.register({
 
     $el.on("change.crosstalkSliderInput", function (event) {
       if (!$el.data("updating") && !$el.data("animating")) {
-        var _getValue = getValue();
-
-        var _getValue2 = _slicedToArray(_getValue, 2);
-
-        var from = _getValue2[0];
-        var to = _getValue2[1];
+        var _getValue = getValue(),
+            _getValue2 = _slicedToArray(_getValue, 2),
+            from = _getValue2[0],
+            to = _getValue2[1];
 
         var keys = [];
         for (var i = 0; i < data.values.length; i++) {
@@ -1001,9 +997,8 @@ var SelectionHandle = exports.SelectionHandle = function () {
    * @param {Object} [extraInfo] - An object whose properties will be copied to
    *   the event object whenever an event is emitted.
    */
-
   function SelectionHandle(group) {
-    var extraInfo = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+    var extraInfo = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
     _classCallCheck(this, SelectionHandle);
 
@@ -1208,7 +1203,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 exports.extend = extend;
 exports.checkSorted = checkSorted;
@@ -1356,7 +1351,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 

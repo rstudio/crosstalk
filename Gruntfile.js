@@ -58,7 +58,7 @@ module.exports = function (grunt) {
     watch: {
       scripts: {
         files: ["./javascript/src/**/*.js", "javascript/tests/**/*.js"],
-        tasks: ["babel", "browserify", "eslint", "mochaTest"]
+        tasks: ["build"]
       }
     },
     jsdoc: {
@@ -75,7 +75,6 @@ module.exports = function (grunt) {
     }
   });
 
-  grunt.loadNpmTasks("grunt-babel");
   grunt.loadNpmTasks("grunt-browserify");
   grunt.loadNpmTasks("grunt-contrib-watch");
   grunt.loadNpmTasks("grunt-contrib-uglify");

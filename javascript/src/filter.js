@@ -1,3 +1,4 @@
+import Events from "./events";
 import FilterSet from "./filterset";
 import grp from "./group";
 import * as util from "./util";
@@ -36,18 +37,69 @@ export class FilterHandle {
    * present in all non-null filter handles are considered part of the filter
    * set.
    *
-   * @param {string} group - The name of the crosstalk group.
+   * @param {string} [group] - The name of the Crosstalk group, or if none,
+   *   null or undefined (or any other falsy value). This can be changed later
+   *   via the @{link FilterHandle#setGroup} method.
    * @param {Object} [extraInfo] - An object whose properties will be copied to
    *   the event object whenever an event is emitted.
    */
   constructor(group, extraInfo) {
-    group = grp(group);
-    this._filterSet = getFilterSet(group);
-    this._filterVar = group.var("filter");
-    this._emitter = new util.SubscriptionTracker(this._filterVar);
-    this._id = "filter" + nextId();
+    this._eventRelay = new Events();
+    this._emitter = new util.SubscriptionTracker(this._eventRelay);
+
+    // Name of the group we're currently tracking, if any. Can change over time.
+    this._group = null;
+    // The filterSet that we're tracking, if any. Can change over time.
+    this._filterSet = null;
+    // The Var we're currently tracking, if any. Can change over time.
+    this._filterVar = null;
+    // The event handler subscription we currently have on var.on("change").
+    this._varOnChangeSub = null;
 
     this._extraInfo = util.extend({ sender: this }, extraInfo);
+
+    this._id = "filter" + nextId();
+
+    this.setGroup(group);
+  }
+
+  /**
+   * Changes the Crosstalk group membership of this FilterHandle. If `set()` was
+   * previously called on this handle, switching groups will clear those keys
+   * from the old group's filter set. These keys will not be applied to the new
+   * group's filter set either. In other words, `setGroup()` effectively calls
+   * `clear()` before switching groups.
+   *
+   * @param {string} group - The name of the Crosstalk group, or null (or
+   *   undefined) to clear the group.
+   */
+  setGroup(group) {
+    // If group is unchanged, do nothing
+    if (this._group === group)
+      return;
+    // Treat null, undefined, and other falsy values the same
+    if (!this._group && !group)
+      return;
+
+    if (this._filterVar) {
+      this._filterVar.off("change", this._varOnChangeSub);
+      this.clear();
+      this._varOnChangeSub = null;
+      this._filterVar = null;
+      this._filterSet = null;
+    }
+
+    this._group = group;
+
+    if (group) {
+      group = grp(group);
+      this._filterSet = getFilterSet(group);
+      this._filterVar = grp(group).var("filter");
+      let sub = this._filterVar.on("change", (e) => {
+        this._eventRelay.trigger("change", e, this);
+      });
+      this._varOnChangeSub = sub;
+    }
   }
 
   /**
@@ -71,6 +123,7 @@ export class FilterHandle {
   close() {
     this._emitter.removeAllListeners();
     this.clear();
+    this.setGroup(null);
   }
 
   /**
@@ -81,6 +134,8 @@ export class FilterHandle {
    *   passed into the `FilterHandle` constructor).
    */
   clear(extraInfo) {
+    if (!this._filterSet)
+      return;
     this._filterSet.clear(this._id);
     this._onChange(extraInfo);
   }
@@ -101,6 +156,8 @@ export class FilterHandle {
    *   passed into the `FilterHandle` constructor).
    */
   set(keys, extraInfo) {
+    if (!this._filterSet)
+      return;
     this._filterSet.update(this._id, keys);
     this._onChange(extraInfo);
   }
@@ -111,7 +168,7 @@ export class FilterHandle {
    *   is being applied (all data should be displayed).
    */
   get filteredKeys() {
-    return this._filterSet.value;
+    return this._filterSet ? this._filterSet.value : null;
   }
 
   /**
@@ -141,6 +198,8 @@ export class FilterHandle {
   }
 
   _onChange(extraInfo) {
+    if (!this._filterSet)
+      return;
     this._filterVar.set(this._filterSet.value, this._mergeExtraInfo(extraInfo));
   }
 

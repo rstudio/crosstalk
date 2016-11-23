@@ -1,3 +1,4 @@
+import Events from "./events";
 import grp from "./group";
 import * as util from "./util";
 
@@ -13,16 +14,64 @@ export class SelectionHandle {
    * changing across the others, and `"change"` event listeners on all instances
    * (including the one that initiated the sending) will fire.
    *
-   * @param {string} group - The name of the crosstalk group.
+   * @param {string} [group] - The name of the Crosstalk group, or if none,
+   *   null or undefined (or any other falsy value). This can be changed later
+   *   via the @{link SelectionHandle#setGroup} method.
    * @param {Object} [extraInfo] - An object whose properties will be copied to
    *   the event object whenever an event is emitted.
    */
   constructor(group, extraInfo = null) {
-    this._group = group = grp(group);
-    this._var = group.var("selection");
-    this._emitter = new util.SubscriptionTracker(this._var);
+    this._eventRelay = new Events();
+    this._emitter = new util.SubscriptionTracker(this._eventRelay);
+
+    // Name of the group we're currently tracking, if any. Can change over time.
+    this._group = null;
+    // The Var we're currently tracking, if any. Can change over time.
+    this._var = null;
+    // The event handler subscription we currently have on var.on("change").
+    this._varOnChangeSub = null;
 
     this._extraInfo = util.extend({ sender: this }, extraInfo);
+
+    this.setGroup(group);
+  }
+
+  /**
+   * Changes the Crosstalk group membership of this SelectionHandle. The group
+   * being switched away from (if any) will not have its selection value
+   * modified as a result of calling `setGroup`, even if this handle was the
+   * most recent handle to set the selection of the group.
+   *
+   * The group being switched to (if any) will also not have its selection value
+   * modified as a result of calling `setGroup`. If you want to set the
+   * selection value of the new group, call `set` explicitly.
+   *
+   * @param {string} group - The name of the Crosstalk group, or null (or
+   *   undefined) to clear the group.
+   */
+  setGroup(group) {
+    // If group is unchanged, do nothing
+    if (this._group === group)
+      return;
+    // Treat null, undefined, and other falsy values the same
+    if (!this._group && !group)
+      return;
+
+    if (this._var) {
+      this._var.off("change", this._varOnChangeSub);
+      this._var = null;
+      this._varOnChangeSub = null;
+    }
+
+    this._group = group;
+
+    if (group) {
+      this._var = grp(group).var("selection");
+      let sub = this._var.on("change", (e) => {
+        this._eventRelay.trigger("change", e, this);
+      });
+      this._varOnChangeSub = sub;
+    }
   }
 
   /**
@@ -36,7 +85,7 @@ export class SelectionHandle {
    *   of the selected data points will be present in the array.
    */
   get value() {
-    return this._var.get();
+    return this._var ? this._var.get() : null;
   }
 
   /**
@@ -45,12 +94,10 @@ export class SelectionHandle {
    * @private
    */
   _mergeExtraInfo(extraInfo) {
-    if (!this._extraInfo)
-      return extraInfo;
-    else if (!extraInfo)
-      return this._extraInfo;
-    else
-      return util.extend({}, this._extraInfo, extraInfo);
+    // Important incidental effect: shallow clone is returned
+    return util.extend({},
+      this._extraInfo ? this._extraInfo : null,
+      extraInfo ? extraInfo : null);
   }
 
   /**
@@ -66,7 +113,8 @@ export class SelectionHandle {
    *   passed into the `SelectionHandle` constructor).
    */
   set(selectedKeys, extraInfo) {
-    this._var.set(selectedKeys, this._mergeExtraInfo(extraInfo));
+    if (this._var)
+      this._var.set(selectedKeys, this._mergeExtraInfo(extraInfo));
   }
 
   /**
@@ -80,7 +128,8 @@ export class SelectionHandle {
    *   into the `SelectionHandle` constructor).
    */
   clear(extraInfo) {
-    this.set(void 0, this._mergeExtraInfo(extraInfo));
+    if (this._var)
+      this.set(void 0, this._mergeExtraInfo(extraInfo));
   }
 
   /**
@@ -116,6 +165,7 @@ export class SelectionHandle {
    */
   close() {
     this._emitter.removeAllListeners();
+    this.setGroup(null);
   }
 
   /**

@@ -98,6 +98,10 @@ exports.FilterHandle = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _events = require("./events");
+
+var _events2 = _interopRequireDefault(_events);
+
 var _filterset = require("./filterset");
 
 var _filterset2 = _interopRequireDefault(_filterset);
@@ -150,7 +154,9 @@ var FilterHandle = exports.FilterHandle = function () {
    * present in all non-null filter handles are considered part of the filter
    * set.
    *
-   * @param {string} group - The name of the crosstalk group.
+   * @param {string} [group] - The name of the Crosstalk group, or if none,
+   *   null or undefined (or any other falsy value). This can be changed later
+   *   via the @{link FilterHandle#setGroup} method.
    * @param {Object} [extraInfo] - An object whose properties will be copied to
    *   the event object whenever an event is emitted.
    */
@@ -158,23 +164,75 @@ var FilterHandle = exports.FilterHandle = function () {
   function FilterHandle(group, extraInfo) {
     _classCallCheck(this, FilterHandle);
 
-    group = (0, _group2.default)(group);
-    this._filterSet = getFilterSet(group);
-    this._filterVar = group.var("filter");
-    this._emitter = new util.SubscriptionTracker(this._filterVar);
-    this._id = "filter" + nextId();
+    this._eventRelay = new _events2.default();
+    this._emitter = new util.SubscriptionTracker(this._eventRelay);
+
+    // Name of the group we're currently tracking, if any. Can change over time.
+    this._group = null;
+    // The filterSet that we're tracking, if any. Can change over time.
+    this._filterSet = null;
+    // The Var we're currently tracking, if any. Can change over time.
+    this._filterVar = null;
+    // The event handler subscription we currently have on var.on("change").
+    this._varOnChangeSub = null;
 
     this._extraInfo = util.extend({ sender: this }, extraInfo);
+
+    this._id = "filter" + nextId();
+
+    this.setGroup(group);
   }
 
   /**
-   * Combine the given `extraInfo` (if any) with the handle's default
-   * `_extraInfo` (if any).
-   * @private
+   * Changes the Crosstalk group membership of this FilterHandle. If `set()` was
+   * previously called on this handle, switching groups will clear those keys
+   * from the old group's filter set. These keys will not be applied to the new
+   * group's filter set either. In other words, `setGroup()` effectively calls
+   * `clear()` before switching groups.
+   *
+   * @param {string} group - The name of the Crosstalk group, or null (or
+   *   undefined) to clear the group.
    */
 
 
   _createClass(FilterHandle, [{
+    key: "setGroup",
+    value: function setGroup(group) {
+      var _this = this;
+
+      // If group is unchanged, do nothing
+      if (this._group === group) return;
+      // Treat null, undefined, and other falsy values the same
+      if (!this._group && !group) return;
+
+      if (this._filterVar) {
+        this._filterVar.off("change", this._varOnChangeSub);
+        this.clear();
+        this._varOnChangeSub = null;
+        this._filterVar = null;
+        this._filterSet = null;
+      }
+
+      this._group = group;
+
+      if (group) {
+        group = (0, _group2.default)(group);
+        this._filterSet = getFilterSet(group);
+        this._filterVar = (0, _group2.default)(group).var("filter");
+        var sub = this._filterVar.on("change", function (e) {
+          _this._eventRelay.trigger("change", e, _this);
+        });
+        this._varOnChangeSub = sub;
+      }
+    }
+
+    /**
+     * Combine the given `extraInfo` (if any) with the handle's default
+     * `_extraInfo` (if any).
+     * @private
+     */
+
+  }, {
     key: "_mergeExtraInfo",
     value: function _mergeExtraInfo(extraInfo) {
       if (!this._extraInfo) return extraInfo;else if (!extraInfo) return this._extraInfo;else return util.extend({}, this._extraInfo, extraInfo);
@@ -190,6 +248,7 @@ var FilterHandle = exports.FilterHandle = function () {
     value: function close() {
       this._emitter.removeAllListeners();
       this.clear();
+      this.setGroup(null);
     }
 
     /**
@@ -203,6 +262,7 @@ var FilterHandle = exports.FilterHandle = function () {
   }, {
     key: "clear",
     value: function clear(extraInfo) {
+      if (!this._filterSet) return;
       this._filterSet.clear(this._id);
       this._onChange(extraInfo);
     }
@@ -226,6 +286,7 @@ var FilterHandle = exports.FilterHandle = function () {
   }, {
     key: "set",
     value: function set(keys, extraInfo) {
+      if (!this._filterSet) return;
       this._filterSet.update(this._id, keys);
       this._onChange(extraInfo);
     }
@@ -271,6 +332,7 @@ var FilterHandle = exports.FilterHandle = function () {
   }, {
     key: "_onChange",
     value: function _onChange(extraInfo) {
+      if (!this._filterSet) return;
       this._filterVar.set(this._filterSet.value, this._mergeExtraInfo(extraInfo));
     }
 
@@ -296,7 +358,7 @@ var FilterHandle = exports.FilterHandle = function () {
   }, {
     key: "filteredKeys",
     get: function get() {
-      return this._filterSet.value;
+      return this._filterSet ? this._filterSet.value : null;
     }
   }]);
 
@@ -304,7 +366,7 @@ var FilterHandle = exports.FilterHandle = function () {
 }();
 
 
-},{"./filterset":3,"./group":4,"./util":11}],3:[function(require,module,exports){
+},{"./events":1,"./filterset":3,"./group":4,"./util":11}],3:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -525,8 +587,6 @@ var _selection = require("./selection");
 
 var _filter = require("./filter");
 
-var _widget = require("./widget");
-
 require("./input");
 
 require("./input_selectize");
@@ -562,8 +622,7 @@ var crosstalk = {
   var: var_,
   has: has,
   SelectionHandle: _selection.SelectionHandle,
-  FilterHandle: _filter.FilterHandle,
-  Widget: _widget.Widget
+  FilterHandle: _filter.FilterHandle
 };
 
 exports.default = crosstalk;
@@ -572,7 +631,7 @@ global.crosstalk = crosstalk;
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./filter":2,"./group":4,"./input":6,"./input_checkboxgroup":7,"./input_selectize":8,"./input_slider":9,"./selection":10,"./widget":13}],6:[function(require,module,exports){
+},{"./filter":2,"./group":4,"./input":6,"./input_checkboxgroup":7,"./input_selectize":8,"./input_slider":9,"./selection":10}],6:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -909,6 +968,10 @@ exports.SelectionHandle = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _events = require("./events");
+
+var _events2 = _interopRequireDefault(_events);
+
 var _group = require("./group");
 
 var _group2 = _interopRequireDefault(_group);
@@ -935,7 +998,9 @@ var SelectionHandle = exports.SelectionHandle = function () {
    * changing across the others, and `"change"` event listeners on all instances
    * (including the one that initiated the sending) will fire.
    *
-   * @param {string} group - The name of the crosstalk group.
+   * @param {string} [group] - The name of the Crosstalk group, or if none,
+   *   null or undefined (or any other falsy value). This can be changed later
+   *   via the @{link SelectionHandle#setGroup} method.
    * @param {Object} [extraInfo] - An object whose properties will be copied to
    *   the event object whenever an event is emitted.
    */
@@ -945,26 +1010,75 @@ var SelectionHandle = exports.SelectionHandle = function () {
 
     _classCallCheck(this, SelectionHandle);
 
-    this._group = group = (0, _group2.default)(group);
-    this._var = group.var("selection");
-    this._emitter = new util.SubscriptionTracker(this._var);
+    this._eventRelay = new _events2.default();
+    this._emitter = new util.SubscriptionTracker(this._eventRelay);
+
+    // Name of the group we're currently tracking, if any. Can change over time.
+    this._group = null;
+    // The Var we're currently tracking, if any. Can change over time.
+    this._var = null;
+    // The event handler subscription we currently have on var.on("change").
+    this._varOnChangeSub = null;
 
     this._extraInfo = util.extend({ sender: this }, extraInfo);
+
+    this.setGroup(group);
   }
 
   /**
-   * Retrieves the current selection for the group represented by this
-   * `SelectionHandle`.
+   * Changes the Crosstalk group membership of this SelectionHandle. The group
+   * being switched away from (if any) will not have its selection value
+   * modified as a result of calling `setGroup`, even if this handle was the
+   * most recent handle to set the selection of the group.
    *
-   * - If no selection is active, then this value will be falsy.
-   * - If a selection is active, but no data points are selected, then this
-   *   value will be an empty array.
-   * - If a selection is active, and data points are selected, then the keys
-   *   of the selected data points will be present in the array.
+   * The group being switched to (if any) will also not have its selection value
+   * modified as a result of calling `setGroup`. If you want to set the
+   * selection value of the new group, call `set` explicitly.
+   *
+   * @param {string} group - The name of the Crosstalk group, or null (or
+   *   undefined) to clear the group.
    */
 
 
   _createClass(SelectionHandle, [{
+    key: "setGroup",
+    value: function setGroup(group) {
+      var _this = this;
+
+      // If group is unchanged, do nothing
+      if (this._group === group) return;
+      // Treat null, undefined, and other falsy values the same
+      if (!this._group && !group) return;
+
+      if (this._var) {
+        this._var.off("change", this._varOnChangeSub);
+        this._var = null;
+        this._varOnChangeSub = null;
+      }
+
+      this._group = group;
+
+      if (group) {
+        this._var = (0, _group2.default)(group).var("selection");
+        var sub = this._var.on("change", function (e) {
+          _this._eventRelay.trigger("change", e, _this);
+        });
+        this._varOnChangeSub = sub;
+      }
+    }
+
+    /**
+     * Retrieves the current selection for the group represented by this
+     * `SelectionHandle`.
+     *
+     * - If no selection is active, then this value will be falsy.
+     * - If a selection is active, but no data points are selected, then this
+     *   value will be an empty array.
+     * - If a selection is active, and data points are selected, then the keys
+     *   of the selected data points will be present in the array.
+     */
+
+  }, {
     key: "_mergeExtraInfo",
 
 
@@ -974,7 +1088,8 @@ var SelectionHandle = exports.SelectionHandle = function () {
      * @private
      */
     value: function _mergeExtraInfo(extraInfo) {
-      if (!this._extraInfo) return extraInfo;else if (!extraInfo) return this._extraInfo;else return util.extend({}, this._extraInfo, extraInfo);
+      // Important incidental effect: shallow clone is returned
+      return util.extend({}, this._extraInfo ? this._extraInfo : null, extraInfo ? extraInfo : null);
     }
 
     /**
@@ -993,7 +1108,7 @@ var SelectionHandle = exports.SelectionHandle = function () {
   }, {
     key: "set",
     value: function set(selectedKeys, extraInfo) {
-      this._var.set(selectedKeys, this._mergeExtraInfo(extraInfo));
+      if (this._var) this._var.set(selectedKeys, this._mergeExtraInfo(extraInfo));
     }
 
     /**
@@ -1010,7 +1125,7 @@ var SelectionHandle = exports.SelectionHandle = function () {
   }, {
     key: "clear",
     value: function clear(extraInfo) {
-      this.set(void 0, this._mergeExtraInfo(extraInfo));
+      if (this._var) this.set(void 0, this._mergeExtraInfo(extraInfo));
     }
 
     /**
@@ -1055,6 +1170,7 @@ var SelectionHandle = exports.SelectionHandle = function () {
     key: "close",
     value: function close() {
       this._emitter.removeAllListeners();
+      this.setGroup(null);
     }
 
     /**
@@ -1079,7 +1195,7 @@ var SelectionHandle = exports.SelectionHandle = function () {
   }, {
     key: "value",
     get: function get() {
-      return this._var.get();
+      return this._var ? this._var.get() : null;
     }
   }]);
 
@@ -1087,7 +1203,7 @@ var SelectionHandle = exports.SelectionHandle = function () {
 }();
 
 
-},{"./group":4,"./util":11}],11:[function(require,module,exports){
+},{"./events":1,"./group":4,"./util":11}],11:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1317,134 +1433,4 @@ exports.default = Var;
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./events":1}],13:[function(require,module,exports){
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Widget = undefined;
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _util = require("./util");
-
-var util = _interopRequireWildcard(_util);
-
-var _filter = require("./filter");
-
-var _selection = require("./selection");
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Widget = exports.Widget = function () {
-  function Widget(methods) {
-    _classCallCheck(this, Widget);
-
-    util.extend(this, methods);
-  }
-
-  _createClass(Widget, [{
-    key: "applySelection",
-    value: function applySelection(e) {}
-  }, {
-    key: "applyFilter",
-    value: function applyFilter(e) {}
-  }, {
-    key: "renderValue",
-    value: function renderValue(value) {}
-
-    /**
-     * Call from renderValue to set or modify the Crosstalk group name. This
-     * will register event handlers so that `this.applySelection` and
-     * `this.applyFilter` are called at the appropriate times. It will also
-     * unregister existing event handlers if this instance previously belonged
-     * to a different group.
-     *
-     * @param {string} group - The name of the Crosstalk group that should be
-     *   used, or a falsy value (like `null` or undefined) if none.
-     * @param {boolean} runCallbacks - If true, and the group has changed since
-     *   the last time `setCrosstalkGroup` was called, then invoke
-     *   `this.applySelection` and `this.applyFilter` before returning.
-     */
-
-  }, {
-    key: "setCrosstalkGroup",
-    value: function setCrosstalkGroup(group) {
-      var _this = this;
-
-      var runCallbacks = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
-
-      // Has nothing changed? Then just return. Don't even run callbacks.
-      if (this._crosstalk_group === group) return;
-      if (!this._crosstalk_group && !group) return;
-
-      this._crosstalk_group = group;
-
-      // If existing handles exist, close them. This unregisters event handlers.
-      if (this._crosstalk_selection) {
-        this._crosstalk_selection.close();
-        this._crosstalk_selection = null;
-      }
-      if (this._crosstalk_filter) {
-        this._crosstalk_filter.close();
-        this._crosstalk_filter = null;
-      }
-
-      if (group) {
-        // Create and save new handles, listen for events.
-        this._crosstalk_selection = new _selection.SelectionHandle(group, { sender: this });
-        this._crosstalk_selection.on("change", function (e) {
-          _this.applySelection(e);
-        });
-        this._crosstalk_filter = new _filter.FilterHandle(group, { sender: this });
-        this._crosstalk_filter.on("change", function (e) {
-          _this.applyFilter(e);
-        });
-      }
-
-      if (runCallbacks) {
-        // Immediate callbacks are desired
-        this.applySelection({ value: this.selection, sender: this });
-        this.applyFilter({ value: this.filteredKeys, sender: this });
-      }
-    }
-
-    /**
-     * The set of selected keys for the current Crosstalk group (if any group is
-     * assigned).
-     *
-     * @type {string[],null}
-     */
-
-  }, {
-    key: "selection",
-    set: function set(keys) {
-      if (this._crosstalk_selection) {
-        this._crosstalk_selection.set(keys);
-      }
-    },
-    get: function get() {
-      return this._crosstalk_selection ? this._crosstalk_selection.value : null;
-    }
-  }, {
-    key: "filter",
-    set: function set(keys) {
-      if (this._crosstalk_filter) {
-        this._crosstalk_filter.set(keys);
-      }
-    }
-  }, {
-    key: "filteredKeys",
-    get: function get() {
-      return this._crosstalk_filter ? this._crosstalk_filter.filteredKeys : null;
-    }
-  }]);
-
-  return Widget;
-}();
-
-
-},{"./filter":2,"./selection":10,"./util":11}]},{},[5]);
+},{"./events":1}]},{},[5]);

@@ -11,9 +11,9 @@ install:
   - nvm install stable
   - nvm use stable
   - npm -g install npm@latest # Work around https://github.com/npm/npm/issues/14042
-  - npm -g install grunt-cli babel-cli
+  - npm -g install grunt-cli
   - npm install
-  - npm build
+  - grunt build
   - npm run coverage
   - git diff --exit-code >/dev/null
 

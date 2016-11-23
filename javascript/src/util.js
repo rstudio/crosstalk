@@ -22,14 +22,14 @@ export function checkSorted(list) {
 }
 
 export function diffSortedLists(a, b) {
-  var i_a = 0;
-  var i_b = 0;
+  let i_a = 0;
+  let i_b = 0;
 
   a = a || [];
   b = b || [];
 
-  var a_only = [];
-  var b_only = [];
+  let a_only = [];
+  let b_only = [];
 
   checkSorted(a);
   checkSorted(b);

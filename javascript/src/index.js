@@ -6,7 +6,7 @@ import "./input_selectize";
 import "./input_checkboxgroup";
 import "./input_slider";
 
-var defaultGroup = group("default");
+const defaultGroup = group("default");
 
 function var_(name) {
   return defaultGroup.var(name);
@@ -26,7 +26,7 @@ if (global.Shiny) {
   });
 }
 
-var crosstalk = {
+const crosstalk = {
   group: group,
   var: var_,
   has: has,

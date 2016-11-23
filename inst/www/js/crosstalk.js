@@ -7,8 +7,6 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-exports.stamp = stamp;
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var Events = function () {
@@ -73,19 +71,6 @@ var Events = function () {
 }();
 
 exports.default = Events;
-
-
-var stampSeq = 1;
-
-function stamp(el) {
-  if (el === null) {
-    return "";
-  }
-  if (!el.__crosstalkStamp) {
-    el.__crosstalkStamp = "ct" + stampSeq++;
-  }
-  return el.__crosstalkStamp;
-}
 
 },{}],2:[function(require,module,exports){
 "use strict";
@@ -845,7 +830,7 @@ input.register({
     var $el = $(el).find("input");
     var dataType = $el.data("data-type");
     var timeFormat = $el.data("time-format");
-    var timeFormatter;
+    var timeFormatter = void 0;
 
     // Set up formatting functions
     if (dataType === "date") {

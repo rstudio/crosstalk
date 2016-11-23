@@ -6,6 +6,14 @@ r:
 sudo: false
 cache: packages
 
+install:
+  - . $HOME/.nvm/nvm.sh
+  - nvm install stable
+  - nvm use stable
+  - npm install
+  - npm build
+  - git diff --exit-code >/dev/null
+
 notifications:
   email:
     on_success: change

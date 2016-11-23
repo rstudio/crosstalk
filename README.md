@@ -1,4 +1,4 @@
-# Crosstalk
+# Crosstalk ![Build status](https://travis-ci.org/rstudio/crosstalk.svg?branch=master)
 
 A package for R that enhances [htmlwidgets](http://htmlwidgets.org) with client side, inter-widget interactions (currently linked brushing and filtering).
 

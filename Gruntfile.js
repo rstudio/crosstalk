@@ -83,6 +83,7 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks("grunt-jsdoc");
   grunt.loadNpmTasks("grunt-mocha-test");
 
-  grunt.registerTask("build", ["eslint", "mochaTest", "browserify", "exorcise", "uglify"]);
+  grunt.registerTask("test", ["mochaTest", "eslint"]);
+  grunt.registerTask("build", ["test", "browserify", "exorcise", "uglify"]);
   grunt.registerTask("default", ["build"]);
 };

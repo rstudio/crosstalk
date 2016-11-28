@@ -107,6 +107,130 @@ In my experience so far, I've found 4 to be reasonably straightforward to achiev
 
 Each Crosstalk-enabled visualization instance (i.e. each call to `renderValue`) should create a new `crosstalk.SelectionHandle` instance. Use `SelectionHandle` to read and write (and listen for changes to) the selection state for a Crosstalk group.
 
+##### Construction
+
+```javascript
+var ct_sel = new crosstalk.SelectionHandle();
+```
+
+If you know the Crosstalk group name at construction time, you can pass it as an argument to the constructor. If not, you can set it (and re-set it) later:
+
+```javascript
+ct_sel.setGroup(x.settings.crosstalk_group);
+```
+
+##### Events
+
+Listen on the `"change"` event to be notified whenever the selection changes.
+
+```javascript
+ct_sel.on("change", function(e) { ... });
+```
+
+The event handler will be called back with an object argument (`e` in the above example) that contains these properties:
+
+* `value` - Either falsy (meaning no selection is active) or a string array, where each element is the key of a selected data point/row. Any data point whose key does not appear in the string array should be considered deselected.
+* `oldValue` - The previous value of the selection. A convenience for widgets that care to calculate the difference between the old and new values.
+* `sender` - The `SelectionHandle` instance that made this change. Use `===` to compare to your own `SelectionHandle` to determine if the change is in response to an action you yourself took.
+
+You can unregister a previously registered event handler using either the return value of `on`, or with the function/closure itself.
+
+```javascript
+function myEventListener(e) { ... }
+var subscription = ct_sel.on("change", myEventListener);
+                             
+// These two lines are equivalent
+ct_sel.off("change", subscription);
+ct_sel.off("change", myEventListener);
+```
+
+##### Getting the selection
+
+It may also be useful to get the selection value from places other than the change event handler. You can do this using the `value` property.
+
+```javascript
+var selected_keys = ct_sel.value;
+```
+
+##### Setting the selection
+
+And of course, we need the ability to modify the selection. The `set` method changes the value and automatically triggers any change event listeners.
+
+```javascript
+ct_sel.set(["Alaska", "Rhode Island", "Wyoming"]);
+```
+
+You can also easily clear the selection.
+
+```javascript
+ct_sel.clear();
+```
+
+##### Cleaning up
+
+Close the handle to remove all event handlers and remove the handle from the current group.
+
+```javascript
+ct_sel.close();
+```
+
+### Filtering
+
+Filtering causes a subset of data points to be shown, while all others are hidden.
+
+With Crosstalk's filtering API, multiple widgets simultaneously contribute to the current "filter set". Crosstalk will determine which data points are permitted by all of the actively filtering widgets.
+
+Earlier, we said that visualizations would ideally support both reading and writing of linked brushing state; that is, each plot should allow users to set the selection via direct manipulation, and also highlight points based on selections on other linked plots. While it's possible to envision such functionality for filtering as well (see [dc.js](https://dc-js.github.io/dc.js/)), it's not currently recommended to do so with Crosstalk. Instead, the current design is geared toward distinct "filter controls" for input and "filtered visualizations" for output. Both types of controls will use the same `crosstalk.FilterHandle` class, but they will interact with it in different ways.
+
+#### Filter JavaScript API
+
+Construction, event handling, and setting of `crosstalk.FilterHandle` are almost identical to `SelectionHandle`:
+
+```javascript
+// Make instance
+var ct_filter = new crosstalk.FilterHandle();
+
+// Choose group
+ct_filter.setGroup(x.settings.crosstalk_group);
+
+// Get notified when this group's filter changes
+ct_filter.on("change", function(e) {
+  // e.value gives the filter
+});
+
+// Set this handle's filter keys
+ct_filter.set(["Washington", "Oregon", "Idaho"]);
+
+// Clear this handle's filter
+ct_filter.clear();
+```
+
+`FilterHandle` doesn't have a `value` property. Instead, it has a `filteredKeys` property. This property doesn't simply return the most recently set filter value in the group; rather, each filter handle maintains its own set of keys (or none) and `filteredKeys` returns the *intersection* of them all.
+
+For example:
+
+```javascript
+var filter1 = new crosstalk.FilterHandle("groupA");
+var filter2 = new crosstalk.FilterHandle("groupA");
+var filter3 = new crosstalk.FilterHandle("groupA");
+
+filter1.set(["New York", "New Jersey", "Connecticut"]);
+filter1.filteredKeys // ["New York", "New Jersey", "Connecticut"]
+
+filter2.set(["New York", "Connecticut"]);
+filter1.filteredKeys // ["New York", "Connecticut"];
+
+filter3.set(["New Jersey"]);
+filter3.filteredKeys // []
+
+filter2.clear();
+filter1.filteredKeys // ["New Jersey"]
+```
+
+Note that it doesn't matter which handle you call `filteredKeys` on. All filter handles that belong to the same group will return the same value for `filteredKeys`.
+
+### Putting it together
+
 Here's what the htmlwidget binding code for [d3scatter](https://github.com/jcheng5/d3scatter) looks like, without Crosstalk support:
 
 ```javascript
@@ -230,11 +354,7 @@ HTMLWidgets.widget({
 });
 ```
 
-### Filtering
 
-Cause a subset of data points to be shown, while all others are hidden.
-
-Unlike with linked brushing, where only a single widget can decide what data points are selected, with filtering multiple widgets can simultaneously contribute to the current "filter set". Crosstalk will determine which data points are permitted by all of the actively filtering widgets,
 
 
 

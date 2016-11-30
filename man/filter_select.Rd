@@ -8,7 +8,8 @@
 filter_select(id, label, sharedData, group, allLevels = FALSE,
   multiple = TRUE)
 
-filter_checkbox(id, label, sharedData, group, allLevels = FALSE)
+filter_checkbox(id, label, sharedData, group, allLevels = FALSE,
+  inline = FALSE)
 }
 \arguments{
 \item{id}{An HTML element ID; must be unique within the web page}

@@ -271,7 +271,14 @@ SharedData <- R6Class(
       }
     },
     transform = function(func) {
-      SharedData$new(func(private$.data), key = private$.key, group = private$.group)
+      newData <- if (shiny::is.reactive(private$.data)) {
+        reactive({
+          func(private$.data())
+        })
+      } else {
+        func(private$.data())
+      }
+      SharedData$new(newData, key = private$.key, group = private$.group)
     },
     origData = function() {
       if (shiny::is.reactive(private$.data)) {

@@ -47,7 +47,6 @@ ionrangesliderLibs <- function() {
   )
 }
 
-#' @import dplyr
 makeGroupOptions <- function(sharedData, group, allLevels) {
   df <- sharedData$data(
     withSelection = FALSE,
@@ -55,21 +54,32 @@ makeGroupOptions <- function(sharedData, group, allLevels) {
     withKey = TRUE
   )
 
-  df <- df %>%
-    dplyr::group_by_(group_ = group) %>%
-    dplyr::summarise(key = list(key_))
+  if (inherits(group, "formula"))
+    group <- lazyeval::f_eval(group, df)
 
-  if (is.factor(df$group_) && allLevels) {
-    labels <- as.character(levels(df$group_))
-    values <- as.character(levels(df$group_))
-  } else {
-    labels <- as.character(df$group_)
-    values <- as.character(df$group_)
+  if (length(group) < 1) {
+    stop("Can't form options with zero-length group vector")
   }
 
+  lvls <- if (is.factor(group)) {
+    if (allLevels) {
+      levels(group)
+    } else {
+      levels(droplevels(group))
+    }
+  } else {
+    sort(unique(group))
+  }
+  matches <- match(group, lvls)
+  vals <- lapply(1:length(lvls), function(i) {
+    df$key_[which(matches == i)]
+  })
+
+  lvls_str <- as.character(lvls)
+
   options <- list(
-    items = data.frame(value = values, label = labels, stringsAsFactors = FALSE),
-    map = setNames(as.list(df$key), as.character(df$group_)),
+    items = data.frame(value = lvls_str, label = lvls_str, stringsAsFactors = FALSE),
+    map = setNames(vals, lvls_str),
     group = sharedData$groupName()
   )
 
@@ -126,24 +136,21 @@ filter_select <- function(id, label, sharedData, group, allLevels = FALSE,
 
 #' @rdname filter_select
 #' @export
-filter_checkbox <- function(id, label, sharedData, group, allLevels = FALSE) {
+filter_checkbox <- function(id, label, sharedData, group, allLevels = FALSE, inline = FALSE) {
   options <- makeGroupOptions(sharedData, group, allLevels)
 
   labels <- options$items$label
   values <- options$items$value
   options$items <- NULL # Doesn't need to be serialized for this type of control
 
+  makeCheckbox <- if (inline) inlineCheckbox else blockCheckbox
+
   htmltools::browsable(attachDependencies(
     tags$div(id = id, class = "form-group crosstalk-input-checkboxgroup crosstalk-input",
       tags$label(class = "control-label", `for` = id, label),
       tags$div(class = "crosstalk-options-group",
         mapply(labels, values, FUN = function(label, value) {
-          tags$div(class = "checkbox",
-            tags$label(
-              tags$input(type = "checkbox", name = id, value = value),
-              tags$span(label)
-            )
-          )
+          makeCheckbox(id, value, label)
         }, SIMPLIFY = FALSE, USE.NAMES = FALSE)
       ),
       tags$script(type = "application/json",
@@ -155,6 +162,21 @@ filter_checkbox <- function(id, label, sharedData, group, allLevels = FALSE) {
   ))
 }
 
+blockCheckbox <- function(id, value, label) {
+  tags$div(class = "checkbox",
+    tags$label(
+      tags$input(type = "checkbox", name = id, value = value),
+      tags$span(label)
+    )
+  )
+}
+
+inlineCheckbox <- function(id, value, label) {
+  tags$label(class = "checkbox-inline",
+    tags$input(type = "checkbox", name = id, value = value),
+    tags$span(label)
+  )
+}
 
 #' Range filter control
 #'
@@ -405,6 +427,88 @@ animation_options <- function(interval=1000,
     loop=loop,
     playButton=playButton,
     pauseButton=pauseButton)
+}
+
+#' Arrange HTML elements or widgets in Bootstrap columns
+#'
+#' This helper function makes it easy to put HTML elements side by side. It can
+#' be called directly from the console but is especially designed to work in an
+#' R Markdown document.
+#'
+#' @param ... \code{htmltools} tag objects, lists, text, HTML widgets, or
+#'   NULL. These arguments should be unnamed.
+#' @param widths The number of columns that should be assigned to each of the
+#'   \code{...} elements (the total number of columns available is always 12).
+#'   The width vector will be recycled if there are more \code{...} arguments.
+#'   \code{NA} columns will evenly split the remaining columns that are left
+#'   after the widths are recycled and non-\code{NA} values are subtracted.
+#' @param device The class of device which is targeted by these widths; with
+#'   smaller screen sizes the layout will collapse to a one-column,
+#'   top-to-bottom display instead. xs: never collapse, sm: collapse below
+#'   768px, md: 992px, lg: 1200px.
+#'
+#' @return A \code{\link[htmltools]{browsable}} HTML element.
+#'
+#' @examples
+#' library(htmltools)
+#'
+#' # If width is unspecified, equal widths will be used
+#' bscols(
+#'   div(style = css(width="100%", height="400px", background_color="red")),
+#'   div(style = css(width="100%", height="400px", background_color="blue"))
+#' )
+#'
+#' # Use NA to absorb remaining width
+#' bscols(widths = c(2, NA, NA),
+#'   div(style = css(width="100%", height="400px", background_color="red")),
+#'   div(style = css(width="100%", height="400px", background_color="blue")),
+#'   div(style = css(width="100%", height="400px", background_color="green"))
+#' )
+#'
+#' # Recycling widths
+#' bscols(widths = c(2, 4),
+#'   div(style = css(width="100%", height="400px", background_color="red")),
+#'   div(style = css(width="100%", height="400px", background_color="blue")),
+#'   div(style = css(width="100%", height="400px", background_color="red")),
+#'   div(style = css(width="100%", height="400px", background_color="blue"))
+#' )
+#' @export
+bscols <- function(..., widths = NA, device = c("xs", "sm", "md", "lg")) {
+  device <- match.arg(device)
+
+  if (length(list(...)) == 0) {
+    widths = c()
+  } else {
+    if (length(widths) > length(list(...))) {
+      warning("Too many widths provided to bscols; truncating")
+    }
+    widths <- rep_len(widths, length(list(...)))
+
+    if (any(is.na(widths))) {
+      remaining <- 12 - sum(widths, na.rm = TRUE)
+      stretch_cols <- length(which(is.na(widths)))
+      stretch_width <- max(1, floor(remaining / stretch_cols))
+      widths[is.na(widths)] <- stretch_width
+    }
+
+    if (sum(widths) > 12) {
+      warning("Sum of bscol width units is greater than 12")
+    }
+  }
+
+  ui <- tags$div(class = "container-fluid",
+    # Counteract knitr pre/code output blocks
+    style = css(white_space = "normal"),
+    tags$div(class = "fluid-row",
+      unname(mapply(list(...), widths, FUN = function(el, width) {
+        div(class = sprintf("col-%s-%s", device, width),
+          el
+        )
+      }, SIMPLIFY = FALSE))
+    )
+  )
+
+  browsable(attachDependencies(ui, list(jqueryLib(), bootstrapLib())))
 }
 
 controlLabel <- function(controlName, label) {

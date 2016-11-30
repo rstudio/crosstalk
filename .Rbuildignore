@@ -13,3 +13,7 @@
 ^app\.R$
 ^crosstalk\.gif$
 ^jsdoc.conf.json$
+^rmarkdown$
+^doc$
+^coverage$
+

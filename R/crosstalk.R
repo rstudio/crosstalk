@@ -10,6 +10,8 @@ init <- function() {
 #'
 #' List of \code{\link[htmltools]{htmlDependency}} objects necessary for
 #' Crosstalk to function. Intended for widget authors.
+#' @importFrom stats na.omit setNames
+#' @importFrom utils packageVersion
 #' @export
 crosstalkLibs <- function() {
   list(

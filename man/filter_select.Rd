@@ -27,6 +27,8 @@ should all the levels be displayed as options, or only ones that are
 present in the data?}
 
 \item{multiple}{Can multiple values be selected?}
+
+\item{inline}{If \code{TRUE}, render checkbox options horizontally instead of vertically.}
 }
 \description{
 Creates a select box or list of checkboxes, for filtering a

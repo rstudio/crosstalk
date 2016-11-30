@@ -134,6 +134,8 @@ filter_select <- function(id, label, sharedData, group, allLevels = FALSE,
   ))
 }
 
+#' @param inline If \code{TRUE}, render checkbox options horizontally instead of vertically.
+#'
 #' @rdname filter_select
 #' @export
 filter_checkbox <- function(id, label, sharedData, group, allLevels = FALSE, inline = FALSE) {

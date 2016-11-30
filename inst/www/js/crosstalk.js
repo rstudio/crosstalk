@@ -698,6 +698,8 @@ var _input = require("./input");
 
 var input = _interopRequireWildcard(_input);
 
+var _filter = require("./filter");
+
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 var $ = global.jQuery;
@@ -710,8 +712,7 @@ input.register({
      * map: {"groupA": ["keyA", "keyB", ...], ...}
      * group: "ct-groupname"
      */
-    var ctGroup = global.crosstalk.group(data.group);
-    var ctHandle = global.crosstalk.filter.createHandle(ctGroup);
+    var ctHandle = new _filter.FilterHandle(data.group);
 
     var $el = $(el);
     $el.on("change", "input[type='checkbox']", function () {
@@ -737,7 +738,7 @@ input.register({
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./input":6}],8:[function(require,module,exports){
+},{"./filter":2,"./input":6}],8:[function(require,module,exports){
 (function (global){
 "use strict";
 

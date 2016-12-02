@@ -1,0 +1,66 @@
+---
+title: "Using Crosstalk"
+---
+
+```{r setup, echo=FALSE}
+knitr::opts_chunk$set(fig.height = 2.75, fig.width = 5, comment = NA)
+```
+
+Crosstalk makes it easy to link multiple (Crosstalk-compatible) [HTML widgets](http://htmlwidgets.org) within an R Markdown page or Shiny app. To begin, you'll need to install the `crosstalk` package:
+
+```{r eval=FALSE}
+devtools::install_github("rstudio/crosstalk")
+```
+
+Note that at the time of this writing, only a few HTML Widgets are Crosstalk-compatible. This article will use a simple d3 scatter plot widget package called `d3scatter`.
+
+```{r eval=FALSE}
+devtools::install_github("jcheng5/d3scatter")
+```
+
+Crosstalk is designed to work with widgets that take data frames (or sufficiently data-frame-like objects) as input. d3scatter, for example, takes a data frame:
+
+```{r fig.height = 2.75, fig.width = 5}
+library(d3scatter)
+
+d3scatter(iris, ~Petal.Length, ~Petal.Width, ~Species)
+```
+
+With Crosstalk, we can put two of these scatter plot widgets next to each other and link their selection state. We do this by creating a SharedData R6 object that wraps our actual data, and passing that to the widgets instead of a data frame. (The `bscols` function that is used below is a simple helper function for creating [Bootstrap](https://getbootstrap.com/) column layouts, like a lite version of Shiny's [`fluidRow` and `column` functions](http://shiny.rstudio.com/articles/layout-guide.html).)
+
+```{r warning=FALSE, results='hold', comment=NA}
+library(crosstalk)
+
+shared_iris <- SharedData$new(iris)
+bscols(
+  d3scatter(shared_iris, ~Petal.Length, ~Petal.Width, ~Species, width="100%", height=300),
+  d3scatter(shared_iris, ~Sepal.Length, ~Sepal.Width, ~Species, width="100%", height=300)
+)
+```
+
+Click and drag to brush data points in the above plots; noticed that their brushing states are linked. This is because they share the same `SharedData` object. If you created a separated `SharedData` object for each plot, even with the same underlying data frame, the plots would not be linked.
+
+Note that we're not limited to linking only two plots, nor do we need to limit ourselves to the same type of widget. Any Crosstalk-compatible widget can be linked with any other.
+
+// TODO: Example with more widgets
+
+### Filters
+
+The examples so far have used linked brushing. Crosstalk also supports using _filter inputs_ to narrow down data sets. If you're familiar with input controls in Shiny, Crosstalk filter inputs feel similar, but they don't require Shiny so they work in static HTML documents.
+
+In the following example, we'll use three filter inputs to control two plots. (Note that linked brushing still works on the plots.)
+
+```{r}
+shared_mtcars <- SharedData$new(mtcars)
+bscols(widths = c(3,NA,NA),
+  list(
+    filter_checkbox("cyl", "Cylinders", shared_mtcars, ~cyl, inline = TRUE),
+    filter_slider("hp", "Horsepower", shared_mtcars, ~hp, width = "100%"),
+    filter_select("auto", "Automatic", shared_mtcars, ~ifelse(am == 0, "Yes", "No"))
+  ),
+  d3scatter(shared_mtcars, ~wt, ~mpg, ~factor(cyl), width="100%", height=250),
+  d3scatter(shared_mtcars, ~hp, ~qsec, ~factor(cyl), width="100%", height=250)
+)
+```
+
+These three `filter_` functions are part of the Crosstalk package, but third-party filter inputs could certainly be written and shipped in other R packages.

@@ -1,4 +1,5 @@
 import * as input from "./input";
+import { FilterHandle } from "./filter";
 
 let $ = global.jQuery;
 let strftime = global.strftime;
@@ -11,14 +12,13 @@ input.register({
      * map: {"groupA": ["keyA", "keyB", ...], ...}
      * group: "ct-groupname"
      */
-    let ctGroup = global.crosstalk.group(data.group);
-    let ctHandle = global.crosstalk.filter.createHandle(ctGroup);
-    
-    var opts = {};
-    var $el = $(el).find("input");
-    var dataType = $el.data("data-type");
-    var timeFormat = $el.data("time-format");
-    var timeFormatter;
+    let ctHandle = new FilterHandle(data.group);
+
+    let opts = {};
+    let $el = $(el).find("input");
+    let dataType = $el.data("data-type");
+    let timeFormat = $el.data("time-format");
+    let timeFormatter;
 
     // Set up formatting functions
     if (dataType === "date") {
@@ -28,7 +28,7 @@ input.register({
       };
 
     } else if (dataType === "datetime") {
-      var timezone = $el.data("timezone");
+      let timezone = $el.data("timezone");
       if (timezone)
         timeFormatter = strftime.timezone(timezone);
       else
@@ -106,7 +106,7 @@ input.register({
 
 // Convert a number to a string with leading zeros
 function padZeros(n, digits) {
-  var str = n.toString();
+  let str = n.toString();
   while (str.length < digits)
     str = "0" + str;
   return str;

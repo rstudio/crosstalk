@@ -1,5 +1,5 @@
 import assert from "assert";
-import * as util from "./util";
+import * as util from "../src/util";
 
 describe("util.extend", () => {
   let target = {a: 1, b: 2};

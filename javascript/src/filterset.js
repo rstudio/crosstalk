@@ -10,6 +10,9 @@ function naturalComparator(a, b) {
   }
 }
 
+/**
+ * @private
+ */
 export default class FilterSet {
   constructor() {
     this.reset();
@@ -50,6 +53,7 @@ export default class FilterSet {
   /**
    * @param {string[]} keys Sorted array of strings that indicate
    * a superset of possible keys.
+   * @private
    */
   _updateValue(keys = this._allKeys) {
     let handleCount = Object.keys(this._handles).length;
@@ -71,7 +75,11 @@ export default class FilterSet {
       return;
     }
 
-    let keys = this._handles[handleId] || [];
+    let keys = this._handles[handleId];
+    if (!keys) {
+      keys = [];
+    }
+
     for (let i = 0; i < keys.length; i++) {
       this._keys[keys[i]]--;
     }

@@ -17,12 +17,12 @@ export default class Var {
       // Do nothing; the value hasn't changed
       return;
     }
-    var oldValue = this._value;
+    let oldValue = this._value;
     this._value = value;
     // Alert JavaScript listeners that the value has changed
-    var evt = {};
+    let evt = {};
     if (event && typeof(event) === "object") {
-      for (var k in event) {
+      for (let k in event) {
         if (event.hasOwnProperty(k))
           evt[k] = event[k];
       }

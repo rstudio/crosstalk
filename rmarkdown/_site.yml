@@ -1,0 +1,15 @@
+name: "crosstalk"
+navbar:
+  title: "Crosstalk"
+  left:
+    - text: "Home"
+      href: index.html
+    - text: "Using Crosstalk"
+      href: using.html
+output:
+  html_document:
+    theme: cosmo
+    highlight: textmate
+    toc_depth: 3
+    toc_float:
+      collapsed: false

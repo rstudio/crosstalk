@@ -100,23 +100,6 @@ plots).
     Clears the selection. For the meaning of \code{ownerId}, see the
     \code{selection} method.
   }
-  \item{\code{transform(func)}}{
-    Apply a transformation function to the internal data frame, and return
-    a new \code{SharedData} object that \emph{shares its identity with the
-    original \code{SharedData} object}. The transformation function
-    \code{func} must have a single (data frame-like) parameter, and must
-    return a data frame-like object with the same number of rows, with the
-    same key column.
-
-    This is useful for linking different widgets that expect their data in
-    different data frame-like formats. For example, the DT package requires
-    a standard data frame but Leaflet might need a
-    \code{SpatialPolygonsDataFrame} (which can be converted to a standard
-    data frame using \code{as.data.frame}):
-    \preformatted{sd <- SharedData$new(polygonDataFrame)
-leaflet(sd) \%>\% addPolygons()
-datatable(sd$transform(as.data.frame))}
-  }
 }
 }
 \keyword{datasets}

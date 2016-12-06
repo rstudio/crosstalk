@@ -1,0 +1,24 @@
+language: r
+r:
+  - oldrel
+  - release
+  - devel
+sudo: false
+cache: packages
+
+install:
+  - . $HOME/.nvm/nvm.sh
+  - nvm install stable
+  - nvm use stable
+  - npm -g install npm@latest # Work around https://github.com/npm/npm/issues/14042
+  - npm -g install grunt-cli
+  - npm install
+  - grunt build
+  - npm run coverage
+  - git diff --exit-code >/dev/null
+
+notifications:
+  email:
+    on_success: change
+    on_failure: change
+

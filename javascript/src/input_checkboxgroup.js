@@ -1,4 +1,5 @@
 import * as input from "./input";
+import { FilterHandle } from "./filter";
 
 let $ = global.jQuery;
 
@@ -10,8 +11,7 @@ input.register({
      * map: {"groupA": ["keyA", "keyB", ...], ...}
      * group: "ct-groupname"
      */
-    let ctGroup = global.crosstalk.group(data.group);
-    let ctHandle = global.crosstalk.filter.createHandle(ctGroup);
+    let ctHandle = new FilterHandle(data.group);
 
     let $el = $(el);
     $el.on("change", "input[type='checkbox']", function() {

@@ -1,12 +1,12 @@
 import group from "./group";
-import * as selection from "./selection";
-import * as filter from "./filter";
+import { SelectionHandle } from "./selection";
+import { FilterHandle } from "./filter";
 import "./input";
 import "./input_selectize";
 import "./input_checkboxgroup";
 import "./input_slider";
 
-var defaultGroup = group("default");
+const defaultGroup = group("default");
 
 function var_(name) {
   return defaultGroup.var(name);
@@ -26,12 +26,12 @@ if (global.Shiny) {
   });
 }
 
-var crosstalk = {
+const crosstalk = {
   group: group,
   var: var_,
   has: has,
-  selection: selection,
-  filter: filter
+  SelectionHandle: SelectionHandle,
+  FilterHandle: FilterHandle
 };
 
 export default crosstalk;

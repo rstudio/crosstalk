@@ -8,7 +8,8 @@
 filter_select(id, label, sharedData, group, allLevels = FALSE,
   multiple = TRUE)
 
-filter_checkbox(id, label, sharedData, group, allLevels = FALSE)
+filter_checkbox(id, label, sharedData, group, allLevels = FALSE,
+  inline = FALSE)
 }
 \arguments{
 \item{id}{An HTML element ID; must be unique within the web page}
@@ -26,6 +27,8 @@ should all the levels be displayed as options, or only ones that are
 present in the data?}
 
 \item{multiple}{Can multiple values be selected?}
+
+\item{inline}{If \code{TRUE}, render checkbox options horizontally instead of vertically.}
 }
 \description{
 Creates a select box or list of checkboxes, for filtering a

@@ -1,5 +1,6 @@
 import * as input from "./input";
 import * as util from "./util";
+import { FilterHandle } from "./filter";
 
 let $ = global.jQuery;
 
@@ -25,8 +26,7 @@ input.register({
 
     let selectize = $(select).selectize(opts)[0].selectize;
 
-    let ctGroup = global.crosstalk.group(data.group);
-    let ctHandle = global.crosstalk.filter.createHandle(ctGroup);
+    let ctHandle = new FilterHandle(data.group);
 
     selectize.on("change", function() {
       if (selectize.items.length === 0) {

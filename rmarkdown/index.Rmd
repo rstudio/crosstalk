@@ -1,4 +1,6 @@
-# Crosstalk ![Build status](https://travis-ci.org/rstudio/crosstalk.svg?branch=master)
+---
+title: "Crosstalk"
+---
 
 A package for R that enhances [htmlwidgets](http://htmlwidgets.org) with client side, inter-widget interactions (currently linked brushing and filtering).
 
@@ -16,8 +18,7 @@ By standardizing on a set of interactions, we can let widget users coordinate wi
 
 Here's an example using R Markdown:
 
-```
----
+<pre class="markdown"><code>---
 title: Fiji earthquakes
 output: html_document
 ---
@@ -37,14 +38,13 @@ filter_slider("mag", "Magnitude", sd, column = ~mag, step = 0.1)
 # Use SharedData like a dataframe with Crosstalk-enabled widgets
 leaflet(sd) %>% addTiles() %>% addMarkers()
 datatable(sd)
-&#96;``
-```
+&#96;``</code></pre>
 
 We wrap the data frame `quakes` in a `SharedData` R6 object to signal to widgets and filter inputs that they should link up to other Crosstalk-enabled widgets/inputs that use the same `SharedData` object.
 
 Here are the results:
 
-![crosstalk.gif](crosstalk.gif)
+![](crosstalk.gif)
 
 ## Important limitations
 
@@ -52,99 +52,3 @@ There are inherent limitations in the current version of Crosstalk that widget a
 
 1. **Crosstalk currently only works for linked brushing and filtering of views that show individual data points, not aggregate or summary views** (where "observations" is defined as a single row in a data frame). For example, histograms are not supported since each bar represents multiple data points; but scatter plot points each represent a single data point, so they are supported.
 2. Because all data must be loaded into the browser, **Crosstalk is not appropriate for large data sets**. (There's no hard limit, since HTML widgets require varying amounts of CPU cycles and memory for each data point.)
-
-## What widgets work with Crosstalk?
-
-Crosstalk is still **experimental** (i.e. APIs may change) and is not yet available on CRAN. Therefore, work on widgets is taking place on GitHub branches until Crosstalk is stable.
-
-### Plotly
-
-[Plotly](https://plot.ly/r/) supports linked brushing and filtering for scatterplots for `plot_ly` plots. `ggplotly` is not supported.
-
-*Note*: To make a selection on a Plotly plot, make sure to switch to the "Box Select" or "Lasso Select" tool, as the default is to zoom. You can change the default by adding `%>% layout(dragmode = "select")` (or `"lasso"`) to your plotly object, as in the example below.
-
-#### Installation
-
-```r
-devtools::install_github("ropensci/plotly@joe/feature/crosstalk")
-```
-
-#### Example
-
-```r
-library(crosstalk)
-library(plotly)
-
-set.seed(100)
-sd <- SharedData$new(diamonds[sample(nrow(diamonds), 1000), ])
-
-plot_ly(d, x = carat, y = price, text = paste("Clarity: ", clarity),
-  mode = "markers", color = carat, size = carat) %>%
-  layout(dragmode = "select")
-```
-
-### Leaflet
-
-[Leaflet](https://rstudio.github.io/leaflet/) supports linked brushing and filtering for markers, circle markers, and shapes. You can't currently make a selection on a Leaflet map, but selections on other widgets will be reflected with increased/decreased opacity on the map.
-
-#### Installation
-
-```r
-devtools::install_github("rstudio/leaflet@joe/feature/crosstalk-filter")
-```
-
-#### Example
-
-```r
-library(crosstalk)
-library(leaflet)
-
-sd <- SharedData$new(quakes)
-
-leaflet(sd) %>% addMarkers()
-```
-
-### DT
-
-[DT](https://rstudio.github.io/DT/) supports filtering.
-
-#### Installation
-
-```r
-devtools::install_github("rstudio/DT@joe/feature/crosstalk")
-```
-
-#### Example
-
-```r
-library(crosstalk)
-library(DT)
-
-sd <- SharedData$new(mtcars)
-
-datatable(sd)
-```
-
-## What filters are available?
-
-Currently, the following filter controls are available. These are built-in to the Crosstalk package.
-
-* `filter_slider` - A range slider that filters on a single (numeric, date, or date/time) variable.
-* `filter_checkbox` - List of checkboxes to filter based on a categorical variable.
-* `filter_select` - [Selectize](http://selectize.github.io/selectize.js/)-based control to filter based on a categorical variable.
-
-These widgets work almost anywhere HTML widgets themselves do: R Markdown documents, Shiny apps, from the R console.
-
-See the function reference in the Crosstalk package for more details.
-
-## How do I modify my own HTML widget to support Crosstalk?
-
-TODO
-
-## How can I write my own filter input widget?
-
-TODO
-
-## Can I use Crosstalk with Shiny?
-
-Yes! TODO

@@ -26,7 +26,20 @@ library(d3scatter)
 d3scatter(iris, ~Petal.Length, ~Petal.Width, ~Species)
 ```
 
-With Crosstalk, we can put two of these scatter plot widgets next to each other and link their selection state. We do this by creating a SharedData R6 object that wraps our actual data, and passing that to the widgets instead of a data frame. (The `bscols` function that is used below is a simple helper function for creating [Bootstrap](https://getbootstrap.com/) column layouts, like a lite version of Shiny's [`fluidRow` and `column` functions](http://shiny.rstudio.com/articles/layout-guide.html).)
+Crosstalk's main R API is a `SharedData` R6 class. You use this class to wrap your data frame, and pass it to a Crosstalk-compatible widget where a data frame would normally be expected.
+
+```{r warning=FALSE, results='hide', eval=FALSE}
+library(crosstalk)
+
+shared_iris <- SharedData$new(iris)
+d3scatter(shared_iris, ~Petal.Length, ~Petal.Width, ~Species)
+```
+
+(It's not even worth showing the results--it looks just the same as the plot above.)
+
+## Linked brushing
+
+Things become more interesting when we pass the same `SharedData` instance to two separate widgets: their selection state becomes linked. (`bscols` is a simple helper function for creating [Bootstrap](https://getbootstrap.com/) column layouts, used here to put two plots side by side.)
 
 ```{r warning=FALSE, results='hold', comment=NA}
 library(crosstalk)
@@ -42,9 +55,19 @@ Click and drag to brush data points in the above plots; noticed that their brush
 
 Note that we're not limited to linking only two plots, nor do we need to limit ourselves to the same type of widget. Any Crosstalk-compatible widget can be linked with any other.
 
-// TODO: Example with more widgets
+```{r message=FALSE, warning=FALSE, results='hold', comment=NA}
+library(leaflet)
 
-### Filters
+shared_quakes <- SharedData$new(quakes[sample(nrow(quakes), 100),])
+bscols(
+  leaflet(shared_quakes, width = "100%", height = 300) %>%
+    addTiles() %>%
+    addMarkers(),
+  d3scatter(shared_quakes, ~depth, ~mag, width = "100%", height = 300)
+)
+```
+
+## Filters
 
 The examples so far have used linked brushing. Crosstalk also supports using _filter inputs_ to narrow down data sets. If you're familiar with input controls in Shiny, Crosstalk filter inputs feel similar, but they don't require Shiny so they work in static HTML documents.
 
@@ -64,3 +87,86 @@ bscols(widths = c(3,NA,NA),
 ```
 
 These three `filter_` functions are part of the Crosstalk package, but third-party filter inputs could certainly be written and shipped in other R packages.
+
+While linked brushing only lets you have an active selection on one widget at a time, you can have multiple active filters and Crosstalk will combine the filters by intersection. In other words, only data points that pass *all* active filters will be displayed in any of the visualizations.
+
+## Keys
+
+The `SharedData` constructor has two optional parameters. The first is `key`, which is one of the central concepts of Crosstalk. This concept is important because Crosstalk widgets communicate with each other using arrays of keys; this is how both selection and filter state are represented.
+
+A key is a unique ID string by which a row can be identified. If you've used SQL databases, you can think of these as primary keys, except that their type must be character vector (whereas databases more often use integer values as keys). And indeed, the same criteria that make for good primary keys in SQL databases also make for good Crosstalk keys:
+
+* Unchanging over the life of the data
+* Relatively short
+* Must never be `NA` or `NULL` or `""`
+* Must be unique within the dataset
+
+Keys should also be data that's safe to share publicly, as they may end up being embedded in web page HTML (e.g., not social security numbers).
+
+If an explicit `key` argument isn't passed to `SharedData`, then `row.names()` are used if available; if not, then row numbers are used. While row numbers are not ideal because reordering or filtering the data will cause them to change, they are sufficient for simple cases where you are not using Shiny and are not doing anything special with groups (see the next section).
+
+The `key` argument can take several forms:
+
+1. One-sided formula, e.g. `~ColumnName`. Will be evaluated in the context of the data.
+2. Character vector. Will be used directly. It must be the same length as the data. (This should not be used if the data is [reactive](shiny.html) and may vary in length.)
+3. Function with a single parameter. This will be invoked as necessary with the data frame as the argument; the return value should be a character vector of length `nrow(data)`.
+
+The following code snippet demonstrates all three styles, with identical results:
+
+```{r}
+state_info <- data.frame(stringsAsFactors = FALSE,
+  state.name,
+  state.region,
+  state.area
+)
+sd1 <- SharedData$new(state_info, ~state.name)
+sd2 <- SharedData$new(state_info, state_info$state.name)
+sd3 <- SharedData$new(state_info, function(data) data$state.name)
+
+# Do all three forms give the same results?
+all(sd1$key() == sd2$key() & sd2$key() == sd3$key())
+```
+
+## Grouping
+
+So far we've generated three sets of Crosstalk plots (based on `iris`, `quakes`, and `mtcars`). Each of these sets forms a "group", or a set of Crosstalk plots/widgets that only communicate with each other. Selecting points on one of the `iris` plots doesn't affect the plots in the `quakes` group, and vice versa.
+
+Every `SharedData` instance belongs to a group. If you don't specify a group when creating a `SharedData` instance, a randomly generated name is used:
+
+```{r}
+shared_iris$groupName()
+```
+
+In other words, every `SharedData` forms its own group, by default.
+
+You can provide a `group` argument to the `SharedData` constructor to assign it to a specific group. **It's critical that all `SharedData` instances in a group refer conceptually to the same data points, and share the same keys.** This doesn't mean that the data and keys need to be identical across `SharedData` instances in the group, but rather, that any overlapping key values must refer to the same data point or observation; and conversely, that related data points/observations in different `SharedData` instances must use identical keys.
+
+This might be useful in cases, for example, where data is subsetted. The following code plots `mtcars` in its entirety, and also displays two smaller plots that subset to automatic and manual transmissions. Even though there are three distinct `SharedData` objects, the plots are linked because the group names are identical.
+
+```{r}
+row.names(mtcars) <- NULL
+sd_mtcars_all <- SharedData$new(mtcars, group = "mtcars_subset")
+sd_mtcars_auto <- SharedData$new(mtcars[mtcars$am == 0,], group = "mtcars_subset")
+sd_mtcars_manual <- SharedData$new(mtcars[mtcars$am == 1,], group = "mtcars_subset")
+
+bscols(widths = c(8, 4),
+  d3scatter(sd_mtcars_all, ~hp, ~mpg, ~factor(cyl),
+    x_lim = ~range(hp), y_lim = ~range(mpg),
+    width = "100%", height = 400),
+  list(
+    d3scatter(sd_mtcars_auto, ~hp, ~mpg, ~factor(cyl),
+      x_lim = range(mtcars$hp), y_lim = range(mtcars$mpg),
+      width = "100%", height = 200),
+    d3scatter(sd_mtcars_manual, ~hp, ~mpg, ~factor(cyl),
+      x_lim = range(mtcars$hp), y_lim = range(mtcars$mpg),
+      width = "100%", height = 200)
+  )
+)
+```
+
+Note that this example only works because the `mtcars` data frame has row names.
+
+
+
+
+

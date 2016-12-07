@@ -3,8 +3,10 @@ title: "Using Crosstalk"
 ---
 
 ```{r setup, echo=FALSE}
+set.seed(100)
 knitr::opts_chunk$set(fig.height = 2.75, fig.width = 5, comment = NA)
 ```
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
 
 Crosstalk makes it easy to link multiple (Crosstalk-compatible) [HTML widgets](http://htmlwidgets.org) within an R Markdown page or Shiny app. To begin, you'll need to install the `crosstalk` package:
 
@@ -55,7 +57,7 @@ Click and drag to brush data points in the above plots; noticed that their brush
 
 Note that we're not limited to linking only two plots, nor do we need to limit ourselves to the same type of widget. Any Crosstalk-compatible widget can be linked with any other.
 
-```{r message=FALSE, warning=FALSE, results='hold', comment=NA}
+```{r message=FALSE, warning=FALSE, comment=NA}
 library(leaflet)
 
 shared_quakes <- SharedData$new(quakes[sample(nrow(quakes), 100),])

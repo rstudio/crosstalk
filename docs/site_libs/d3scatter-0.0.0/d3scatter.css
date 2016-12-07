@@ -1,0 +1,27 @@
+.d3scatter {
+  font-family: sans-serif;
+  font-size: 12px;
+}
+
+.d3scatter .axis path,
+.d3scatter .axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.d3scatter .dot {
+}
+
+.d3scatter .extent {
+  fill: transparent;
+  stroke: #888;
+  stroke-dasharray: 4 4;
+}
+
+.d3scatter .selection-active .dot {
+  opacity: 0.2;
+}
+.d3scatter .selection-active .dot.selected {
+  opacity: 1.0;
+}

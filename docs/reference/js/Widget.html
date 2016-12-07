@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Class: Widget</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Class: Widget</h1>
+
+    
+
+
+
+
+<section>
+
+<header>
+    
+        <h2>Widget</h2>
+        
+            <div class="class-description"><p>A convenience base class for implementing Crosstalk-compatible HTML widgets.</p>
+<p>HTML widget implementers can extend it either by calling its constructor with
+overriding methods in an object, or, by instantiating it without any
+arguments and simply assigning methods to the object by name.</p></div>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+
+    
+    <h2>Constructor</h2>
+    
+
+    <h4 class="name" id="Widget"><span class="type-signature"></span>new Widget<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="widget.js.html">widget.js</a>, <a href="widget.js.html#line54">line 54</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Without Crosstalk
+factory: function(el, width, height) {
+  return {
+    renderValue: function(value) {
+      // Rendering logic
+    }
+  };
+}
+
+// With Crosstalk, style 1
+factory: function(el, width, height) {
+  return new crosstalk.Widget({
+    renderValue: function(value) {
+      // Rendering logic
+    },
+    applySelection: function(e) {
+      // Highlighting logic
+    },
+    applyFilter: function(e) {
+      // Filtering logic
+    }
+  });
+}
+
+// With Crosstalk, style 2
+factory: function(el, width, height) {
+  var instance = new crosstalk.Widget();
+
+  instance.renderValue = function(value) {
+    // Rendering logic
+  };
+  instance.applySelection = function(e) {
+    // Highlighting logic
+  };
+  instance.applyFilter = function(e) {
+    // Filtering logic
+  };
+
+  return instance;
+}</code></pre>
+
+
+
+    
+    </div>
+
+    
+
+    
+
+    
+
+     
+
+    
+
+    
+        <h3 class="subsection-title">Members</h3>
+
+        
+            
+<h4 class="name" id="filter"><span class="type-signature"></span>filter<span class="type-signature"> :Array.&lt;string>|null</span></h4>
+
+
+
+
+<div class="description">
+    <p>Set the <code>filter</code> property to a set of keys that should be made visible; all
+other keys will be considered filtered out. Or, set to <code>null</code> to permit all
+data to be visible. This is a write-only property; to retrieve the final
+array of keys that should be displayed, use the <code>filteredKeys</code> property,
+which takes into account all active filters in the Crosstalk group.</p>
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">Array.&lt;string></span>
+|
+
+<span class="param-type">null</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="widget.js.html">widget.js</a>, <a href="widget.js.html#line178">line 178</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="filteredKeys"><span class="type-signature"></span>filteredKeys<span class="type-signature"> :Array.&lt;string>|null</span></h4>
+
+
+
+
+<div class="description">
+    <p>Retrieves the set of keys that should be displayed (not filtered out). If
+falsy, then no filter is active and all available data should be displayed.</p>
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">Array.&lt;string></span>
+|
+
+<span class="param-type">null</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="widget.js.html">widget.js</a>, <a href="widget.js.html#line194">line 194</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="selection"><span class="type-signature"></span>selection<span class="type-signature"> :Array.&lt;string>|null</span></h4>
+
+
+
+
+<div class="description">
+    <p>The set of selected keys for the current Crosstalk group (if any group is
+assigned). Setting this property will cause Crosstalk events to fire.
+A falsy value means that nothing is selected.</p>
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">Array.&lt;string></span>
+|
+
+<span class="param-type">null</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="widget.js.html">widget.js</a>, <a href="widget.js.html#line159">line 159</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    <h4 class="name" id="applyFilter"><span class="type-signature"></span>applyFilter<span class="signature">(e)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Should be overridden with custom behavior that filters out all data except
+for those data points that correspond to the keys in <code>e.value</code>.</p>
+<p>If <code>e.value</code> is falsy, then no filter is active, and all data points should
+be displayed.</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>e</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">FilterHandle#change</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The event object.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="widget.js.html">widget.js</a>, <a href="widget.js.html#line88">line 88</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="applySelection"><span class="type-signature"></span>applySelection<span class="signature">(e)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Should be overridden with custom behavior that highlights data
+corresponding to the keys in <code>e.value</code>.</p>
+<p>If <code>e.value</code> is falsy, then no selection is active, and all data points
+should be displayed with the same level of prominence.</p>
+<p>Some implementations may want to distinguish between selections that
+originate from a user action on &quot;this&quot; widget instance, versus any other
+widget instance in the Crosstalk group. (For instance, if the user has
+performed a brushing operation on a different widget instance, and a
+visible brush exists on this instance, then this instance's brush should
+be cleared.) You can determine this using <code>e.sender === this</code>, which will
+evaluate to true if and only if the selection belongs to this instance.</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>e</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">SelectionHandle#change</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The event object.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="widget.js.html">widget.js</a>, <a href="widget.js.html#line76">line 76</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="renderValue"><span class="type-signature"></span>renderValue<span class="signature">(value)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Should be overridden with custom behavior, as is usual for htmlwidget
+instances. During the course of rendering, be sure to call
+<code>this.setCrosstalkGroup(group)</code>.</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>value</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The value to render.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="widget.js.html">widget.js</a>, <a href="widget.js.html#line98">line 98</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="setCrosstalkGroup"><span class="type-signature"></span>setCrosstalkGroup<span class="signature">(group, runCallbacks)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Call from renderValue to set or modify the Crosstalk group name. This
+will register event handlers so that <code>this.applySelection</code> and
+<code>this.applyFilter</code> are called at the appropriate times. It will also
+unregister existing event handlers if this instance previously belonged
+to a different group.</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>group</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>The name of the Crosstalk group that should be
+  used, or a falsy value (like <code>null</code> or undefined) if none.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>runCallbacks</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+
+            <td class="description last"><p>If true, and the group has changed since
+  the last time <code>setCrosstalkGroup</code> was called, then invoke
+  <code>this.applySelection</code> and <code>this.applyFilter</code> before returning.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="widget.js.html">widget.js</a>, <a href="widget.js.html#line114">line 114</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="FilterHandle.html">FilterHandle</a></li><li><a href="SelectionHandle.html">SelectionHandle</a></li><li><a href="Widget.html">Widget</a></li></ul><h3>Events</h3><ul><li><a href="FilterHandle.html#event:change">change</a></li><li><a href="SelectionHandle.html#event:change">change</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Wed Dec 07 2016 12:28:58 GMT-0800 (PST)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

@@ -20,6 +20,7 @@ function nextId() {
 
 export class FilterHandle {
   /**
+   * @classdesc
    * Use this class to contribute to, and listen for changes to, the filter set
    * for the given group of widgets. Filter input controls should create one
    * `FilterHandle` and only call {@link FilterHandle#set}. Output widgets that

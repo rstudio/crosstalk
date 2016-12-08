@@ -61,18 +61,6 @@ module.exports = function (grunt) {
         tasks: ["build"]
       }
     },
-    jsdoc: {
-      dist: {
-        src: ["javascript/src/**/*.js"],
-        options: {
-          destination: "docs/reference/js/",
-          configure: "jsdoc.conf.json",
-          //template: "node_modules/ink-docstrap/template",
-          //configure: "node_modules/ink-docstrap/template/jsdoc.conf.json"
-          tutorials: "javascript/tutorials"
-        }
-      }
-    }
   });
 
   grunt.loadNpmTasks("grunt-browserify");
@@ -80,7 +68,6 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks("grunt-contrib-uglify");
   grunt.loadNpmTasks("grunt-eslint");
   grunt.loadNpmTasks("grunt-exorcise");
-  grunt.loadNpmTasks("grunt-jsdoc");
   grunt.loadNpmTasks("grunt-mocha-test");
 
   grunt.registerTask("test", ["mochaTest", "eslint"]);

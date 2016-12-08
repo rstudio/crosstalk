@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title></title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-1.1/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-1.1/highlight.js"></script>
+<link rel="stylesheet" type="text/css" href="site_libs/bootstrap-3.3.5/css/cosmo.min.css"/>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Crosstalk</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="using.html">Using</a>
+</li>
+<li>
+  <a href="authoring.html">Authoring</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Reference (JS)
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="filter.html">FilterHandle</a>
+    </li>
+    <li>
+      <a href="selection.html">SelectionHandle</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+
+</div>
+
+
+<p><a name="FilterHandle"></a></p>
+<div id="filterhandle" class="section level2">
+<h2>FilterHandle</h2>
+<p>Use this class to contribute to, and listen for changes to, the filter set for the given group of widgets. Filter input controls should create one <code>FilterHandle</code> and only call <a href="#FilterHandle+set">set</a>. Output widgets that wish to displayed filtered data should create one <code>FilterHandle</code> and use the <a href="#FilterHandle+filteredKeys">filteredKeys</a> property and listen for change events.</p>
+<p>If two (or more) <code>FilterHandle</code> instances in the same webpage share the same group name, they will contribute to a single “filter set”. Each <code>FilterHandle</code> starts out with a <code>null</code> value, which means they take nothing away from the set of data that should be shown. To make a <code>FilterHandle</code> actually remove data from the filter set, set its value to an array of keys which should be displayed. Crosstalk will aggregate the various key arrays by finding their intersection; only keys that are present in all non-null filter handles are considered part of the filter set.</p>
+<p><strong>Kind</strong>: global class</p>
+<ul>
+<li><a href="#FilterHandle">FilterHandle</a>
+<ul>
+<li><a href="#new_FilterHandle_new">new crosstalk.FilterHandle([group], [extraInfo])</a></li>
+<li><em>instance</em>
+<ul>
+<li><a href="#FilterHandle+filteredKeys">.filteredKeys</a> ⇒ <code>Array.&lt;string&gt;</code> | <code>null</code></li>
+<li><a href="#FilterHandle+setGroup">.setGroup(group)</a></li>
+<li><a href="#FilterHandle+close">.close()</a></li>
+<li><a href="#FilterHandle+clear">.clear([extraInfo])</a></li>
+<li><a href="#FilterHandle+set">.set(keys, [extraInfo])</a></li>
+<li><a href="#FilterHandle+on">.on(eventType, listener)</a> ⇒ <code>string</code></li>
+<li><a href="#FilterHandle+off">.off(eventType, listener)</a></li>
+<li><a href="#FilterHandle+event_change">“change”</a></li>
+</ul></li>
+<li><em>inner</em>
+<ul>
+<li><a href="#FilterHandle..listener">~listener</a> : <code>function</code></li>
+</ul></li>
+</ul></li>
+</ul>
+<p><a name="new_FilterHandle_new"></a></p>
+<div id="new-crosstalk.filterhandlegroup-extrainfo" class="section level3">
+<h3>new crosstalk.FilterHandle([group], [extraInfo])</h3>
+<table style="width:58%;">
+<colgroup>
+<col width="19%" />
+<col width="19%" />
+<col width="19%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Param</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>[group]</td>
+<td><code>string</code></td>
+<td>The name of the Crosstalk group, or if none, null or undefined (or any other falsy value). This can be changed later via the @{link FilterHandle#setGroup} method.</td>
+</tr>
+<tr class="even">
+<td>[extraInfo]</td>
+<td><code>Object</code></td>
+<td>An object whose properties will be copied to the event object whenever an event is emitted.</td>
+</tr>
+</tbody>
+</table>
+<p><a name="FilterHandle+filteredKeys"></a></p>
+</div>
+<div id="filterhandle.filteredkeys-array.string-null" class="section level3">
+<h3>filterHandle.filteredKeys ⇒ <code>Array.&lt;string&gt;</code> | <code>null</code></h3>
+<p><strong>Kind</strong>: instance property of <code><a href="#FilterHandle">FilterHandle</a></code><br />
+<strong>Returns</strong>: <code>Array.&lt;string&gt;</code> | <code>null</code> - - Either: 1) an array of keys that made it through all of the <code>FilterHandle</code> instances, or, 2) <code>null</code>, which means no filter is being applied (all data should be displayed).<br />
+<a name="FilterHandle+setGroup"></a></p>
+</div>
+<div id="filterhandle.setgroupgroup" class="section level3">
+<h3>filterHandle.setGroup(group)</h3>
+<p>Changes the Crosstalk group membership of this FilterHandle. If <code>set()</code> was previously called on this handle, switching groups will clear those keys from the old group’s filter set. These keys will not be applied to the new group’s filter set either. In other words, <code>setGroup()</code> effectively calls <code>clear()</code> before switching groups.</p>
+<p><strong>Kind</strong>: instance method of <code><a href="#FilterHandle">FilterHandle</a></code></p>
+<table style="width:58%;">
+<colgroup>
+<col width="19%" />
+<col width="19%" />
+<col width="19%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Param</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>group</td>
+<td><code>string</code></td>
+<td>The name of the Crosstalk group, or null (or undefined) to clear the group.</td>
+</tr>
+</tbody>
+</table>
+<p><a name="FilterHandle+close"></a></p>
+</div>
+<div id="filterhandle.close" class="section level3">
+<h3>filterHandle.close()</h3>
+<p>Close the handle. This clears this handle’s contribution to the filter set, and unsubscribes all event listeners.</p>
+<p><strong>Kind</strong>: instance method of <code><a href="#FilterHandle">FilterHandle</a></code><br />
+<a name="FilterHandle+clear"></a></p>
+</div>
+<div id="filterhandle.clearextrainfo" class="section level3">
+<h3>filterHandle.clear([extraInfo])</h3>
+<p>Clear this handle’s contribution to the filter set.</p>
+<p><strong>Kind</strong>: instance method of <code><a href="#FilterHandle">FilterHandle</a></code></p>
+<table style="width:58%;">
+<colgroup>
+<col width="19%" />
+<col width="19%" />
+<col width="19%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Param</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>[extraInfo]</td>
+<td><code>Object</code></td>
+<td>Extra properties to be included on the event object that’s passed to listeners (in addition to any options that were passed into the <code>FilterHandle</code> constructor).</td>
+</tr>
+</tbody>
+</table>
+<p><a name="FilterHandle+set"></a></p>
+</div>
+<div id="filterhandle.setkeys-extrainfo" class="section level3">
+<h3>filterHandle.set(keys, [extraInfo])</h3>
+<p>Set this handle’s contribution to the filter set. This array should consist of the keys of the rows that <em>should</em> be displayed; any keys that are not present in the array will be considered <em>filtered out</em>. Note that multiple <code>FilterHandle</code> instances in the group may each contribute an array of keys, and only those keys that appear in <em>all</em> of the arrays make it through the filter.</p>
+<p><strong>Kind</strong>: instance method of <code><a href="#FilterHandle">FilterHandle</a></code></p>
+<table style="width:58%;">
+<colgroup>
+<col width="19%" />
+<col width="19%" />
+<col width="19%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Param</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>keys</td>
+<td><code>Array.&lt;string&gt;</code></td>
+<td>Empty array, or array of keys. To clear the filter, don’t pass an empty array; instead, use the <a href="#FilterHandle+clear">clear</a> method.</td>
+</tr>
+<tr class="even">
+<td>[extraInfo]</td>
+<td><code>Object</code></td>
+<td>Extra properties to be included on the event object that’s passed to listeners (in addition to any options that were passed into the <code>FilterHandle</code> constructor).</td>
+</tr>
+</tbody>
+</table>
+<p><a name="FilterHandle+on"></a></p>
+</div>
+<div id="filterhandle.oneventtype-listener-string" class="section level3">
+<h3>filterHandle.on(eventType, listener) ⇒ <code>string</code></h3>
+<p>Subscribe to events on this <code>FilterHandle</code>.</p>
+<p><strong>Kind</strong>: instance method of <code><a href="#FilterHandle">FilterHandle</a></code><br />
+<strong>Returns</strong>: <code>string</code> - - A token to pass to <a href="#FilterHandle+off">off</a> to cancel this subscription.</p>
+<table style="width:58%;">
+<colgroup>
+<col width="19%" />
+<col width="19%" />
+<col width="19%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Param</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>eventType</td>
+<td><code>string</code></td>
+<td>Indicates the type of events to listen to. Currently, only <code>&quot;change&quot;</code> is supported.</td>
+</tr>
+<tr class="even">
+<td>listener</td>
+<td><code><a href="#FilterHandle..listener">listener</a></code></td>
+<td>The callback function that will be invoked when the event occurs.</td>
+</tr>
+</tbody>
+</table>
+<p><a name="FilterHandle+off"></a></p>
+</div>
+<div id="filterhandle.offeventtype-listener" class="section level3">
+<h3>filterHandle.off(eventType, listener)</h3>
+<p>Cancel event subscriptions created by <a href="#FilterHandle+on">on</a>.</p>
+<p><strong>Kind</strong>: instance method of <code><a href="#FilterHandle">FilterHandle</a></code></p>
+<table style="width:58%;">
+<colgroup>
+<col width="19%" />
+<col width="19%" />
+<col width="19%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Param</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>eventType</td>
+<td><code>string</code></td>
+<td>The type of event to unsubscribe.</td>
+</tr>
+<tr class="even">
+<td>listener</td>
+<td><code>string</code> | <code><a href="#FilterHandle..listener">listener</a></code></td>
+<td>Either the callback function previously passed into <a href="#FilterHandle+on">on</a>, or the string that was returned from <a href="#FilterHandle+on">on</a>.</td>
+</tr>
+</tbody>
+</table>
+<p><a name="FilterHandle+event_change"></a></p>
+</div>
+<div id="change" class="section level3">
+<h3>“change”</h3>
+<p><strong>Kind</strong>: event emitted by <code><a href="#FilterHandle">FilterHandle</a></code><br />
+<strong>Properties</strong></p>
+<table style="width:58%;">
+<colgroup>
+<col width="19%" />
+<col width="19%" />
+<col width="19%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>value</td>
+<td><code>object</code></td>
+<td>The new value of the filter set, or <code>null</code> if no filter set is active.</td>
+</tr>
+<tr class="even">
+<td>oldValue</td>
+<td><code>object</code></td>
+<td>The previous value of the filter set.</td>
+</tr>
+<tr class="odd">
+<td>sender</td>
+<td><code><a href="#FilterHandle">FilterHandle</a></code></td>
+<td>The <code>FilterHandle</code> instance that changed the value.</td>
+</tr>
+</tbody>
+</table>
+<p><a name="FilterHandle..listener"></a></p>
+</div>
+<div id="filterhandlelistener-function" class="section level3">
+<h3>FilterHandle~listener : <code>function</code></h3>
+<p><strong>Kind</strong>: inner typedef of <code><a href="#FilterHandle">FilterHandle</a></code></p>
+<table style="width:58%;">
+<colgroup>
+<col width="19%" />
+<col width="19%" />
+<col width="19%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Param</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>event</td>
+<td><code>Object</code></td>
+<td>An object containing details of the event. For <code>&quot;change&quot;</code> events, this includes the properties <code>value</code> (the new value of the filter set, or <code>null</code> if no filter set is active), <code>oldValue</code> (the previous value of the filter set), and <code>sender</code> (the <code>FilterHandle</code> instance that made the change).</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

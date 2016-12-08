@@ -6,7 +6,6 @@ title: "Using Crosstalk"
 set.seed(100)
 knitr::opts_chunk$set(fig.height = 2.75, fig.width = 5, comment = NA)
 ```
-<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
 
 Crosstalk makes it easy to link multiple (Crosstalk-compatible) [HTML widgets](http://htmlwidgets.org) within an R Markdown page or Shiny app. To begin, you'll need to install the `crosstalk` package:
 

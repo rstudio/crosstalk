@@ -5,6 +5,7 @@ import * as util from "./util";
 export class SelectionHandle {
 
   /**
+   * @classdesc
    * Use this class to read and write (and listen for changes to) the selection
    * for a Crosstalk group. This is intended to be used for linked brushing.
    *
@@ -16,11 +17,11 @@ export class SelectionHandle {
    *
    * @param {string} [group] - The name of the Crosstalk group, or if none,
    *   null or undefined (or any other falsy value). This can be changed later
-   *   via the @{link SelectionHandle#setGroup} method.
+   *   via the [SelectionHandle#setGroup](#setGroup) method.
    * @param {Object} [extraInfo] - An object whose properties will be copied to
    *   the event object whenever an event is emitted.
    */
-  constructor(group, extraInfo = null) {
+  constructor(group = null, extraInfo = null) {
     this._eventRelay = new Events();
     this._emitter = new util.SubscriptionTracker(this._eventRelay);
 

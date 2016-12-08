@@ -1,0 +1,149 @@
+<a name="FilterHandle"></a>
+
+## FilterHandle
+Use this class to contribute to, and listen for changes to, the filter set
+for the given group of widgets. Filter input controls should create one
+`FilterHandle` and only call [set](#FilterHandle+set). Output widgets that
+wish to displayed filtered data should create one `FilterHandle` and use
+the [filteredKeys](#FilterHandle+filteredKeys) property and listen for change
+events.
+
+If two (or more) `FilterHandle` instances in the same webpage share the
+same group name, they will contribute to a single "filter set". Each
+`FilterHandle` starts out with a `null` value, which means they take
+nothing away from the set of data that should be shown. To make a
+`FilterHandle` actually remove data from the filter set, set its value to
+an array of keys which should be displayed. Crosstalk will aggregate the
+various key arrays by finding their intersection; only keys that are
+present in all non-null filter handles are considered part of the filter
+set.
+
+**Kind**: global class  
+
+* [FilterHandle](#FilterHandle)
+    * [new crosstalk.FilterHandle([group], [extraInfo])](#new_FilterHandle_new)
+    * _instance_
+        * [.filteredKeys](#FilterHandle+filteredKeys) ⇒ <code>Array.&lt;string&gt;</code> &#124; <code>null</code>
+        * [.setGroup(group)](#FilterHandle+setGroup)
+        * [.close()](#FilterHandle+close)
+        * [.clear([extraInfo])](#FilterHandle+clear)
+        * [.set(keys, [extraInfo])](#FilterHandle+set)
+        * [.on(eventType, listener)](#FilterHandle+on) ⇒ <code>string</code>
+        * [.off(eventType, listener)](#FilterHandle+off)
+        * ["change"](#FilterHandle+event_change)
+    * _inner_
+        * [~listener](#FilterHandle..listener) : <code>function</code>
+
+<a name="new_FilterHandle_new"></a>
+
+### new crosstalk.FilterHandle([group], [extraInfo])
+
+| Param | Type | Description |
+| ------------- | ------------- | ------------- |
+| [group] | <code>string</code> | The name of the Crosstalk group, or if none,   null or undefined (or any other falsy value). This can be changed later   via the @{link FilterHandle#setGroup} method. |
+| [extraInfo] | <code>Object</code> | An object whose properties will be copied to   the event object whenever an event is emitted. |
+
+<a name="FilterHandle+filteredKeys"></a>
+
+### filterHandle.filteredKeys ⇒ <code>Array.&lt;string&gt;</code> &#124; <code>null</code>
+**Kind**: instance property of <code>[FilterHandle](#FilterHandle)</code>  
+**Returns**: <code>Array.&lt;string&gt;</code> &#124; <code>null</code> - - Either: 1) an array of keys that made it through
+  all of the `FilterHandle` instances, or, 2) `null`, which means no filter
+  is being applied (all data should be displayed).  
+<a name="FilterHandle+setGroup"></a>
+
+### filterHandle.setGroup(group)
+Changes the Crosstalk group membership of this FilterHandle. If `set()` was
+previously called on this handle, switching groups will clear those keys
+from the old group's filter set. These keys will not be applied to the new
+group's filter set either. In other words, `setGroup()` effectively calls
+`clear()` before switching groups.
+
+**Kind**: instance method of <code>[FilterHandle](#FilterHandle)</code>  
+
+| Param | Type | Description |
+| ------------- | ------------- | ------------- |
+| group | <code>string</code> | The name of the Crosstalk group, or null (or   undefined) to clear the group. |
+
+<a name="FilterHandle+close"></a>
+
+### filterHandle.close()
+Close the handle. This clears this handle's contribution to the filter set,
+and unsubscribes all event listeners.
+
+**Kind**: instance method of <code>[FilterHandle](#FilterHandle)</code>  
+<a name="FilterHandle+clear"></a>
+
+### filterHandle.clear([extraInfo])
+Clear this handle's contribution to the filter set.
+
+**Kind**: instance method of <code>[FilterHandle](#FilterHandle)</code>  
+
+| Param | Type | Description |
+| ------------- | ------------- | ------------- |
+| [extraInfo] | <code>Object</code> | Extra properties to be included on the event   object that's passed to listeners (in addition to any options that were   passed into the `FilterHandle` constructor). |
+
+<a name="FilterHandle+set"></a>
+
+### filterHandle.set(keys, [extraInfo])
+Set this handle's contribution to the filter set. This array should consist
+of the keys of the rows that _should_ be displayed; any keys that are not
+present in the array will be considered _filtered out_. Note that multiple
+`FilterHandle` instances in the group may each contribute an array of keys,
+and only those keys that appear in _all_ of the arrays make it through the
+filter.
+
+**Kind**: instance method of <code>[FilterHandle](#FilterHandle)</code>  
+
+| Param | Type | Description |
+| ------------- | ------------- | ------------- |
+| keys | <code>Array.&lt;string&gt;</code> | Empty array, or array of keys. To clear the   filter, don't pass an empty array; instead, use the   [clear](#FilterHandle+clear) method. |
+| [extraInfo] | <code>Object</code> | Extra properties to be included on the event   object that's passed to listeners (in addition to any options that were   passed into the `FilterHandle` constructor). |
+
+<a name="FilterHandle+on"></a>
+
+### filterHandle.on(eventType, listener) ⇒ <code>string</code>
+Subscribe to events on this `FilterHandle`.
+
+**Kind**: instance method of <code>[FilterHandle](#FilterHandle)</code>  
+**Returns**: <code>string</code> - - A token to pass to [off](#FilterHandle+off) to cancel
+  this subscription.  
+
+| Param | Type | Description |
+| ------------- | ------------- | ------------- |
+| eventType | <code>string</code> | Indicates the type of events to listen to.   Currently, only `"change"` is supported. |
+| listener | <code>[listener](#FilterHandle..listener)</code> | The callback function that   will be invoked when the event occurs. |
+
+<a name="FilterHandle+off"></a>
+
+### filterHandle.off(eventType, listener)
+Cancel event subscriptions created by [on](#FilterHandle+on).
+
+**Kind**: instance method of <code>[FilterHandle](#FilterHandle)</code>  
+
+| Param | Type | Description |
+| ------------- | ------------- | ------------- |
+| eventType | <code>string</code> | The type of event to unsubscribe. |
+| listener | <code>string</code> &#124; <code>[listener](#FilterHandle..listener)</code> | Either the callback   function previously passed into [on](#FilterHandle+on), or the   string that was returned from [on](#FilterHandle+on). |
+
+<a name="FilterHandle+event_change"></a>
+
+### "change"
+**Kind**: event emitted by <code>[FilterHandle](#FilterHandle)</code>  
+**Properties**
+
+| Name | Type | Description |
+| ------------- | ------------- | ------------- |
+| value | <code>object</code> | The new value of the filter set, or `null`   if no filter set is active. |
+| oldValue | <code>object</code> | The previous value of the filter set. |
+| sender | <code>[FilterHandle](#FilterHandle)</code> | The `FilterHandle` instance that   changed the value. |
+
+<a name="FilterHandle..listener"></a>
+
+### FilterHandle~listener : <code>function</code>
+**Kind**: inner typedef of <code>[FilterHandle](#FilterHandle)</code>  
+
+| Param | Type | Description |
+| ------------- | ------------- | ------------- |
+| event | <code>Object</code> | An object containing details of the event. For   `"change"` events, this includes the properties `value` (the new   value of the filter set, or `null` if no filter set is active),   `oldValue` (the previous value of the filter set), and `sender` (the   `FilterHandle` instance that made the change). |
+

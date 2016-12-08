@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title></title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-1.1/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-1.1/highlight.js"></script>
+<link rel="stylesheet" type="text/css" href="site_libs/bootstrap-3.3.5/css/cosmo.min.css"/>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Crosstalk</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="using.html">Using</a>
+</li>
+<li>
+  <a href="authoring.html">Authoring</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Reference (JS)
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="filter.html">FilterHandle</a>
+    </li>
+    <li>
+      <a href="selection.html">SelectionHandle</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+
+</div>
+
+
+<p><a name="SelectionHandle"></a></p>
+<div id="selectionhandle" class="section level2">
+<h2>SelectionHandle</h2>
+<p>Use this class to read and write (and listen for changes to) the selection for a Crosstalk group. This is intended to be used for linked brushing.</p>
+<p>If two (or more) <code>SelectionHandle</code> instances in the same webpage share the same group name, they will share the same state. Setting the selection using one <code>SelectionHandle</code> instance will result in the <code>value</code> property instantly changing across the others, and <code>&quot;change&quot;</code> event listeners on all instances (including the one that initiated the sending) will fire.</p>
+<p><strong>Kind</strong>: global class</p>
+<ul>
+<li><a href="#SelectionHandle">SelectionHandle</a>
+<ul>
+<li><a href="#new_SelectionHandle_new">new SelectionHandle([group], [extraInfo])</a></li>
+<li><em>instance</em>
+<ul>
+<li><a href="#SelectionHandle+value">.value</a></li>
+<li><a href="#SelectionHandle+setGroup">.setGroup(group)</a></li>
+<li><a href="#SelectionHandle+set">.set(selectedKeys, [extraInfo])</a></li>
+<li><a href="#SelectionHandle+clear">.clear([extraInfo])</a></li>
+<li><a href="#SelectionHandle+on">.on(eventType, listener)</a> ⇒ <code>string</code></li>
+<li><a href="#SelectionHandle+off">.off(eventType, listener)</a></li>
+<li><a href="#SelectionHandle+close">.close()</a></li>
+<li><a href="#SelectionHandle+event_change">“change”</a></li>
+</ul></li>
+<li><em>inner</em>
+<ul>
+<li><a href="#SelectionHandle..listener">~listener</a> : <code>function</code></li>
+</ul></li>
+</ul></li>
+</ul>
+<p><a name="new_SelectionHandle_new"></a></p>
+<div id="new-selectionhandlegroup-extrainfo" class="section level3">
+<h3>new SelectionHandle([group], [extraInfo])</h3>
+<table style="width:78%;">
+<colgroup>
+<col width="19%" />
+<col width="19%" />
+<col width="19%" />
+<col width="19%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Param</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>[group]</td>
+<td><code>string</code></td>
+<td><code>null</code></td>
+<td>The name of the Crosstalk group, or if none, null or undefined (or any other falsy value). This can be changed later via the <a href="#setGroup">SelectionHandle#setGroup</a> method.</td>
+</tr>
+<tr class="even">
+<td>[extraInfo]</td>
+<td><code>Object</code></td>
+<td><code></code></td>
+<td>An object whose properties will be copied to the event object whenever an event is emitted.</td>
+</tr>
+</tbody>
+</table>
+<p><a name="SelectionHandle+value"></a></p>
+</div>
+<div id="selectionhandle.value" class="section level3">
+<h3>selectionHandle.value</h3>
+<p>Retrieves the current selection for the group represented by this <code>SelectionHandle</code>.</p>
+<ul>
+<li>If no selection is active, then this value will be falsy.</li>
+<li>If a selection is active, but no data points are selected, then this value will be an empty array.</li>
+<li>If a selection is active, and data points are selected, then the keys of the selected data points will be present in the array.</li>
+</ul>
+<p><strong>Kind</strong>: instance property of <code><a href="#SelectionHandle">SelectionHandle</a></code><br />
+<a name="SelectionHandle+setGroup"></a></p>
+</div>
+<div id="selectionhandle.setgroupgroup" class="section level3">
+<h3>selectionHandle.setGroup(group)</h3>
+<p>Changes the Crosstalk group membership of this SelectionHandle. The group being switched away from (if any) will not have its selection value modified as a result of calling <code>setGroup</code>, even if this handle was the most recent handle to set the selection of the group.</p>
+<p>The group being switched to (if any) will also not have its selection value modified as a result of calling <code>setGroup</code>. If you want to set the selection value of the new group, call <code>set</code> explicitly.</p>
+<p><strong>Kind</strong>: instance method of <code><a href="#SelectionHandle">SelectionHandle</a></code></p>
+<table style="width:58%;">
+<colgroup>
+<col width="19%" />
+<col width="19%" />
+<col width="19%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Param</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>group</td>
+<td><code>string</code></td>
+<td>The name of the Crosstalk group, or null (or undefined) to clear the group.</td>
+</tr>
+</tbody>
+</table>
+<p><a name="SelectionHandle+set"></a></p>
+</div>
+<div id="selectionhandle.setselectedkeys-extrainfo" class="section level3">
+<h3>selectionHandle.set(selectedKeys, [extraInfo])</h3>
+<p>Overwrites the current selection for the group, and raises the <code>&quot;change&quot;</code> event among all of the group’s ’<code>SelectionHandle</code> instances (including this one).</p>
+<p><strong>Kind</strong>: instance method of <code><a href="#SelectionHandle">SelectionHandle</a></code><br />
+<strong>Emits</strong>: <code><a href="#SelectionHandle+event_change">change</a></code></p>
+<table style="width:58%;">
+<colgroup>
+<col width="19%" />
+<col width="19%" />
+<col width="19%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Param</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>selectedKeys</td>
+<td><code>Array.&lt;string&gt;</code></td>
+<td>Falsy, empty array, or array of keys (see <a href="#SelectionHandle+value">value</a>).</td>
+</tr>
+<tr class="even">
+<td>[extraInfo]</td>
+<td><code>Object</code></td>
+<td>Extra properties to be included on the event object that’s passed to listeners (in addition to any options that were passed into the <code>SelectionHandle</code> constructor).</td>
+</tr>
+</tbody>
+</table>
+<p><a name="SelectionHandle+clear"></a></p>
+</div>
+<div id="selectionhandle.clearextrainfo" class="section level3">
+<h3>selectionHandle.clear([extraInfo])</h3>
+<p>Overwrites the current selection for the group, and raises the <code>&quot;change&quot;</code> event among all of the group’s ’<code>SelectionHandle</code> instances (including this one).</p>
+<p><strong>Kind</strong>: instance method of <code><a href="#SelectionHandle">SelectionHandle</a></code><br />
+<strong>Emits</strong>: <code><a href="#SelectionHandle+event_change">change</a></code></p>
+<table style="width:58%;">
+<colgroup>
+<col width="19%" />
+<col width="19%" />
+<col width="19%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Param</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>[extraInfo]</td>
+<td><code>Object</code></td>
+<td>Extra properties to be included on the event object that’s passed to listeners (in addition to any that were passed into the <code>SelectionHandle</code> constructor).</td>
+</tr>
+</tbody>
+</table>
+<p><a name="SelectionHandle+on"></a></p>
+</div>
+<div id="selectionhandle.oneventtype-listener-string" class="section level3">
+<h3>selectionHandle.on(eventType, listener) ⇒ <code>string</code></h3>
+<p>Subscribes to events on this <code>SelectionHandle</code>.</p>
+<p><strong>Kind</strong>: instance method of <code><a href="#SelectionHandle">SelectionHandle</a></code><br />
+<strong>Returns</strong>: <code>string</code> - - A token to pass to <a href="#SelectionHandle+off">off</a> to cancel this subscription.</p>
+<table style="width:58%;">
+<colgroup>
+<col width="19%" />
+<col width="19%" />
+<col width="19%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Param</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>eventType</td>
+<td><code>string</code></td>
+<td>Indicates the type of events to listen to. Currently, only <code>&quot;change&quot;</code> is supported.</td>
+</tr>
+<tr class="even">
+<td>listener</td>
+<td><code><a href="#SelectionHandle..listener">listener</a></code></td>
+<td>The callback function that will be invoked when the event occurs.</td>
+</tr>
+</tbody>
+</table>
+<p><a name="SelectionHandle+off"></a></p>
+</div>
+<div id="selectionhandle.offeventtype-listener" class="section level3">
+<h3>selectionHandle.off(eventType, listener)</h3>
+<p>Cancels event subscriptions created by <a href="#SelectionHandle+on">on</a>.</p>
+<p><strong>Kind</strong>: instance method of <code><a href="#SelectionHandle">SelectionHandle</a></code></p>
+<table style="width:58%;">
+<colgroup>
+<col width="19%" />
+<col width="19%" />
+<col width="19%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Param</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>eventType</td>
+<td><code>string</code></td>
+<td>The type of event to unsubscribe.</td>
+</tr>
+<tr class="even">
+<td>listener</td>
+<td><code>string</code> | <code><a href="#SelectionHandle..listener">listener</a></code></td>
+<td>Either the callback function previously passed into <a href="#SelectionHandle+on">on</a>, or the string that was returned from <a href="#SelectionHandle+on">on</a>.</td>
+</tr>
+</tbody>
+</table>
+<p><a name="SelectionHandle+close"></a></p>
+</div>
+<div id="selectionhandle.close" class="section level3">
+<h3>selectionHandle.close()</h3>
+<p>Shuts down the <code>SelectionHandle</code> object.</p>
+<p>Removes all event listeners that were added through this handle.</p>
+<p><strong>Kind</strong>: instance method of <code><a href="#SelectionHandle">SelectionHandle</a></code><br />
+<a name="SelectionHandle+event_change"></a></p>
+</div>
+<div id="change" class="section level3">
+<h3>“change”</h3>
+<p><strong>Kind</strong>: event emitted by <code><a href="#SelectionHandle">SelectionHandle</a></code><br />
+<strong>Properties</strong></p>
+<table style="width:58%;">
+<colgroup>
+<col width="19%" />
+<col width="19%" />
+<col width="19%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>value</td>
+<td><code>object</code></td>
+<td>The new value of the selection, or <code>undefined</code> if no selection is active.</td>
+</tr>
+<tr class="even">
+<td>oldValue</td>
+<td><code>object</code></td>
+<td>The previous value of the selection.</td>
+</tr>
+<tr class="odd">
+<td>sender</td>
+<td><code><a href="#SelectionHandle">SelectionHandle</a></code></td>
+<td>The <code>SelectionHandle</code> instance that changed the value.</td>
+</tr>
+</tbody>
+</table>
+<p><a name="SelectionHandle..listener"></a></p>
+</div>
+<div id="selectionhandlelistener-function" class="section level3">
+<h3>SelectionHandle~listener : <code>function</code></h3>
+<p><strong>Kind</strong>: inner typedef of <code><a href="#SelectionHandle">SelectionHandle</a></code></p>
+<table style="width:58%;">
+<colgroup>
+<col width="19%" />
+<col width="19%" />
+<col width="19%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Param</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>event</td>
+<td><code>Object</code></td>
+<td>An object containing details of the event. For <code>&quot;change&quot;</code> events, this includes the properties <code>value</code> (the new value of the selection, or <code>undefined</code> if no selection is active), <code>oldValue</code> (the previous value of the selection), and <code>sender</code> (the <code>SelectionHandle</code> instance that made the change).</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

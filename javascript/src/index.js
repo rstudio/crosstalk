@@ -34,5 +34,8 @@ const crosstalk = {
   FilterHandle: FilterHandle
 };
 
+/**
+ * @namespace crosstalk
+ */
 export default crosstalk;
 global.crosstalk = crosstalk;

@@ -9,9 +9,11 @@ navbar:
     - text: "Authoring"
       href: authoring.html
     - text: "Reference (JS)"
-      href: reference/js/index.html
-    - text: "Reference (R)"
-      href: reference/r/index.html
+      menu:
+        - text: "FilterHandle"
+          href: filter.html
+        - text: "SelectionHandle"
+          href: selection.html
 output:
   html_document:
     theme: cosmo
@@ -19,4 +21,6 @@ output:
     toc_depth: 3
     toc_float:
       collapsed: false
+    include:
+      in_header: _header.html
 output_dir: .

@@ -22,6 +22,7 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-1.1/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-1.1/highlight.js"></script>
+<link rel="stylesheet" type="text/css" href="site_libs/bootstrap-3.3.5/css/cosmo.min.css"/>
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
@@ -184,11 +185,20 @@ $(document).ready(function () {
 <li>
   <a href="authoring.html">Authoring</a>
 </li>
-<li>
-  <a href="reference/js/index.html">Reference (JS)</a>
-</li>
-<li>
-  <a href="reference/r/index.html">Reference (R)</a>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Reference (JS)
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="filter.html">FilterHandle</a>
+    </li>
+    <li>
+      <a href="selection.html">SelectionHandle</a>
+    </li>
+  </ul>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">

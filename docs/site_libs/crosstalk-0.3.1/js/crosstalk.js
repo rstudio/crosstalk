@@ -121,6 +121,7 @@ function nextId() {
 
 var FilterHandle = exports.FilterHandle = function () {
   /**
+   * @classdesc
    * Use this class to contribute to, and listen for changes to, the filter set
    * for the given group of widgets. Filter input controls should create one
    * `FilterHandle` and only call {@link FilterHandle#set}. Output widgets that
@@ -609,6 +610,9 @@ var crosstalk = {
   FilterHandle: _filter.FilterHandle
 };
 
+/**
+ * @namespace crosstalk
+ */
 exports.default = crosstalk;
 
 global.crosstalk = crosstalk;
@@ -972,6 +976,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var SelectionHandle = exports.SelectionHandle = function () {
 
   /**
+   * @classdesc
    * Use this class to read and write (and listen for changes to) the selection
    * for a Crosstalk group. This is intended to be used for linked brushing.
    *
@@ -983,11 +988,12 @@ var SelectionHandle = exports.SelectionHandle = function () {
    *
    * @param {string} [group] - The name of the Crosstalk group, or if none,
    *   null or undefined (or any other falsy value). This can be changed later
-   *   via the @{link SelectionHandle#setGroup} method.
+   *   via the [SelectionHandle#setGroup](#setGroup) method.
    * @param {Object} [extraInfo] - An object whose properties will be copied to
    *   the event object whenever an event is emitted.
    */
-  function SelectionHandle(group) {
+  function SelectionHandle() {
+    var group = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     var extraInfo = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
     _classCallCheck(this, SelectionHandle);

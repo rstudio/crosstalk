@@ -19,9 +19,13 @@
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-1.1/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-1.1/highlight.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
 <link rel="stylesheet" type="text/css" href="site_libs/bootstrap-3.3.5/css/cosmo.min.css"/>
 
 <style type="text/css">code{white-space: pre;}</style>
@@ -162,9 +166,104 @@ $(document).ready(function () {
 
 
 
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
 
 
-<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
       <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
@@ -180,10 +279,10 @@ $(document).ready(function () {
   <a href="index.html">Home</a>
 </li>
 <li>
-  <a href="using.html">Using</a>
+  <a href="using.html">Using Crosstalk</a>
 </li>
 <li>
-  <a href="authoring.html">Authoring</a>
+  <a href="authoring.html">Authoring widgets</a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
@@ -202,7 +301,12 @@ $(document).ready(function () {
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/rstudio/crosstalk">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -217,27 +321,64 @@ $(document).ready(function () {
 </div>
 
 
-<p>If you’re the author of an htmlwidget, this tutorial will help you determine whether it is a good candidate for Crosstalk integration, and tell you how to begin.</p>
-<div id="fundamental-concepts" class="section level2">
-<h2>Fundamental concepts</h2>
-<p>A few main concepts form the foundation for interaction in Crosstalk.</p>
-<ul>
-<li><strong>Shared data</strong> - A single data frame (or data frame-like object) that is shared between all linked visualizations/filter controls.</li>
-<li><strong>Key</strong> - A string that uniquely identifies a row within a shared data object (similar to a primary key in a SQL table, or the concept of keys in d3). In non-Shiny settings, this is usually just the row number. When using Shiny, it can sometimes be helpful to identify a column in the data frame that can be used as an ID, so that as data frame rows are added, removed, or reordered, each row keeps a consistent key value.</li>
-<li><strong>Visualizations</strong> - Crosstalk-compatible htmlwidget instances, essentially. Ideally, a visualization supports brushing, highlighting (emphasizing points that have been brushed elsewhere), and showing a subset of rows.</li>
-<li><strong>Filter controls</strong> - Input widgets/controls that allow users to choose a subset of the data to display; for example, a slider over one of the numerical properties of the data, or a drop-down box with factor levels. Crosstalk itself comes with several filter inputs, and custom filter inputs can be written as well. (If you’re familiar with Shiny, these are like Shiny’s input widgets, except that they communicate with other client-side Crosstalk components instead of talking to a server.)</li>
-<li><strong>Group</strong> - A set of visualizations and/or filter controls that are linked together for linked brushing and/or filtering purposes. It’s possible for a single web page to have more than one distinct Crosstalk group.</li>
-</ul>
+<p>If you’re the author of an <a href="http://htmlwidgets.org">htmlwidget</a> package and would like to add Crosstalk support to your widget, this document will help you get started.</p>
+<div id="should-you-integrate-with-crosstalk" class="section level2">
+<h2>Should you integrate with Crosstalk?</h2>
+<p>Before you begin, know that not all HTML widgets are good candidates for integration with Crosstalk. The htmlwidgets framework itself makes minimal assumptions, so as to encourage a diverse ecosystem of widgets. Crosstalk, on the other hand, is highly opinionated; it is designed to operate on certain kinds of data, with certain kinds of interactivity. Some widgets will be difficult or impossible to integrate with Crosstalk; other widgets might be easy to integrate but offer a poor overall user experience.</p>
+<p>A widget is a good candidate for Crosstalk if it:</p>
+<div id="operates-on-data-frames-or-data-frame-like-objects" class="section level4">
+<h4>Operates on data frames, or data frame-like objects</h4>
+<p>Crosstalk works on a row-by-row basis. When you select a bunch of data points in Crosstalk, each data point is considered a row (or observation), and row IDs are broadcast to the rest of the Crosstalk group. If your data isn’t inherently tabular in nature, or at the very least a flat list of values, you’re going to suffer from impedance mismatch. (That doesn’t mean your widget’s <em>visualization</em> needs to be tabular, just that the <em>underlying data</em> should have a by-row structure to it.)</p>
+<p>Examples of appropriate data: data frame, data.table, spatial objects (e.g. <code>SpatialPolygonsDataFrame</code>).</p>
+<p>Examples of inappropriate data: raster images, text corpora, hierarchy/trees (lists of lists).</p>
 </div>
-<div id="introduction-to-the-crosstalk-api" class="section level2">
-<h2>Introduction to the Crosstalk API</h2>
-<p>The Crosstalk API has two distinct parts: an R6 class, <code>SharedData</code>, that wraps a data frame; and a small JavaScript API through which widgets can send/receive messages to each other relating to brushing and filtering.</p>
-<p>Creating a <code>SharedData</code> instance is easy. Its R6 constructor has one required and two optional components:</p>
-<ul>
-<li><code>data</code> - The underlying data frame. This can either be an actual data frame (or data frame-like) object, or a Shiny reactive expression that yields such an object.</li>
-<li><code>key</code> - <em>[Optional]</em> Either a character vector or one-sided formula that indicates the key of the data frame (see the “Key” definition above). If not provided, then row names (if available) or row numbers will be used as keys.</li>
-<li><code>group</code> - <em>[Optional]</em> The name of the Crosstalk group that visualizations/filter controls using this <code>SharedData</code> object should belong to. If not provided, a random group name is used, which should be fine in the vast majority of cases.</li>
-</ul>
+<div id="displays-individual-rowsobservationsdata-points" class="section level4">
+<h4>Displays individual rows/observations/data points</h4>
+<p>Crosstalk works best when each data point is displayed independently in a visualization. This makes it straightforward to highlight/fade or filter out arbitrary sets of points.</p>
+<p>Visualizations that aggregate or summarize rows—for example, grouping rows by a categorical variable and showing the averages in a bar chart—will have a harder time. There’s no hope of this working correctly unless all of the row-level data is passed to the widget’s JavaScript binding, plus all of the parameters of how the aggregation was performed, plus the actual logic to perform said aggregation. Without all that information, there’s no way to partially highlight a bar based on a set of points that were brushed in a linked scatter plot, for example.</p>
+<p>It’s not impossible, but I haven’t explored this area enough to make recommendations for how such operations should be expressed, and therefore suggest you steer clear for now. If you have an urgent scenario, feel free to contact me (<a href="mailto:joe@rstudio.com">joe@rstudio.com</a>).</p>
+</div>
+<div id="supports-highlightingfading-and-hidingshowing-of-data-points" class="section level4">
+<h4>Supports highlighting/fading and hiding/showing of data points</h4>
+<p>Crosstalk widgets need to support highlighting/fading (or emphasizing/de-emphasizing through other means) of data points to support linked brushing, and they need to support hiding/showing to support filtering. Ideally, this will happen quickly, without disturbing other aspects of the widget (e.g. if the user has zoomed in on one part of the widget, or repositioned some nodes in a network graph, those aspects should not be affected by selecting or filtering).</p>
+</div>
+<div id="provides-a-gesture-for-selecting-data-points-and-api-for-dismissing-selection" class="section level4">
+<h4>Provides a gesture for selecting data points, and API for dismissing selection</h4>
+<p>Ideally, each Crosstalk widget would not only highlight/fade to reflect selections made on linked widgets, but also allow you to make a selection directly on the widget itself. Further, after a selection is made on your widget, Crosstalk may alert you to a selection made on linked widget, at which time you must programatically remove the selection box (or whatever your brush looks like) from your widget.</p>
+<p>This is easy if the underlying JavaScript library has already provided these facilities for you, but if not, it can be quite tricky to implement. Unfortunately, doing the JavaScript UI programming necessary to support a nice selection experience is outside the scope of this article.</p>
+</div>
+</div>
+<div id="modify-your-package" class="section level2">
+<h2>Modify your package</h2>
+<p>If you’ve read those criteria and are still with us, it’s time to modify your package to support Crosstalk!</p>
+<ol style="list-style-type: decimal">
+<li>Modify your <code>DESCRIPTION</code> file’s Imports field to include <code>crosstalk</code> and <code>htmltools</code>.</li>
+<li>In your widget’s R function, modify the call to <code>createWidget</code> to include the argument <code>dependencies = crosstalk::crosstalkLibs()</code>.</li>
+</ol>
+<pre class="r"><code># Before
+
+myWidget &lt;- function(data, width = NULL, height = NULL) {
+  # Some logic goes here...
+
+  createWidget(&quot;myWidget&quot;, x, width=width, height=height)
+}
+
+
+# After
+
+myWidget &lt;- function(data, width = NULL, height = NULL) {
+  # Some logic goes here...
+
+  createWidget(&quot;myWidget&quot;, x, width=width, height=height,
+    dependencies = crosstalk::crosstalkLibs()
+  )
+}</code></pre>
+<p>This ensures that Crosstalk’s JavaScript runtime dependencies are loaded at the appropriate time.</p>
+<p>Now we’re ready to begin customizing your widget-specific logic to work with Crosstalk.</p>
+</div>
+<div id="modify-the-r-binding" class="section level2">
+<h2>Modify the R binding</h2>
+<p>The R binding is the R function that constructs an instance of your widget (usually it is named after your widget). I’ll assume you already take a data frame as an argument.</p>
 <p>Users signal their intention to use Crosstalk by passing your widget a <code>SharedData</code> instance instead of a regular data frame.</p>
 <pre class="r"><code>df &lt;- read.csv(&quot;mydata.csv&quot;, stringsAsFactors=FALSE)
 sd &lt;- SharedData$new(df)
@@ -247,8 +388,7 @@ myWidget(df)
 
 # Crosstalk enabled
 myWidget(sd)</code></pre>
-<p>As a widget author, you’ll want to extract the data frame, key, and group name using the <code>data</code>, <code>key</code>, and <code>groupName</code> methods, respectively.</p>
-<p>Assuming you already have a working htmlwidget that works with data frames, the main thing you need to do is unwrap the underlying data frame and add the group name and key values to your widget payload (the <code>x</code> parameter in <code>htmlwidgets::createWidget()</code>).</p>
+<p>When your R binding detects a <code>SharedData</code> instance, it will extract the data frame, key vector, and group name, and include them in the widget payload that is passed to <code>createWidget</code>.</p>
 <p>Before:</p>
 <pre class="r"><code>myWidget &lt;- function(data, width = NULL, height = NULL) {
   x &lt;- list(
@@ -281,24 +421,24 @@ myWidget(sd)</code></pre>
   createWidget(&quot;myWidget&quot;, x, width=width, height=height)
 }</code></pre>
 <p>Now in your JavaScript binding’s <code>renderValue</code> method, you can access <code>x.settings.crosstalk_key</code> and <code>x.settings.crosstalk_group</code>. To tell if Crosstalk is enabled for the current <code>renderValue</code> invocation, test one of these values for truthiness.</p>
+<p>This example happens to pass the entire data frame to <code>createWidget</code>. That’s not necessary and in fact is probably not that common. Usually a subset of columns, possibly transformed, is all that’s included in the payload. That’s fine, as far as Crosstalk is concerned. All that matters is that you keep your data in sync with the key vector; if you subset or reorder the data, you must do the same to the key vector.</p>
 </div>
-<div id="implementing-interactions" class="section level2">
-<h2>Implementing interactions</h2>
+<div id="modify-the-javascript-binding" class="section level2">
+<h2>Modify the JavaScript binding</h2>
 <p>Now the more difficult part: actually implementing the linked interactions on the JavaScript side.</p>
 <p>Currently, Crosstalk supports two types of inter-widget interaction: linked brushing, and filtering. By “supports” I mean that Crosstalk will help visualizations and filter controls <em>communicate intentions</em> to each other. But actually implementing the selection, highlighting, and filtering behaviors for each widget type is the job of the widget author.</p>
 <p>The sections below will discuss the types of interactions that are expected from each Crosstalk-compatible widget, and how to use Crosstalk’s JavaScript APIs to communicate.</p>
-<p>// TODO: <code>htmlDependency</code> and R import</p>
 <div id="linked-brushing" class="section level3">
 <h3>Linked brushing</h3>
 <p>Linked brushing lets the end user select data points in any visualization, to highlight the corresponding data points in all linked visualization.</p>
 <p>At any given moment, only one visualization may have a selection; for example, if widget A has an active selection, and then the user begins making a selection on widget B, then widget A should immediately clear its selection.</p>
 <p>Ideally, each visualization should be capable of the following:</p>
-<ul>
+<ol style="list-style-type: decimal">
 <li>Allow the user to <u>make a selection</u>, usually through clicking on data points, or better, making a rectangular or lasso-shaped selection. (The result of the selection must be a subset of the rows in the dataset—that’s the only type of selection that is useful in Crosstalk.)</li>
 <li><u>Clear a selection interactively</u> in response to a user gesture (i.e. clicking on an inert, unselected area of the visualization).</li>
 <li><u>Clear a selection programmatically</u>, in response to another visualization (in the same Crosstalk group) starting a selection operation.</li>
 <li><u>Highlight points</u> selected by another visualization. A common way to do this is to lower the opacity of data points that are not selected (and use the maximum opacity value for all data points when no selection is active in the group).</li>
-</ul>
+</ol>
 <p>In my experience so far, I’ve found 4 to be reasonably straightforward to achieve. But 1-3 can be difficult if you’re building on top of a JavaScript visualization library that isn’t designed to accomodate interactively selecting data points. Though it’s far preferable to support all four of these features, it’s possible to only support 4 to create what is essentially a “listen-only” Crosstalk participant.</p>
 <div id="selection-javascript-api" class="section level4">
 <h4>Selection JavaScript API</h4>
@@ -495,26 +635,19 @@ sel_handle.on(&quot;change&quot;, function(e) {
   }
 });</code></pre>
 </div>
-<div id="should-i-integrate-my-widget-with-crosstalk" class="section level3">
-<h3>Should I integrate my widget with Crosstalk?</h3>
-<p>Crosstalk makes a few demands on its widgets. If your widget doesn’t match all of the following criteria, you may find it difficult to integrate with Crosstalk in a sensible way.</p>
-<div id="data-frame-or-data-frame-like-format-for-data" class="section level4">
-<h4>Data frame (or data frame-like) format for data</h4>
-<p>From the R side, your data must be represented in a data frame, or data frame-like object. In particular, it should work with the following S3 generics: - <strong><code>row.names()</code></strong> (this can return <code>NULL</code>, it just can’t error) - <strong><code>nrow()</code></strong> - <strong><code>$&lt;-</code></strong> (For example, <code>df$selected_ &lt;- ...</code> should add a new column called <code>selected_</code> if one doesn’t already exist) - <strong><code>[</code></strong> with two dimensions, e.g. <code>df[row, column]</code></p>
-<p>This list of criteria may change in the future, so if you have implemented a data structure that you want to work with Crosstalk, the more you can make it look and feel like a data frame, the better.</p>
-</div>
-<div id="visualization-that-can-highlight-on-a-row-by-row-basis-for-linked-brushing" class="section level4">
-<h4>Visualization that can highlight on a row-by-row basis (for linked brushing)</h4>
-<p>The JavaScript visualization side of your widget must be able to highlight an arbitrary subset of rows.</p>
-</div>
-<div id="visualization-that-can-hideshow-on-a-row-by-row-basis-for-filtering" class="section level4">
-<h4>Visualization that can hide/show on a row-by-row basis (for filtering)</h4>
-</div>
-</div>
 </div>
 
+<footer>
+  <div>&nbsp;</div>
+  <div>&nbsp;</div>
+  <div class="text-muted">
+  Copyright &copy; 2016 RStudio, Inc.
+  </div>
+</footer>
 
 
+</div>
+</div>
 
 </div>
 

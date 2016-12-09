@@ -1,12 +1,13 @@
 name: "crosstalk"
 navbar:
   title: "Crosstalk"
+  type: inverse
   left:
     - text: "Home"
       href: index.html
-    - text: "Using"
+    - text: "Using Crosstalk"
       href: using.html
-    - text: "Authoring"
+    - text: "Authoring widgets"
       href: authoring.html
     - text: "Reference (JS)"
       menu:
@@ -14,13 +15,16 @@ navbar:
           href: filter.html
         - text: "SelectionHandle"
           href: selection.html
+  right:
+    - icon: fa-github fa-lg
+      href: https://github.com/rstudio/crosstalk
 output:
   html_document:
     theme: cosmo
     highlight: textmate
     toc_depth: 3
-    toc_float:
-      collapsed: false
+    toc_float: true
     include:
       in_header: _header.html
+      after_body: _footer.html
 output_dir: .

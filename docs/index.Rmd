@@ -2,9 +2,34 @@
 title: "Crosstalk"
 ---
 
-Crosstalk is an add-on to the [htmlwidgets](http://htmlwidgets.org) package. It provides authors of HTML widgets with a set of classes, functions, and conventions for implementing standard cross-widget interactions (currently, linked brushing and filtering) in a standard way.
+Crosstalk is an add-on to the [htmlwidgets](http://htmlwidgets.org) package. It extends htmlwidgets with a set of classes, functions, and conventions for implementing cross-widget interactions (currently, linked brushing and filtering).
 
-Here's an example using R Markdown:
+Play with the example below by manipulating the slider, clicking rows in the data table, and playing with the selection button in the map.
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+library(crosstalk)
+library(leaflet)
+library(DT)
+
+# Wrap data frame in SharedData
+sd <- SharedData$new(quakes[sample(nrow(quakes), 100),])
+
+# Create a filter input
+filter_slider("mag", "Magnitude", sd, column=~mag, step=0.1, width=250)
+
+# Use SharedData like a dataframe with Crosstalk-enabled widgets
+bscols(device = "md",
+  leaflet(sd) %>% addTiles() %>% addMarkers(),
+  datatable(sd, extensions="Scroller", style="bootstrap", class="compact", width="100%", height="auto",
+    options=list(deferRender=TRUE, scrollY=300, scroller=TRUE))
+)
+```
+
+<p class="text-center" style="margin-top: 2em; margin-bottom: 4em">
+<button class="btn btn-success" onclick="this.parentElement.style.display = 'none'; $('#example_code').fadeIn();">Show source code</button>
+</p>
+
+<div id="example_code" style="display: none">
 
 <pre class="markdown"><code>---
 title: Fiji earthquakes
@@ -17,27 +42,7 @@ library(leaflet)
 library(DT)
 
 # Wrap data frame in SharedData
-sd <- SharedData$new(quakes)
-
-# Create a filter input
-filter_slider("mag", "Magnitude", sd, column=~mag, step=0.1, width=250)
-
-# Use SharedData like a dataframe with Crosstalk-enabled widgets
-leaflet(sd) %>% addTiles() %>% addMarkers()
-datatable(sd)
-&#96;``</code></pre>
-
-We wrap the data frame `quakes` in a `SharedData` R6 object to signal to widgets and filter inputs that they should link up to other Crosstalk-enabled widgets/inputs that use the same `SharedData` object.
-
-Here are the results:
-
-```{r echo=FALSE, warning=FALSE, message=FALSE}
-library(crosstalk)
-library(leaflet)
-library(DT)
-
-# Wrap data frame in SharedData
-sd <- SharedData$new(quakes)
+sd <- SharedData$new(quakes[sample(nrow(quakes), 100),])
 
 # Create a filter input
 filter_slider("mag", "Magnitude", sd, column=~mag, step=0.1, width=250)
@@ -45,20 +50,27 @@ filter_slider("mag", "Magnitude", sd, column=~mag, step=0.1, width=250)
 # Use SharedData like a dataframe with Crosstalk-enabled widgets
 bscols(
   leaflet(sd) %>% addTiles() %>% addMarkers(),
-  datatable(sd, extensions="Scroller",
-    style="bootstrap", class="compact", width="100%", options=list(
-      deferRender = TRUE,
-      scrollY = 300,
-      scroller = TRUE
-    ))
+  datatable(sd, extensions="Scroller", style="bootstrap", class="compact", width="100%",
+    options=list(deferRender=TRUE, scrollY=300, scroller=TRUE))
 )
-```
+&#96;``</code></pre>
 
-![](crosstalk.gif)
+</div>
+
+## Works anywhere htmlwidgets does
+
+Like regular HTML widgets, Crosstalk doesn't require Shiny or any other runtime R dependencies. That means you can use it, either alone or with [R Markdown](http://rmarkdown.rstudio.com), to generate static HTML documents that can be hosted anywhere, including Amazon S3, GitHub, or RPubs. However, it is also designed to work seamlessly with Shiny apps, which lets you combine Crosstalk widget interactions with base plots, ggplot2, and anything else you can do with Shiny.
 
 ## Important limitations
 
-There are inherent limitations in the current version of Crosstalk that widget authors and users need to be aware of.
+Crosstalk has inherent limitations that widget authors and users need to be aware of.
 
-1. **Crosstalk currently only works for linked brushing and filtering of views that show individual data points, not aggregate or summary views** (where "observations" is defined as a single row in a data frame). For example, histograms are not supported since each bar represents multiple data points; but scatter plot points each represent a single data point, so they are supported.
-2. Because all data must be loaded into the browser, **Crosstalk is not appropriate for large data sets**. (There's no hard limit, since HTML widgets require varying amounts of CPU cycles and memory for each data point.)
+1. **HTML widgets must be specifically modified by their authors** to support Crosstalk. Crosstalk cannot magically provide cross-widget interactivity with generic HTML widgets.
+2. **Crosstalk currently only works for linked brushing and filtering of views that show individual data points, not aggregate or summary views** (where "observations" is defined as a single row in a data frame). For example, histograms are not supported since each bar represents multiple data points; but scatter plot points each represent a single data point, so they are supported.
+3. Because all data must be loaded into the browser, **Crosstalk is not appropriate for large data sets.** (There's no hard limit, since HTML widgets require varying amounts of CPU cycles and memory for each data point.)
+
+## Next steps
+
+Both widget users and widget authors should read the [Using Crosstalk](using.html) guide.
+
+Widget authors should then proceed to read [Authoring Crosstalk widgets](authoring.html).

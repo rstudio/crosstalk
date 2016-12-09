@@ -435,7 +435,7 @@ animation_options <- function(interval=1000,
 #'
 #' This helper function makes it easy to put HTML elements side by side. It can
 #' be called directly from the console but is especially designed to work in an
-#' R Markdown document.
+#' R Markdown document. Warning: This will bring in all of Bootstrap!
 #'
 #' @param ... \code{htmltools} tag objects, lists, text, HTML widgets, or
 #'   NULL. These arguments should be unnamed.
@@ -498,9 +498,8 @@ bscols <- function(..., widths = NA, device = c("xs", "sm", "md", "lg")) {
     }
   }
 
-  ui <- tags$div(class = "container-fluid",
+  ui <- tags$div(class = "container-fluid crosstalk-bscols",
     # Counteract knitr pre/code output blocks
-    style = css(white_space = "normal"),
     tags$div(class = "fluid-row",
       unname(mapply(list(...), widths, FUN = function(el, width) {
         div(class = sprintf("col-%s-%s", device, width),

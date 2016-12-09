@@ -13,10 +13,11 @@ Crosstalk makes it easy to link multiple (Crosstalk-compatible) [HTML widgets](h
 devtools::install_github("rstudio/crosstalk")
 ```
 
-Note that at the time of this writing, only a few HTML Widgets are Crosstalk-compatible. This article will use a simple d3 scatter plot widget package called `d3scatter`.
+Note that at the time of this writing, only a few HTML Widgets are Crosstalk-compatible. This article will use a simple d3 scatter plot widget package called [`d3scatter`](https://github.com/jcheng5/d3scatter), and the development version of the [Leaflet](https://rstudio.github.io/leaflet) package.
 
 ```{r eval=FALSE}
 devtools::install_github("jcheng5/d3scatter")
+devtools::install_github("rstudio/leaflet")
 ```
 
 Crosstalk is designed to work with widgets that take data frames (or sufficiently data-frame-like objects) as input. d3scatter, for example, takes a data frame:

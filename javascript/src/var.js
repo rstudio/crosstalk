@@ -38,7 +38,7 @@ export default class Var {
         ".clientValue-" +
           (this._group.name !== null ? this._group.name + "-" : "") +
           this._name,
-        value
+        typeof(value) === "undefined" ? null : value
       );
     }
   }

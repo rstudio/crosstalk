@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>Shiny</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-1.1/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-1.1/highlight.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+<link rel="stylesheet" type="text/css" href="site_libs/bootstrap-3.3.5/css/cosmo.min.css"/>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Crosstalk</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="using.html">Using Crosstalk</a>
+</li>
+<li>
+  <a href="authoring.html">Authoring widgets</a>
+</li>
+<li>
+  <a href="shiny.html">Shiny</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Reference (JS)
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="filter.html">FilterHandle</a>
+    </li>
+    <li>
+      <a href="selection.html">SelectionHandle</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/rstudio/crosstalk">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Shiny</h1>
+
+</div>
+
+
+<p>Crosstalk doesn’t require the use of Shiny. You can perform linked brushing and filtering purely with JavaScript, leaving you with static HTML files that you can host on any web server.</p>
+<p>You can also choose to use Crosstalk and Shiny together, and when you do so, you broaden the capabilities of Crosstalk by allowing your brushing and filtering to drive arbitrary calculations and Shiny outputs.</p>
+<div id="basic-usage" class="section level3">
+<h3>Basic usage</h3>
+<p>We’ll start by creating a basic Shiny application that contains some linked widgets, simply so you can see how the parts fit together.</p>
+<pre class="r"><code>library(shiny)
+library(crosstalk)
+library(d3scatter)
+
+ui &lt;- fluidPage(
+  fluidRow(
+    column(6, d3scatterOutput(&quot;scatter1&quot;)),
+    column(6, d3scatterOutput(&quot;scatter2&quot;))
+  )
+)
+
+server &lt;- function(input, output, session) {
+  shared_iris &lt;- SharedData$new(iris)
+  
+  output$scatter1 &lt;- renderD3scatter({
+    d3scatter(shared_iris, ~Petal.Length, ~Petal.Width, ~Species, width = &quot;100%&quot;)
+  })
+
+  output$scatter2 &lt;- renderD3scatter({
+    d3scatter(shared_iris, ~Sepal.Length, ~Sepal.Width, ~Species, width = &quot;100%&quot;)
+  })
+}
+
+shinyApp(ui, server)</code></pre>
+<p>If you’ve ever used HTML widgets with Shiny apps, this should look familiar. Our UI definition includes <code>xxxOutput</code> calls, which we then populate with server-side <code>renderXXX</code> expressions.</p>
+<p>The main thing to note here is that the variable that holds the <code>SharedData</code> instance is being declared at the topmost level inside the server function. <strong>It’s important that the <code>SharedData</code> object be created inside the server function, not outside it,</strong> as we often do in “regular” Shiny app development. If you create <code>SharedData</code> outside of the server function, the bidirectional communication between Crosstalk’s client and server pieces will not work and some of the capabilities below will fail to work.</p>
+<p>Run the above code. It works, but doesn’t do anything we couldn’t accomplish just as well without Shiny. Let’s see what else we can do.</p>
+</div>
+<div id="using-reactive-data-sources" class="section level3">
+<h3>Using reactive data sources</h3>
+<p>One thing you can’t do in a static Crosstalk HTML page is change your data source. With Shiny, it’s easy to set up reactive expressions that react to changes over time. If you have a reactive expression that produces a data frame, simply pass the reactive expression into <code>SharedData$new</code> in place of a data frame.</p>
+<p>In this example, we’ll modify the previous example on this page to randomly jitter the data a couple of times a second. (If random jittering is too contrived for your taste, imagine streaming data or interactively filtered data.)</p>
+<pre class="r"><code>library(shiny)
+library(crosstalk)
+library(d3scatter)
+
+ui &lt;- fluidPage(
+  fluidRow(
+    column(6, d3scatterOutput(&quot;scatter1&quot;)),
+    column(6, d3scatterOutput(&quot;scatter2&quot;))
+  )
+)
+
+server &lt;- function(input, output, session) {
+  jittered_iris &lt;- reactive({
+    invalidateLater(500)
+    data.frame(lapply(iris, function(col) {
+      if (is.numeric(col))
+        jitter(col)
+      else
+        col
+    }))
+  })
+  shared_iris &lt;- SharedData$new(jittered_iris)
+  
+  output$scatter1 &lt;- renderD3scatter({
+    d3scatter(shared_iris, ~Petal.Length, ~Petal.Width, ~Species, width = &quot;100%&quot;,
+      x_lim = range(iris$Petal.Length), y_lim = range(iris$Petal.Width))
+  })
+  
+  output$scatter2 &lt;- renderD3scatter({
+    d3scatter(shared_iris, ~Sepal.Length, ~Sepal.Width, ~Species, width = &quot;100%&quot;,
+      x_lim = range(iris$Sepal.Length), y_lim = range(iris$Sepal.Width))
+  })
+}
+
+shinyApp(ui, server)</code></pre>
+<p>Notice that we passed the reactive expression itself (<code>jittered_iris</code>), not the value of the reactive expression (<code>jittered_iris()</code>). We don’t want to <em>read</em> the reactive expression at the time that we construct the <code>SharedData</code> object, but instead, want to give the reactive expression itself to the new object so the latter can read the former at any point in the future. If this feels foreign to you, think of how you pass a function name, not a function call, to <code>lapply</code>; that’s exactly analogous to what we’re doing here.</p>
+<p>Note that when using a reactive expression for your underlying data source, the <code>SharedData</code> constructor’s <code>key</code> argument should be provided explicitly unless you know for sure that either 1) the data frame will always have row names, or 2) the keys of the rows you’re returning will never vary in order. If the former row 3 becomes the new row 15 while the app executes, and you have not specified keys, you’ll get strange results. And be sure not to provide the <code>key</code> argument as a character value, but instead as a formula or function (that will be applied against each new data frame produced by the reactive expression).</p>
+</div>
+<div id="adding-reactive-outputs" class="section level3">
+<h3>Adding reactive outputs</h3>
+<p>Not only can we use reactive data to feed <code>SharedData</code> and Crosstalk widgets (i.e. server-to-client); we can also use Crosstalk selections and filters to feed reactive expressions (i.e. client-to-server).</p>
+<p>In this example we’ll use the Crosstalk selection to drive a textual summary of the selected data.</p>
+<p>(As a bonus, we’ll also let the user subset the underlying data frame by species, using a Shiny <code>selectInput</code> and a reactive. At the time of this writing, Crosstalk filter controls don’t work particularly well with Shiny, so you can use traditional Shiny techniques to do filtering instead.)</p>
+<pre class="r"><code>library(shiny)
+library(crosstalk)
+library(d3scatter)
+library(dplyr)
+
+ui &lt;- fluidPage(
+  selectInput(&quot;species&quot;, &quot;Species&quot;, levels(iris$Species), multiple = TRUE),
+  fluidRow(
+    column(6, d3scatterOutput(&quot;scatter1&quot;)),
+    column(6, d3scatterOutput(&quot;scatter2&quot;))
+  ),
+  h4(&quot;Summary of selected data&quot;),
+  verbatimTextOutput(&quot;summary&quot;)
+)
+
+server &lt;- function(input, output, session) {
+  # Subset the dataset based on user&#39;s choice of species
+  user_iris &lt;- reactive({
+    iris[is.null(input$species) | iris$Species %in% input$species,]
+  })
+  
+  shared_iris &lt;- SharedData$new(user_iris)
+  
+  output$scatter1 &lt;- renderD3scatter({
+    d3scatter(shared_iris, ~Petal.Length, ~Petal.Width, ~Species, width = &quot;100%&quot;)
+  })
+  
+  output$scatter2 &lt;- renderD3scatter({
+    d3scatter(shared_iris, ~Sepal.Length, ~Sepal.Width, ~Species, width = &quot;100%&quot;)
+  })
+  
+  output$summary &lt;- renderPrint({
+    df &lt;- shared_iris$data(withSelection = TRUE) %&gt;%
+      filter(selected_ | is.na(selected_)) %&gt;%
+      mutate(selected_ = NULL)
+    
+    cat(nrow(df), &quot;observation(s) selected\n\n&quot;)
+    summary(df)
+  })
+}
+
+shinyApp(ui, server)</code></pre>
+<p>Calling <code>shared_iris$data()</code> with the <code>withSelection = TRUE</code> argument gives us a data frame with an additional column <code>selected_</code>, that contains <code>TRUE</code> or <code>FALSE</code> depending on whether that row is currently selected or not (or <code>NA</code> for all the rows if there is no active selection).</p>
+<p>TODO: ggplot2 aggregation example</p>
+</div>
+<div id="driving-selection" class="section level3">
+<h3>Driving selection</h3>
+<p>TODO: Full ggplot2 linked brushing example</p>
+</div>
+
+<footer>
+  <div>&nbsp;</div>
+  <div>&nbsp;</div>
+  <div class="text-muted">
+  Copyright &copy; 2016 RStudio, Inc.
+  </div>
+</footer>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

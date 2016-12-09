@@ -111,7 +111,7 @@ myWidget <- function(data, width = NULL, height = NULL) {
     # Using Crosstalk
     key <- sharedData$key()
     group <- sharedData$groupName()
-    data <- sharedData$data()
+    data <- sharedData$origData()
   } else {
     # Not using Crosstalk
     key <- NULL

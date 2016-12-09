@@ -67,6 +67,8 @@ input.register({
       }
     }
 
+    let lastKnownKeys = null;
+
     $el.on("change.crosstalkSliderInput", function(event) {
       if (!$el.data("updating") && !$el.data("animating")) {
         let [from, to] = getValue();
@@ -79,6 +81,7 @@ input.register({
         }
         keys.sort();
         ctHandle.set(keys);
+        lastKnownKeys = keys;
       }
     });
 
@@ -100,6 +103,16 @@ input.register({
     //     ctHandle.set(keyArray);
     //   }
     // });
+
+    return {
+      suspend: function() {
+        ctHandle.clear();
+      },
+      resume: function() {
+        if (lastKnownKeys)
+          ctHandle.set(lastKnownKeys);
+      }
+    };
   }
 });
 

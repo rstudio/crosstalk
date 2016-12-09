@@ -360,7 +360,7 @@ filter_slider <- function(id, label, sharedData, column, step = NULL,
   })
 
   sliderTag <- div(
-    class = "form-group crosstalk-input-container",
+    class = "form-group crosstalk-input",
     class = "crosstalk-input-slider js-range-slider",
     id = id,
 

@@ -28,8 +28,10 @@ input.register({
 
     let ctHandle = new FilterHandle(data.group);
 
+    let lastKnownKeys;
     selectize.on("change", function() {
       if (selectize.items.length === 0) {
+        lastKnownKeys = null;
         ctHandle.clear();
       } else {
         let keys = {};
@@ -40,10 +42,19 @@ input.register({
         });
         let keyArray = Object.keys(keys);
         keyArray.sort();
+        lastKnownKeys = keyArray;
         ctHandle.set(keyArray);
       }
     });
 
-    return selectize;
+    return {
+      suspend: function() {
+        ctHandle.clear();
+      },
+      resume: function() {
+        if (lastKnownKeys)
+          ctHandle.set(lastKnownKeys);
+      }
+    };
   }
 });

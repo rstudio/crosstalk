@@ -284,6 +284,9 @@ div.tocify {
 <li>
   <a href="authoring.html">Authoring widgets</a>
 </li>
+<li>
+  <a href="shiny.html">Shiny</a>
+</li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
     Reference (JS)
@@ -403,7 +406,7 @@ myWidget(sd)</code></pre>
     # Using Crosstalk
     key &lt;- sharedData$key()
     group &lt;- sharedData$groupName()
-    data &lt;- sharedData$data()
+    data &lt;- sharedData$origData()
   } else {
     # Not using Crosstalk
     key &lt;- NULL

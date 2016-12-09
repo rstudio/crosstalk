@@ -136,7 +136,7 @@ function d3scatter(container) {
       .exit()
         .remove();
     dots
-        .cond(props.selectionSet && !props.selectionSet.empty(), "classed", "selected", function(d) {
+        .cond(props.selectionSet, "classed", "selected", function(d) {
           return props.selectionSet.has(d.key);
         })
         .cond(animate, "transition")
@@ -244,6 +244,11 @@ function d3scatter(container) {
 
   draw.clearBrush = function() {
     brush.clear();
+  };
+
+  draw.hasBrush = function() {
+    var ex = brush.extent();
+    return ex && (ex[0][0] !== ex[1][0] || ex[0][1] !== ex[1][1]);
   };
 
   return draw;

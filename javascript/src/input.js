@@ -27,6 +27,16 @@ function $escape(val) {
   return val.replace(/([!"#$%&'()*+,.\/:;<=>?@\[\\\]^`{|}~])/g, "\\$1");
 }
 
+function bindEl(el) {
+  let $el = $(el);
+  Object.keys(bindings).forEach(function(className) {
+    if ($el.hasClass(className) && !$el.hasClass("crosstalk-input-bound")) {
+      let binding = bindings[className];
+      bindInstance(binding, el);
+    }
+  });
+}
+
 function bindInstance(binding, el) {
   let jsonEl = $(el).find("script[type='application/json'][data-for='" + $escape(el.id) + "']");
   let data = JSON.parse(jsonEl[0].innerText);
@@ -43,6 +53,11 @@ if (global.Shiny) {
     find: function(scope) {
       return $(scope).find(".crosstalk-input");
     },
+    initialize: function(el) {
+      if (!$(el).hasClass("crosstalk-input-bound")) {
+        bindEl(el);
+      }
+    },
     getId: function(el) {
       return el.id;
     },
@@ -56,12 +71,10 @@ if (global.Shiny) {
 
     },
     subscribe: function(el, callback) {
-      $(el).on("crosstalk-value-change.crosstalk", function(event) {
-        callback(false);
-      });
+      $(el).data("crosstalk-instance").resume();
     },
     unsubscribe: function(el) {
-      $(el).off(".crosstalk");
+      $(el).data("crosstalk-instance").suspend();
     }
   });
   global.Shiny.inputBindings.register(inputBinding, "crosstalk.inputBinding");

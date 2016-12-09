@@ -656,6 +656,16 @@ function $escape(val) {
   return val.replace(/([!"#$%&'()*+,.\/:;<=>?@\[\\\]^`{|}~])/g, "\\$1");
 }
 
+function bindEl(el) {
+  var $el = $(el);
+  Object.keys(bindings).forEach(function (className) {
+    if ($el.hasClass(className) && !$el.hasClass("crosstalk-input-bound")) {
+      var binding = bindings[className];
+      bindInstance(binding, el);
+    }
+  });
+}
+
 function bindInstance(binding, el) {
   var jsonEl = $(el).find("script[type='application/json'][data-for='" + $escape(el.id) + "']");
   var data = JSON.parse(jsonEl[0].innerText);
@@ -673,6 +683,11 @@ if (global.Shiny) {
       find: function find(scope) {
         return $(scope).find(".crosstalk-input");
       },
+      initialize: function initialize(el) {
+        if (!$(el).hasClass("crosstalk-input-bound")) {
+          bindEl(el);
+        }
+      },
       getId: function getId(el) {
         return el.id;
       },
@@ -680,12 +695,10 @@ if (global.Shiny) {
       setValue: function setValue(el, value) {},
       receiveMessage: function receiveMessage(el, data) {},
       subscribe: function subscribe(el, callback) {
-        $(el).on("crosstalk-value-change.crosstalk", function (event) {
-          callback(false);
-        });
+        $(el).data("crosstalk-instance").resume();
       },
       unsubscribe: function unsubscribe(el) {
-        $(el).off(".crosstalk");
+        $(el).data("crosstalk-instance").suspend();
       }
     });
     global.Shiny.inputBindings.register(inputBinding, "crosstalk.inputBinding");
@@ -718,10 +731,12 @@ input.register({
      */
     var ctHandle = new _filter.FilterHandle(data.group);
 
+    var lastKnownKeys = void 0;
     var $el = $(el);
     $el.on("change", "input[type='checkbox']", function () {
       var checked = $el.find("input[type='checkbox']:checked");
       if (checked.length === 0) {
+        lastKnownKeys = null;
         ctHandle.clear();
       } else {
         (function () {
@@ -733,10 +748,20 @@ input.register({
           });
           var keyArray = Object.keys(keys);
           keyArray.sort();
+          lastKnownKeys = keyArray;
           ctHandle.set(keyArray);
         })();
       }
     });
+
+    return {
+      suspend: function suspend() {
+        ctHandle.clear();
+      },
+      resume: function resume() {
+        if (lastKnownKeys) ctHandle.set(lastKnownKeys);
+      }
+    };
   }
 });
 
@@ -784,8 +809,10 @@ input.register({
 
     var ctHandle = new _filter.FilterHandle(data.group);
 
+    var lastKnownKeys = void 0;
     selectize.on("change", function () {
       if (selectize.items.length === 0) {
+        lastKnownKeys = null;
         ctHandle.clear();
       } else {
         (function () {
@@ -797,12 +824,20 @@ input.register({
           });
           var keyArray = Object.keys(keys);
           keyArray.sort();
+          lastKnownKeys = keyArray;
           ctHandle.set(keyArray);
         })();
       }
     });
 
-    return selectize;
+    return {
+      suspend: function suspend() {
+        ctHandle.clear();
+      },
+      resume: function resume() {
+        if (lastKnownKeys) ctHandle.set(lastKnownKeys);
+      }
+    };
   }
 });
 
@@ -886,6 +921,8 @@ input.register({
       }
     }
 
+    var lastKnownKeys = null;
+
     $el.on("change.crosstalkSliderInput", function (event) {
       if (!$el.data("updating") && !$el.data("animating")) {
         var _getValue = getValue(),
@@ -902,6 +939,7 @@ input.register({
         }
         keys.sort();
         ctHandle.set(keys);
+        lastKnownKeys = keys;
       }
     });
 
@@ -922,6 +960,15 @@ input.register({
     //     ctHandle.set(keyArray);
     //   }
     // });
+
+    return {
+      suspend: function suspend() {
+        ctHandle.clear();
+      },
+      resume: function resume() {
+        if (lastKnownKeys) ctHandle.set(lastKnownKeys);
+      }
+    };
   }
 });
 
@@ -1397,7 +1444,7 @@ var Var = function () {
       // TODO: Make this extensible, to let arbitrary back-ends know that
       // something has changed
       if (global.Shiny && global.Shiny.onInputChange) {
-        global.Shiny.onInputChange(".clientValue-" + (this._group.name !== null ? this._group.name + "-" : "") + this._name, value);
+        global.Shiny.onInputChange(".clientValue-" + (this._group.name !== null ? this._group.name + "-" : "") + this._name, typeof value === "undefined" ? null : value);
       }
     }
   }, {

@@ -27,7 +27,7 @@ A \code{\link[htmltools]{browsable}} HTML element.
 \description{
 This helper function makes it easy to put HTML elements side by side. It can
 be called directly from the console but is especially designed to work in an
-R Markdown document.
+R Markdown document. Warning: This will bring in all of Bootstrap!
 }
 \examples{
 library(htmltools)

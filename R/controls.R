@@ -101,6 +101,7 @@ makeGroupOptions <- function(sharedData, group, allLevels) {
 #'   should all the levels be displayed as options, or only ones that are
 #'   present in the data?
 #' @param multiple Can multiple values be selected?
+#' @param columns Number of columns the options should be arranged into.
 #'
 #' @examples
 #' ## Only run examples in interactive R sessions
@@ -134,11 +135,28 @@ filter_select <- function(id, label, sharedData, group, allLevels = FALSE,
   ))
 }
 
+columnize <- function(columnCount, elements) {
+  if (columnCount <= 1 || length(elements) <= 1) {
+    return(elements)
+  }
+
+  columnSize <- ceiling(length(elements) / columnCount)
+  lapply(1:ceiling(length(elements) / columnSize), function(i) {
+    tags$div(class = "crosstalk-options-column",
+      {
+        start <- (i-1) * columnSize + 1
+        end <- i * columnSize
+        elements[start:end]
+      }
+    )
+  })
+}
+
 #' @param inline If \code{TRUE}, render checkbox options horizontally instead of vertically.
 #'
 #' @rdname filter_select
 #' @export
-filter_checkbox <- function(id, label, sharedData, group, allLevels = FALSE, inline = FALSE) {
+filter_checkbox <- function(id, label, sharedData, group, allLevels = FALSE, inline = FALSE, columns = 1) {
   options <- makeGroupOptions(sharedData, group, allLevels)
 
   labels <- options$items$label
@@ -151,9 +169,11 @@ filter_checkbox <- function(id, label, sharedData, group, allLevels = FALSE, inl
     tags$div(id = id, class = "form-group crosstalk-input-checkboxgroup crosstalk-input",
       tags$label(class = "control-label", `for` = id, label),
       tags$div(class = "crosstalk-options-group",
-        mapply(labels, values, FUN = function(label, value) {
-          makeCheckbox(id, value, label)
-        }, SIMPLIFY = FALSE, USE.NAMES = FALSE)
+        columnize(columns,
+          mapply(labels, values, FUN = function(label, value) {
+            makeCheckbox(id, value, label)
+          }, SIMPLIFY = FALSE, USE.NAMES = FALSE)
+        )
       ),
       tags$script(type = "application/json",
         `data-for` = id,

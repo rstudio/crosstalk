@@ -12,3 +12,16 @@ body > .container-fluid.crosstalk-bscols {
   margin-left: auto;
   margin-right: auto;
 }
+
+.crosstalk-input-checkboxgroup .crosstalk-options-group .crosstalk-options-column {
+  display: inline-block;
+  padding-right: 12px;
+  vertical-align: top;
+}
+
+@media only screen and (max-width:480px) {
+  .crosstalk-input-checkboxgroup .crosstalk-options-group .crosstalk-options-column {
+    display: block;
+    padding-right: inherit;
+  }
+}

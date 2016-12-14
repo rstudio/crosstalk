@@ -9,7 +9,7 @@ filter_select(id, label, sharedData, group, allLevels = FALSE,
   multiple = TRUE)
 
 filter_checkbox(id, label, sharedData, group, allLevels = FALSE,
-  inline = FALSE)
+  inline = FALSE, columns = 1)
 }
 \arguments{
 \item{id}{An HTML element ID; must be unique within the web page}
@@ -29,6 +29,8 @@ present in the data?}
 \item{multiple}{Can multiple values be selected?}
 
 \item{inline}{If \code{TRUE}, render checkbox options horizontally instead of vertically.}
+
+\item{columns}{Number of columns the options should be arranged into.}
 }
 \description{
 Creates a select box or list of checkboxes, for filtering a

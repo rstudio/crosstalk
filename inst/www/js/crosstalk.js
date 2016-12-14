@@ -800,7 +800,8 @@ input.register({
     var opts = {
       options: first.concat(items),
       valueField: "value",
-      labelField: "label"
+      labelField: "label",
+      searchField: "label"
     };
 
     var select = $(el).find("select")[0];

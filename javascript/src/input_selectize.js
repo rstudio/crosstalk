@@ -19,7 +19,8 @@ input.register({
     let opts = {
       options: first.concat(items),
       valueField: "value",
-      labelField: "label"
+      labelField: "label",
+      searchField: "label"
     };
 
     let select = $(el).find("select")[0];

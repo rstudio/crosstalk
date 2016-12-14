@@ -227,10 +227,11 @@ $(document).ready(function () {
 
 
 <p>Crosstalk doesn’t require the use of Shiny. You can perform linked brushing and filtering purely with JavaScript, leaving you with static HTML files that you can host on any web server.</p>
-<p>You can also choose to use Crosstalk and Shiny together, and when you do so, you broaden the capabilities of Crosstalk by allowing your brushing and filtering to drive arbitrary calculations and Shiny outputs.</p>
+<p>On the other hand, you can use Crosstalk and Shiny together, and when you do so, you broaden the capabilities of Crosstalk by allowing your brushing and filtering to drive arbitrary calculations and Shiny outputs (and vice versa).</p>
 <div id="basic-usage" class="section level3">
 <h3>Basic usage</h3>
-<p>We’ll start by creating a basic Shiny application that contains some linked widgets, simply so you can see how the parts fit together.</p>
+<p>We’ll start by creating a basic Shiny application that contains some linked widgets, simply so you can see how the parts fit together. If you’ve ever used HTML widgets with Shiny apps, this will look familiar. Our UI definition includes <code>xxxOutput</code> calls, which we then populate with server-side <code>renderXXX</code> expressions.</p>
+<p>The main thing to note here is that the <code>shared_iris</code> variable that holds the <code>SharedData</code> instance is being declared inside the server function.</p>
 <pre class="r"><code>library(shiny)
 library(crosstalk)
 library(d3scatter)
@@ -244,7 +245,7 @@ ui &lt;- fluidPage(
 
 server &lt;- function(input, output, session) {
   shared_iris &lt;- SharedData$new(iris)
-  
+
   output$scatter1 &lt;- renderD3scatter({
     d3scatter(shared_iris, ~Petal.Length, ~Petal.Width, ~Species, width = &quot;100%&quot;)
   })
@@ -255,13 +256,13 @@ server &lt;- function(input, output, session) {
 }
 
 shinyApp(ui, server)</code></pre>
-<p>If you’ve ever used HTML widgets with Shiny apps, this should look familiar. Our UI definition includes <code>xxxOutput</code> calls, which we then populate with server-side <code>renderXXX</code> expressions.</p>
-<p>The main thing to note here is that the variable that holds the <code>SharedData</code> instance is being declared at the topmost level inside the server function. <strong>It’s important that the <code>SharedData</code> object be created inside the server function, not outside it,</strong> as we often do in “regular” Shiny app development. If you create <code>SharedData</code> outside of the server function, the bidirectional communication between Crosstalk’s client and server pieces will not work and some of the capabilities below will fail to work.</p>
+<p><strong>It’s important that the <code>SharedData</code> object be created inside the server function, not outside it.</strong> If you create <code>SharedData</code> outside of the server function, the bidirectional communication between Crosstalk’s client and server pieces will not work and some of the capabilities described below will fail to work.</p>
 <p>Run the above code. It works, but doesn’t do anything we couldn’t accomplish just as well without Shiny. Let’s see what else we can do.</p>
 </div>
 <div id="using-reactive-data-sources" class="section level3">
 <h3>Using reactive data sources</h3>
-<p>One thing you can’t do in a static Crosstalk HTML page is change your data source. With Shiny, it’s easy to set up reactive expressions that react to changes over time. If you have a reactive expression that produces a data frame, simply pass the reactive expression into <code>SharedData$new</code> in place of a data frame.</p>
+<p>One thing you can’t do in a static Crosstalk HTML page is change your data (without regenerating and then reloading the page). With Shiny, it’s easy to set up reactive expressions that react to changes.</p>
+<p>Integrating reactive expressions with Crosstalk is easy. Take a reactive expression that produces a data frame, and simply pass the reactive expression into <code>SharedData$new</code> in place of a data frame.</p>
 <p>In this example, we’ll modify the previous example on this page to randomly jitter the data a couple of times a second. (If random jittering is too contrived for your taste, imagine streaming data or interactively filtered data.)</p>
 <pre class="r"><code>library(shiny)
 library(crosstalk)
@@ -285,12 +286,12 @@ server &lt;- function(input, output, session) {
     }))
   })
   shared_iris &lt;- SharedData$new(jittered_iris)
-  
+
   output$scatter1 &lt;- renderD3scatter({
     d3scatter(shared_iris, ~Petal.Length, ~Petal.Width, ~Species, width = &quot;100%&quot;,
       x_lim = range(iris$Petal.Length), y_lim = range(iris$Petal.Width))
   })
-  
+
   output$scatter2 &lt;- renderD3scatter({
     d3scatter(shared_iris, ~Sepal.Length, ~Sepal.Width, ~Species, width = &quot;100%&quot;,
       x_lim = range(iris$Sepal.Length), y_lim = range(iris$Sepal.Width))
@@ -303,7 +304,7 @@ shinyApp(ui, server)</code></pre>
 </div>
 <div id="adding-reactive-outputs" class="section level3">
 <h3>Adding reactive outputs</h3>
-<p>Not only can we use reactive data to feed <code>SharedData</code> and Crosstalk widgets (i.e. server-to-client); we can also use Crosstalk selections and filters to feed reactive expressions (i.e. client-to-server).</p>
+<p>Not only can we use reactive data to feed <code>SharedData</code> and Crosstalk widgets (i.e. server-to-client); we can also use Crosstalk selections and filters to feed reactive expressions (i.e. client-to-server). We do this using the same <code>SharedData</code> object that we pass to the widgets. This object has a <code>data()</code> method that we can use to reactively read a snapshot of the data, and optionally, the selection state of all the rows.</p>
 <p>In this example we’ll use the Crosstalk selection to drive a textual summary of the selected data.</p>
 <p>(As a bonus, we’ll also let the user subset the underlying data frame by species, using a Shiny <code>selectInput</code> and a reactive. At the time of this writing, Crosstalk filter controls don’t work particularly well with Shiny, so you can use traditional Shiny techniques to do filtering instead.)</p>
 <pre class="r"><code>library(shiny)
@@ -326,34 +327,91 @@ server &lt;- function(input, output, session) {
   user_iris &lt;- reactive({
     iris[is.null(input$species) | iris$Species %in% input$species,]
   })
-  
+
   shared_iris &lt;- SharedData$new(user_iris)
-  
+
   output$scatter1 &lt;- renderD3scatter({
     d3scatter(shared_iris, ~Petal.Length, ~Petal.Width, ~Species, width = &quot;100%&quot;)
   })
-  
+
   output$scatter2 &lt;- renderD3scatter({
     d3scatter(shared_iris, ~Sepal.Length, ~Sepal.Width, ~Species, width = &quot;100%&quot;)
   })
-  
+
   output$summary &lt;- renderPrint({
     df &lt;- shared_iris$data(withSelection = TRUE) %&gt;%
       filter(selected_ | is.na(selected_)) %&gt;%
       mutate(selected_ = NULL)
-    
+
     cat(nrow(df), &quot;observation(s) selected\n\n&quot;)
     summary(df)
   })
 }
 
 shinyApp(ui, server)</code></pre>
-<p>Calling <code>shared_iris$data()</code> with the <code>withSelection = TRUE</code> argument gives us a data frame with an additional column <code>selected_</code>, that contains <code>TRUE</code> or <code>FALSE</code> depending on whether that row is currently selected or not (or <code>NA</code> for all the rows if there is no active selection).</p>
-<p>TODO: ggplot2 aggregation example</p>
+<p>Calling <code>shared_iris$data()</code> with the <code>withSelection = TRUE</code> argument gives us a data frame with an additional column <code>selected_</code> that contains <code>TRUE</code> or <code>FALSE</code> (or <code>NA</code> for all the rows if there is no active selection). This is a reactive operation, so when the selection changes in the future, the output (or reactive expression, or observer) that called <code>data(withSelection=TRUE)</code> will automatically respond.</p>
 </div>
-<div id="driving-selection" class="section level3">
-<h3>Driving selection</h3>
-<p>TODO: Full ggplot2 linked brushing example</p>
+<div id="integrating-with-ggplot2" class="section level3">
+<h3>Integrating with ggplot2</h3>
+<p>We can use the capabilities above to integrate Crosstalk widgets with interactive ggplot2 plots driven by Shiny.</p>
+<p>For those very familiar with ggplot2 and Shiny, reflecting selection state using fill or color is straightforward but getting nice looking results is a bit tedious. For example, this code is simple but the output has some problems:</p>
+<pre class="r"><code>library(ggplot2)
+
+# Simulated sharedData$data(withSelection = TRUE)
+df &lt;- cbind(iris, selected_ = c(TRUE, FALSE, FALSE)[sample(3, nrow(iris), replace = TRUE)])
+
+ggplot(df, aes(Species, fill = selected_)) +
+  geom_bar(stat = &quot;count&quot;) +
+  scale_fill_manual(values = c(&quot;#444444&quot;, &quot;#9999FF&quot;))</code></pre>
+<p><img src="shiny_files/figure-html/unnamed-chunk-1-1.png" width="384" /></p>
+<p>This code has several problems:</p>
+<ul>
+<li>The bars are highlighted from the top down, instead of from the bottom up. This can be fixed by converting the <code>selection_</code> column to a factor with ordered levels.</li>
+<li>Though not seen in this example, when no selection is active the <code>selection_</code> column is <code>NA</code> and must be converted to <code>FALSE</code>.</li>
+<li>The legend is superfluous when you have the realtime feedback of linked brushing.</li>
+</ul>
+<p>Rather than forcing you to deal with these common problems each time, Crosstalk provides some helper functions: <code>selection_factor(selected_)</code> should be used in <code>aes</code>, and then <code>scale_fill_selection</code> or <code>scale_color_selection</code> should be used for scaling.</p>
+<pre class="r"><code>library(crosstalk)
+
+ggplot(df, aes(Species, fill = selection_factor(selected_))) +
+  geom_bar(stat = &quot;count&quot;) +
+  scale_fill_selection(&quot;#444444&quot;, &quot;#9999FF&quot;)</code></pre>
+<p><img src="shiny_files/figure-html/unnamed-chunk-2-1.png" width="288" /></p>
+<p>Much better!</p>
+<p>The following code is a complete Shiny app that uses this approach. This example uses Shiny’s new <code>debounce</code> function. (The <code>debounce</code> function has not, at time of this writing, been part of a CRAN release. You can install the latest development version of Shiny with <code>devtools::install_github(&quot;rstudio/shiny&quot;)</code>.) Without it, too many updates come from Crosstalk and cause the ggplot2 code to appear laggy.</p>
+<pre class="r"><code>library(shiny)
+library(crosstalk)
+library(d3scatter)
+library(ggplot2)
+
+ui &lt;- fluidPage(
+  fluidRow(
+    column(4, d3scatterOutput(&quot;scatter1&quot;)),
+    column(4, d3scatterOutput(&quot;scatter2&quot;)),
+    column(4, plotOutput(&quot;by_species&quot;))
+  )
+)
+
+server &lt;- function(input, output, session) {
+  shared_iris &lt;- SharedData$new(iris)
+
+  output$scatter1 &lt;- renderD3scatter({
+    d3scatter(shared_iris, ~Petal.Length, ~Petal.Width, ~Species, width = &quot;100%&quot;)
+  })
+
+  output$scatter2 &lt;- renderD3scatter({
+    d3scatter(shared_iris, ~Sepal.Length, ~Sepal.Width, ~Species, width = &quot;100%&quot;)
+  })
+
+  df &lt;- debounce(reactive(shared_iris$data(withSelection = TRUE)), 250)
+  output$by_species &lt;- renderPlot({
+    ggplot(df(), aes(Species, fill = crosstalk::selection_factor(selected_))) +
+      geom_bar(stat = &quot;count&quot;) +
+      crosstalk::scale_fill_selection(&quot;#444444&quot;, &quot;#9999FF&quot;)
+  })
+}
+
+shinyApp(ui, server)</code></pre>
 </div>
 
 <footer>

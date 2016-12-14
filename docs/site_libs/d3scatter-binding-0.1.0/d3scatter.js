@@ -21,13 +21,6 @@ HTMLWidgets.widget({
     filter_handle.on("change", function(e) {
       scatter.filter(e.value);
     });
-    scatter.on("brush", function(keys) {
-      if (keys.length === 0 && !scatter.hasBrush()) {
-        sel_handle.clear();
-      } else {
-        sel_handle.set(keys);
-      }
-    });
 
     return {
       renderValue: function(value) {
@@ -41,6 +34,10 @@ HTMLWidgets.widget({
           .x_lim(value.x_lim)
           .y_lim(value.y_lim)
           .key(value.data.key || d3.range(value.data.x.length));
+
+        scatter.on("brush", function(keys) {
+          sel_handle.set(keys);
+        });
 
         sel_handle.setGroup(value.group);
         filter_handle.setGroup(value.group);

@@ -1,11 +1,12 @@
 bootstrapLib <- function(theme = NULL) {
-  htmlDependency("bootstrap", "3.3.6",
-    system.file("www/lib/bootstrap", package = "crosstalk"),
+  # Intentionally use an older version of bootstrap. The rendering
+  # environment may use a bootstrap version that has a theme, and
+  # we don't want to trump that just for our little controls.
+  # Ideally we should find a better solution for this.
+  htmlDependency("bootstrap", "3.3.2",
+    system.file("lib/bootstrap", package = "crosstalk"),
     script = c(
-      "js/bootstrap.min.js",
-      # These shims are necessary for IE 8 compatibility
-      "shim/html5shiv.min.js",
-      "shim/respond.min.js"
+      "js/bootstrap.min.js"
     ),
     stylesheet = if (is.null(theme)) "css/bootstrap.min.css",
     meta = list(viewport = "width=device-width, initial-scale=1")
@@ -15,7 +16,7 @@ bootstrapLib <- function(theme = NULL) {
 selectizeLib <- function(bootstrap = TRUE) {
   htmlDependency(
     "selectize", "0.11.2",
-    system.file("www/lib/selectize", package = "crosstalk"),
+    system.file("lib/selectize", package = "crosstalk"),
     stylesheet = if (bootstrap) "css/selectize.bootstrap3.css",
     script = "js/selectize.min.js"
   )
@@ -24,7 +25,7 @@ selectizeLib <- function(bootstrap = TRUE) {
 jqueryLib <- function() {
   htmlDependency(
     "jquery", "1.11.3",
-    system.file("www/lib/jquery", package = "crosstalk"),
+    system.file("lib/jquery", package = "crosstalk"),
     script = "jquery.min.js"
   )
 }
@@ -33,7 +34,7 @@ ionrangesliderLibs <- function() {
   list(
     jqueryLib(),
     htmlDependency("ionrangeslider", "2.1.2",
-      system.file("www/lib/ionrangeslider", package = "crosstalk"),
+      system.file("lib/ionrangeslider", package = "crosstalk"),
       script = "js/ion.rangeSlider.min.js",
       # ion.rangeSlider also needs normalize.css, which is already included in
       # Bootstrap.
@@ -41,7 +42,7 @@ ionrangesliderLibs <- function() {
         "css/ion.rangeSlider.skinShiny.css")
     ),
     htmlDependency("strftime", "0.9.2",
-      system.file("www/lib/strftime", package = "crosstalk"),
+      system.file("lib/strftime", package = "crosstalk"),
       script = "strftime-min.js"
     )
   )

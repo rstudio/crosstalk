@@ -27,6 +27,5 @@ output:
     toc_depth: 3
     toc_float: true
     include:
-      in_header: _header.html
       after_body: _footer.html
 output_dir: .

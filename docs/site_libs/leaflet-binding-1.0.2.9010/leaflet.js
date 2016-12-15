@@ -1391,7 +1391,7 @@ methods.addMarkers = function (lat, lng, icon, layerId, group, options, popup, p
   }
 };
 
-methods.addAwesomeMarkers = function (lat, lng, icon, layerId, group, options, popup, popupOptions, clusterOptions, clusterId, label, labelOptions) {
+methods.addAwesomeMarkers = function (lat, lng, icon, layerId, group, options, popup, popupOptions, clusterOptions, clusterId, label, labelOptions, crosstalkOptions) {
   var icondf = void 0;
   var getIcon = void 0;
   if (icon) {
@@ -1413,7 +1413,7 @@ methods.addAwesomeMarkers = function (lat, lng, icon, layerId, group, options, p
 
   if (!(_jquery2.default.isEmptyObject(lat) || _jquery2.default.isEmptyObject(lng)) || _jquery2.default.isNumeric(lat) && _jquery2.default.isNumeric(lng)) {
 
-    var df = new _dataframe2.default().col("lat", lat).col("lng", lng).col("layerId", layerId).col("group", group).col("popup", popup).col("popupOptions", popupOptions).col("label", label).col("labelOptions", labelOptions).cbind(options);
+    var df = new _dataframe2.default().col("lat", lat).col("lng", lng).col("layerId", layerId).col("group", group).col("popup", popup).col("popupOptions", popupOptions).col("label", label).col("labelOptions", labelOptions).cbind(options).cbind(crosstalkOptions || {});
 
     if (icon) icondf.effectiveLength = df.nrow();
 
@@ -1435,7 +1435,7 @@ function addLayers(map, category, df, layerFunc) {
         (function () {
           var thisId = df.get(i, "layerId");
           var thisGroup = df.get(i, "group");
-          _this4.layerManager.addLayer(layer, category, thisId, thisGroup);
+          _this4.layerManager.addLayer(layer, category, thisId, thisGroup, df.get(i, "ctGroup", true), df.get(i, "ctKey", true));
           if (layer.bindPopup) {
             var popup = df.get(i, "popup");
             var popupOptions = df.get(i, "popupOptions");
@@ -1501,9 +1501,9 @@ function addLayers(map, category, df, layerFunc) {
 
 methods.addGenericLayers = addLayers;
 
-methods.addCircles = function (lat, lng, radius, layerId, group, options, popup, popupOptions, label, labelOptions, highlightOptions) {
+methods.addCircles = function (lat, lng, radius, layerId, group, options, popup, popupOptions, label, labelOptions, highlightOptions, crosstalkOptions) {
   if (!(_jquery2.default.isEmptyObject(lat) || _jquery2.default.isEmptyObject(lng)) || _jquery2.default.isNumeric(lat) && _jquery2.default.isNumeric(lng)) {
-    var df = new _dataframe2.default().col("lat", lat).col("lng", lng).col("radius", radius).col("layerId", layerId).col("group", group).col("popup", popup).col("popupOptions", popupOptions).col("label", label).col("labelOptions", labelOptions).col("highlightOptions", highlightOptions).cbind(options);
+    var df = new _dataframe2.default().col("lat", lat).col("lng", lng).col("radius", radius).col("layerId", layerId).col("group", group).col("popup", popup).col("popupOptions", popupOptions).col("label", label).col("labelOptions", labelOptions).col("highlightOptions", highlightOptions).cbind(options).cbind(crosstalkOptions || {});
 
     addLayers(this, "shape", df, function (df, i) {
       if (_jquery2.default.isNumeric(df.get(i, "lat")) && _jquery2.default.isNumeric(df.get(i, "lng")) && _jquery2.default.isNumeric(df.get(i, "radius"))) {
@@ -1515,9 +1515,9 @@ methods.addCircles = function (lat, lng, radius, layerId, group, options, popup,
   }
 };
 
-methods.addCircleMarkers = function (lat, lng, radius, layerId, group, options, clusterOptions, clusterId, popup, popupOptions, label, labelOptions) {
+methods.addCircleMarkers = function (lat, lng, radius, layerId, group, options, clusterOptions, clusterId, popup, popupOptions, label, labelOptions, crosstalkOptions) {
   if (!(_jquery2.default.isEmptyObject(lat) || _jquery2.default.isEmptyObject(lng)) || _jquery2.default.isNumeric(lat) && _jquery2.default.isNumeric(lng)) {
-    var df = new _dataframe2.default().col("lat", lat).col("lng", lng).col("radius", radius).col("layerId", layerId).col("group", group).col("popup", popup).col("popupOptions", popupOptions).col("label", label).col("labelOptions", labelOptions).cbind(options);
+    var df = new _dataframe2.default().col("lat", lat).col("lng", lng).col("radius", radius).col("layerId", layerId).col("group", group).col("popup", popup).col("popupOptions", popupOptions).col("label", label).col("labelOptions", labelOptions).cbind(crosstalkOptions || {}).cbind(options);
 
     addMarkers(this, df, group, clusterOptions, clusterId, function (df, i) {
       return _leaflet2.default.circleMarker([df.get(i, "lat"), df.get(i, "lng")], df.get(i));
@@ -2203,7 +2203,7 @@ methods.removeMeasure = function () {
   delete this.measureControl;
 };
 
-methods.addSelect = function (crosstalkOptions) {
+methods.addSelect = function (ctGroup) {
   var _this8 = this;
 
   methods.removeSelect.call(this);
@@ -2217,9 +2217,9 @@ methods.addSelect = function (crosstalkOptions) {
         btn.state("select-active");
         _this8._locationFilter = new _leaflet2.default.LocationFilter2();
 
-        if (crosstalkOptions && crosstalkOptions.ctGroup) {
+        if (ctGroup) {
           (function () {
-            var selectionHandle = new global.crosstalk.SelectionHandle(crosstalkOptions.ctGroup);
+            var selectionHandle = new global.crosstalk.SelectionHandle(ctGroup);
             selectionHandle.on("change", function (e) {
               if (e.sender !== selectionHandle) {
                 if (_this8._locationFilter) {
@@ -2258,7 +2258,7 @@ methods.addSelect = function (crosstalkOptions) {
   this._selectButton.addTo(this);
 };
 
-methods.removeSelect = function (crosstalkOptions) {
+methods.removeSelect = function () {
   if (this._locationFilter) {
     this._locationFilter.disable();
   }

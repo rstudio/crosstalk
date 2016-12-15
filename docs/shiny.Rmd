@@ -39,11 +39,11 @@ server <- function(input, output, session) {
 shinyApp(ui, server)
 ```
 
-[Live demo](https://gallery.shinyapps.io/crosstalk_01_two_scatter/)
+[Live demo](https://gallery.shinyapps.io/crosstalk_01_two_scatter/){.btn .btn-success}
 
 **It's important that the `SharedData` object be created inside the server function, not outside it.** If you create `SharedData` outside of the server function, the bidirectional communication between Crosstalk's client and server pieces will not work and some of the capabilities described below will fail to work.
 
-Run the above code, or click the Live Demo link just below it. This app works, but doesn't do anything we couldn't accomplish just as well without Shiny. Let's see what else we can do.
+Run the above code, or click the Live Demo button just below it. This app works, but doesn't do anything we couldn't accomplish just as well without Shiny. Let's see what else we can do.
 
 ### Using reactive data sources
 
@@ -91,7 +91,7 @@ server <- function(input, output, session) {
 shinyApp(ui, server)
 ```
 
-[Live demo](https://gallery.shinyapps.io/crosstalk_02_jittered/)
+[Live demo](https://gallery.shinyapps.io/crosstalk_02_jittered/){.btn .btn-success}
 
 Notice that we passed the reactive expression itself (`jittered_iris`), not the value of the reactive expression (`jittered_iris()`). We don't want to *read* the reactive expression at the time that we construct the `SharedData` object, but instead, want to give the reactive expression itself to the new object so the latter can read the former at any point in the future. If this feels foreign to you, think of how you pass a function name, not a function call, to `lapply`; that's exactly analogous to what we're doing here.
 
@@ -150,7 +150,7 @@ server <- function(input, output, session) {
 shinyApp(ui, server)
 ```
 
-[Live demo](https://gallery.shinyapps.io/crosstalk_03_summary/)
+[Live demo](https://gallery.shinyapps.io/crosstalk_03_summary/){.btn .btn-success}
 
 Calling `shared_iris$data()` with the `withSelection = TRUE` argument gives us a data frame with an additional column `selected_` that contains `TRUE` or `FALSE` (or `NA` for all the rows if there is no active selection). This is a reactive operation, so when the selection changes in the future, the output (or reactive expression, or observer) that called `data(withSelection=TRUE)` will automatically respond.
 
@@ -189,7 +189,7 @@ ggplot(df, aes(Species, fill = selection_factor(selected_))) +
 
 Much better!
 
-The following code is a complete Shiny app that uses this approach. This example uses Shiny's new `debounce` function. (The `debounce` function has not, at time of this writing, been part of a CRAN release. You can install the latest development version of Shiny with `devtools::install_github("rstudio/shiny")`.) Without it, too many updates come from Crosstalk and cause the ggplot2 code to appear laggy.
+The following code is a complete Shiny app that uses this approach. This example uses Shiny's new `debounce` function, which filters a reactive expression to slow down its rate of change. Without it, too many updates come from Crosstalk and cause the ggplot2 code to appear laggy. (The `debounce` function has not, at time of this writing, been part of a CRAN release. You can install the latest development version of Shiny with `devtools::install_github("rstudio/shiny")`.)
 
 ```r
 library(shiny)
@@ -226,3 +226,5 @@ server <- function(input, output, session) {
 
 shinyApp(ui, server)
 ```
+
+[Live demo](https://gallery.shinyapps.io/crosstalk_04_ggplot2/){.btn .btn-success}

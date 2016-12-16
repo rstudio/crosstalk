@@ -33,12 +33,10 @@ Description: Provides building blocks for allowing HTML widgets to communicate
     supports linked brushing and filtering.
 License: MIT + file LICENSE
 Imports:
-    dplyr,
     htmltools (>= 0.3.5),
     jsonlite,
     lazyeval,
     R6,
-    shiny (>= 0.11)
-Enhances:
+    shiny (>= 0.11),
     ggplot2
 RoxygenNote: 5.0.1

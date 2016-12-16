@@ -4,6 +4,7 @@ r:
   - release
   - devel
 sudo: false
+cache: packages
 
 install:
   - . $HOME/.nvm/nvm.sh

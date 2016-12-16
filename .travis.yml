@@ -6,7 +6,7 @@ r:
 sudo: false
 cache: packages
 
-install:
+before_install:
   - . $HOME/.nvm/nvm.sh
   - nvm install stable
   - nvm use stable
@@ -16,8 +16,6 @@ install:
   - grunt build
   - npm run coverage
   - git diff --exit-code >/dev/null
-  - R --no-save --quiet -e "install.packages('devtools')"
-  - R --no-save --quiet -e "devtools::install_deps(dependencies = TRUE)"
 
 notifications:
   email:

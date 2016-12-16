@@ -7,19 +7,20 @@
 // a global object
 var DTWidget = {};
 
+// 123456666.7890 -> 123,456,666.7890
+var markInterval = function(d, digits, interval, mark, decMark, precision) {
+  x = precision ? d.toPrecision(digits) : d.toFixed(digits);
+  if (!/^-?[\d.]+$/.test(x)) return x;
+  var xv = x.split('.');
+  if (xv.length > 2) return x;  // should have at most one decimal point
+  xv[0] = xv[0].replace(new RegExp('\\B(?=(\\d{' + interval + '})+(?!\\d))', 'g'), mark);
+  return xv.join(decMark);
+};
+
 DTWidget.formatCurrency = function(thiz, row, data, col, currency, digits, interval, mark, decMark, before) {
   var d = parseFloat(data[col]);
   if (isNaN(d)) return;
-  // 123456666.7890 -> 123,456,666.7890
-  var markInterval = function(x, interval, mark) {
-    if (!/^-?[\d.]+$/.test(x)) return x;
-    var xv = x.split('.');
-    if (xv.length > 2) return x;  // should have at most one decimal point
-    xv[0] = xv[0].replace(new RegExp('\\B(?=(\\d{' + interval + '})+(?!\\d))', 'g'), mark);
-    return xv.join(decMark);
-  };
-  d = d.toFixed(digits);
-  var res = markInterval(d, interval, mark);
+  var res = markInterval(d, digits, interval, mark, decMark);
   res = before ? (/^-/.test(res) ? '-' + currency + res.replace(/^-/, '') : currency + res) :
     res + currency;
   $(thiz.api().cell(row, col).node()).html(res);
@@ -27,33 +28,35 @@ DTWidget.formatCurrency = function(thiz, row, data, col, currency, digits, inter
 
 DTWidget.formatString = function(thiz, row, data, col, prefix, suffix) {
   var d = data[col];
-  if (d == null) return;
+  if (d === null) return;
   $(thiz.api().cell(row, col).node()).html(prefix + d + suffix);
 };
 
-DTWidget.formatPercentage = function(thiz, row, data, col, digits) {
+DTWidget.formatPercentage = function(thiz, row, data, col, digits, interval, mark, decMark) {
   var d = parseFloat(data[col]);
   if (isNaN(d)) return;
-  $(thiz.api().cell(row, col).node()).html((d * 100).toFixed(digits) + '%');
+  $(thiz.api().cell(row, col).node())
+  .html(markInterval(d * 100, digits, interval, mark, decMark) + '%');
 };
 
-DTWidget.formatRound = function(thiz, row, data, col, digits) {
+DTWidget.formatRound = function(thiz, row, data, col, digits, interval, mark, decMark) {
   var d = parseFloat(data[col]);
   if (isNaN(d)) return;
-  $(thiz.api().cell(row, col).node()).html(d.toFixed(digits));
+  $(thiz.api().cell(row, col).node()).html(markInterval(d, digits, interval, mark, decMark));
 };
 
-DTWidget.formatSignif = function(thiz, row, data, col, digits) {
+DTWidget.formatSignif = function(thiz, row, data, col, digits, interval, mark, decMark) {
   var d = parseFloat(data[col]);
   if (isNaN(d)) return;
-  $(thiz.api().cell(row, col).node()).html(d.toPrecision(digits));
+  $(thiz.api().cell(row, col).node())
+    .html(markInterval(d, digits, interval, mark, decMark, true));
 };
 
-DTWidget.formatDate = function(thiz, row, data, col, method) {
+DTWidget.formatDate = function(thiz, row, data, col, method, params) {
   var d = data[col];
   if (d === null) return;
   d = new Date(d);
-  $(thiz.api().cell(row, col).node()).html(d[method]());
+  $(thiz.api().cell(row, col).node()).html(d[method].apply(d, params));
 };
 
 window.DTWidget = DTWidget;
@@ -89,7 +92,13 @@ HTMLWidgets.widget({
   type: "output",
   initialize: function(el, width, height) {
     $(el).html('&nbsp;');
-    return { data: null };
+    return {
+      data: null,
+      ctfilterHandle: new crosstalk.FilterHandle(),
+      ctfilterSubscription: null,
+      ctselectHandle: new crosstalk.SelectionHandle(),
+      ctselectSubscription: null
+    };
   },
   renderValue: function(el, data, instance) {
     if (el.offsetWidth === 0 || el.offsetHeight === 0) {
@@ -106,8 +115,8 @@ HTMLWidgets.widget({
 
     if (data.options.crosstalkOptions.group) {
       maybeInstallCrosstalkPlugins();
-      var ctGroup = data.options.crosstalkOptions.group;
-      data.options.crosstalkOptions.filterHandle = new crosstalk.FilterHandle(ctGroup);
+      instance.ctfilterHandle.setGroup(data.options.crosstalkOptions.group);
+      instance.ctselectHandle.setGroup(data.options.crosstalkOptions.group);
     }
 
     // If we are in a flexdashboard scroll layout then we:
@@ -247,11 +256,21 @@ HTMLWidgets.widget({
 
     var table = $table.DataTable(options);
     $el.data('datatable', table);
+
+    // Unregister previous Crosstalk event subscriptions, if they exist
+    if (instance.ctfilterSubscription) {
+      instance.ctfilterHandle.off("change", instance.ctfilterSubscription);
+      instance.ctfilterSubscription = null;
+    }
+    if (instance.ctselectSubscription) {
+      instance.ctselectHandle.off("change", instance.ctselectSubscription);
+      instance.ctselectSubscription = null;
+    }
+
     if (!data.options.crosstalkOptions.group) {
       $table[0].ctfilter = null;
       $table[0].ctselect = null;
     } else {
-      var crosstalkFilter = new crosstalk.FilterHandle(data.options.crosstalkOptions.group);
       var key = data.options.crosstalkOptions.key;
       function keysToMatches(keys) {
         if (!keys) {
@@ -274,11 +293,11 @@ HTMLWidgets.widget({
         $table[0].ctfilter = keysToMatches(e.value);
         table.draw();
       }
-      crosstalkFilter.on("change", applyCrosstalkFilter);
-      applyCrosstalkFilter({value: crosstalkFilter.filteredKeys});
+      instance.ctfilterSubscription = instance.ctfilterHandle.on("change", applyCrosstalkFilter);
+      applyCrosstalkFilter({value: instance.ctfilterHandle.filteredKeys});
 
       function applyCrosstalkSelection(e) {
-        if (e.sender !== el) {
+        if (e.sender !== instance.ctselect) {
           table
             .rows('.' + selClass, {search: 'applied'})
             .nodes()
@@ -288,7 +307,7 @@ HTMLWidgets.widget({
             changeInput('rows_selected', selectedRows(), void 0, true);
         }
 
-        if (e.sender !== el && e.value && e.value.length) {
+        if (e.sender !== instance.ctselect && e.value && e.value.length) {
           $table[0].ctselect = keysToMatches(e.value);
           table.draw();
         } else {
@@ -298,10 +317,9 @@ HTMLWidgets.widget({
           }
         }
       }
-      var crosstalkSelection = new crosstalk.SelectionHandle(data.options.crosstalkOptions.group);
-      crosstalkSelection.on("change", applyCrosstalkSelection);
+      instance.ctselectSubscription = instance.ctselectHandle.on("change", applyCrosstalkSelection);
       // TODO: This next line doesn't seem to work when renderDataTable is used
-      applyCrosstalkSelection({value: crosstalkSelection.value});
+      applyCrosstalkSelection({value: instance.ctselectHandle.value});
     }
 
     var inArray = function(val, array) {
@@ -325,16 +343,16 @@ HTMLWidgets.widget({
         $input.on('input blur', function() {
           $input.next('span').toggle(Boolean($input.val()));
         });
-        var searchCol;  // search string for this column
-        if (searchCols && searchCols[i]) {
-          searchCol = searchCols[i];
-          $input.val(searchCol);
-        }
         // Bootstrap sets pointer-events to none and we won't be able to click
         // the clear button
         $input.next('span').css('pointer-events', 'auto').hide().click(function() {
           $(this).hide().prev('input').val('').trigger('input').focus();
         });
+        var searchCol;  // search string for this column
+        if (searchCols && searchCols[i]) {
+          searchCol = searchCols[i];
+          $input.val(searchCol).trigger('input');
+        }
         var $x = $td.children('div').last();
 
         // remove the overflow: hidden attribute of the scrollHead
@@ -365,22 +383,24 @@ HTMLWidgets.widget({
             plugins: ['remove_button'],
             hideSelected: true,
             onChange: function(value) {
-              $input.val(value === null ? '' : JSON.stringify(value));
-              if (value) $input.trigger('input');
+              if (value === null) value = []; // compatibility with jQuery 3.0
+              $input.val(value.length ? JSON.stringify(value) : '');
+              if (value.length) $input.trigger('input');
               $input.attr('title', $input.val());
               if (server) {
-                table.column(i).search(value ? encode_plus(JSON.stringify(value)) : '').draw();
+                table.column(i).search(value.length ? encode_plus(JSON.stringify(value)) : '').draw();
                 return;
               }
               // turn off filter if nothing selected
-              $td.data('filter', value !== null && value.length > 0);
+              $td.data('filter', value.length > 0);
               table.draw();  // redraw table, and filters will be applied
             }
           });
+          if (searchCol) filter[0].selectize.setValue(JSON.parse(searchCol));
           // an ugly hack to deal with shiny: for some reason, the onBlur event
           // of selectize does not work in shiny
           $x.find('div > div.selectize-input > input').on('blur', function() {
-            $x.hide().trigger('hide'); $input.parent().show();
+            $x.hide().trigger('hide'); $input.parent().show(); $input.trigger('blur');
           });
           filter.next('div').css('margin-bottom', 'auto');
         } else if (type === 'character') {
@@ -636,30 +656,29 @@ HTMLWidgets.widget({
 
     // run the callback function on the table instance
     if (typeof data.callback === 'function') data.callback(table);
-    this.adjustWidth(el);
 
-     // fillContainer = TRUE behavior
-    if (instance.fillContainer) {
-
-      // we need to wait just a bit to do this so DT can completely
-      // finish laying itself out
-      var thiz = this;
-      setTimeout(function() {
-
+    var thiz = this;
+    table.on('init', function(e) {
+      // fillContainer = TRUE behavior
+      if (instance.fillContainer) {
         // calculate correct height
         thiz.fillAvailableHeight(el, $(el).innerHeight());
-
-        // we need to force DT to recalculate column widths
-        // (otherwise all the columns are the same size)
-        table.columns.adjust();
-      }, 200);
-    }
+      }
+      // we need to force DT to recalculate column widths
+      // (otherwise all the columns are the same size)
+      thiz.adjustWidth(el);
+    });
 
     // interaction with shiny
     if (!HTMLWidgets.shinyMode && !data.options.crosstalkOptions.group) return;
 
     var methods = {};
     var shinyData = {};
+
+    methods.updateCaption = function(caption) {
+      if (!caption) return;
+      $table.children('caption').replaceWith(caption);
+    }
 
     var changeInput = function(id, value, type, noCrosstalk) {
       var event = id;
@@ -685,9 +704,7 @@ HTMLWidgets.widget({
               selectedKeys.push(keys[value[i] - 1]);
             }
           }
-          var ctsel = new crosstalk.SelectionHandle(data.options.crosstalkOptions.group);
-          ctsel.set(selectedKeys, {sender: el});
-          ctsel.close();
+          instance.ctselectHandle.set(selectedKeys);
         }
       }
     };
@@ -732,7 +749,7 @@ HTMLWidgets.widget({
       // row, column, or cell selection
       if (inArray(selTarget, ['row', 'row+column'])) {
         var selectedRows = function() {
-          var rows = table.rows('.' + selClass, {search: 'applied'});
+          var rows = table.rows('.' + selClass);
           var idx = rows.indexes().toArray();
           if (!server) return addOne(idx);
           idx = idx.map(function(i) {
@@ -899,7 +916,7 @@ HTMLWidgets.widget({
     updateTableInfo();
 
     // state info
-    table.on('draw.dt', function() {
+    table.on('draw.dt column-visibility.dt', function() {
       changeInput('state', table.state());
     });
     changeInput('state', table.state());
@@ -922,6 +939,11 @@ HTMLWidgets.widget({
     })
     changeInput('cell_clicked', {});
 
+    // do not trigger table selection when clicking on links unless they have classes
+    table.on('click.dt', 'tbody td a', function(e) {
+      if (this.className === '') e.stopPropagation();
+    });
+
     methods.addRow = function(data, rowname) {
       var data0 = table.row(0).data(), n = data0.length, d = n - data.length;
       if (d === 1) {
@@ -932,6 +954,39 @@ HTMLWidgets.widget({
         throw 'New data must be of the same length as current data (' + n + ')';
       };
       table.row.add(data).draw();
+    }
+
+    methods.updateSearch = function(keywords) {
+      if (keywords.global !== null)
+        $(table.table().container()).find('input[type=search]').first()
+             .val(keywords.global).trigger('input');
+      var columns = keywords.columns;
+      if (!filterRow || columns === null) return;
+      filterRow.toArray().map(function(td, i) {
+        var v = typeof columns === 'string' ? columns : columns[i];
+        if (typeof v === 'undefined') {
+          console.log('The search keyword for column ' + i + ' is undefined')
+          return;
+        }
+        $(td).find('input').first().val(v);
+        table.column(i).search(v);
+      });
+      table.draw();
+    }
+
+    methods.selectPage = function(page) {
+      if (table.page.info().pages < page || page < 1) {
+        throw 'Selected page is out of range';
+      };
+      table.page(page - 1).draw(false);
+    }
+
+    methods.reloadData = function(resetPaging, clearSelection) {
+      // empty selections first if necessary
+      if (methods.selectRows && inArray('row', clearSelection)) methods.selectRows([]);
+      if (methods.selectColumns && inArray('column', clearSelection)) methods.selectColumns([]);
+      if (methods.selectCells && inArray('cell', clearSelection)) methods.selectCells([]);
+      table.ajax.reload(null, resetPaging);
     }
 
     table.shinyMethods = methods;

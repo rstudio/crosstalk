@@ -1,0 +1,68 @@
+---
+title: List of compatible HTML widgets
+---
+
+This page lists some HTML widgets that are compatible with Crosstalk.
+
+(To add a widget, please submit a PR with modifications to [this page](https://github.com/rstudio/crosstalk/edit/master/docs/authoring.Rmd).)
+
+<style type="text/css">
+img.widget-thumbnail {
+  width: 225px;
+  height: auto;
+  border: 1px solid #e6e6e6;
+  float: left;
+  padding: 3px;
+  margin-right: 20px;
+  margin-bottom: 40px;
+}
+.section.level3 hr {
+  clear: both;
+}
+</style>
+
+
+
+---
+
+[![Plotly screenshot](thumbnails/ropensci-plotly.png){.widget-thumbnail}](https://cpsievert.github.io/plotly_book/)
+
+### [Plotly](https://cpsievert.github.io/plotly_book/)
+
+Plotly is a general purpose plotting library that outputs interactive web graphics.
+
+```r
+devtools::install_github("ropensci/plotly")
+```
+
+
+
+---
+
+[![Leaflet screenshot](thumbnails/rstudio-leaflet.png){.widget-thumbnail}](https://rstudio.github.io/leaflet/)
+
+### [Leaflet](https://rstudio.github.io/leaflet/)
+
+Leaflet lets you easily generate interactive maps using R.
+
+```r
+devtools::install_github("rstudio/leaflet")
+```
+
+
+
+---
+
+[![DT screenshot](thumbnails/rstudio-DT.png){.widget-thumbnail}](https://rstudio.github.io/DT/)
+
+### [DT](https://rstudio.github.io/DT/)
+
+DT is a highly customizable data table library.
+
+```r
+devtools::install_github("rstudio/DT")
+```
+
+
+
+---

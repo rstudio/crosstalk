@@ -11,6 +11,8 @@ navbar:
       href: authoring.html
     - text: "Shiny"
       href: shiny.html
+    - text: "Compatible widgets"
+      href: widgets.html
     - text: "Reference (JS)"
       menu:
         - text: "FilterHandle"

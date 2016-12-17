@@ -244,16 +244,6 @@ HTMLWidgets.widget({
       };
     }
 
-    var highlightKeys = null;
-    options.rowCallback = function(row, data, index, fullIndex) {
-      var $row = $(row);
-      if (highlightKeys === null) {
-        $row.removeClass("dt-crosstalk-fade");
-      } else {
-        $row.toggleClass("dt-crosstalk-fade", !highlightKeys[key[fullIndex]]);
-      }
-    };
-
     var table = $table.DataTable(options);
     $el.data('datatable', table);
 
@@ -297,7 +287,7 @@ HTMLWidgets.widget({
       applyCrosstalkFilter({value: instance.ctfilterHandle.filteredKeys});
 
       function applyCrosstalkSelection(e) {
-        if (e.sender !== instance.ctselect) {
+        if (e.sender !== instance.ctselectHandle) {
           table
             .rows('.' + selClass, {search: 'applied'})
             .nodes()
@@ -307,7 +297,7 @@ HTMLWidgets.widget({
             changeInput('rows_selected', selectedRows(), void 0, true);
         }
 
-        if (e.sender !== instance.ctselect && e.value && e.value.length) {
+        if (e.sender !== instance.ctselectHandle && e.value && e.value.length) {
           $table[0].ctselect = keysToMatches(e.value);
           table.draw();
         } else {

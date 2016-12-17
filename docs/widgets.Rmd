@@ -29,7 +29,9 @@ img.widget-thumbnail {
 
 ### [Plotly](https://cpsievert.github.io/plotly_book/)
 
-Plotly is a general purpose plotting library that outputs interactive web graphics.
+**Author:** [Carson Sievert](https://github.com/cpsievert)
+
+Plotly is a general purpose plotting library that outputs interactive web graphics using [plotly.js](https://plot.ly/javascript/).
 
 ```r
 devtools::install_github("ropensci/plotly")
@@ -43,7 +45,9 @@ devtools::install_github("ropensci/plotly")
 
 ### [Leaflet](https://rstudio.github.io/leaflet/)
 
-Leaflet lets you easily generate interactive maps using R.
+**Author:** [RStudio](https://github.com/rstudio)
+
+Leaflet lets you easily generate interactive maps using R. It is a wrapper for the very popular [Leaflet JavaScript library](http://leafletjs.com/) by [Vladamir Agafonkin](http://agafonkin.com/en/).
 
 ```r
 devtools::install_github("rstudio/leaflet")
@@ -57,7 +61,9 @@ devtools::install_github("rstudio/leaflet")
 
 ### [DT](https://rstudio.github.io/DT/)
 
-DT is a highly customizable data table library.
+**Author:** [RStudio](https://github.com/rstudio)
+
+DT is a highly customizable data table library. It wraps the [DataTables plug-in for jQuery](https://datatables.net/).
 
 ```r
 devtools::install_github("rstudio/DT")

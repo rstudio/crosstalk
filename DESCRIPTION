@@ -39,4 +39,6 @@ Imports:
     R6,
     shiny (>= 0.11),
     ggplot2
+URL: https://rstudio.github.io/crosstalk/
+BugReports: https://github.com/rstudio/crosstalk/issues
 RoxygenNote: 5.0.1

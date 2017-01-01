@@ -10,7 +10,8 @@ scale_fill_selection(color_false, color_true)
 
 scale_color_selection(color_false, color_true)
 
-selection_factor(x, na.replace = c(FALSE, NA, TRUE))
+selection_factor(x, na.replace = c(FALSE, NA, TRUE),
+  reverse = packageVersion("ggplot2") < "2.2.0")
 }
 \arguments{
 \item{color_false}{The color that should be mapped to unselected rows}
@@ -23,6 +24,10 @@ vector indicating which rows are selected}
 \item{na.replace}{The value to use to replace \code{NA} values; choose either
 \code{FALSE}, \code{NA}, or \code{TRUE} based on how you want values to be
 treated when no selection is active}
+
+\item{reverse}{Whether the factor level order should be \code{c(FALSE, TRUE)}
+(normal) or \code{c(TRUE, FALSE)} (reverse). The former is required for
+ggplot2 2.2.0+, the latter for earlier versions.}
 }
 \description{
 Add \code{scale_fill_selection()} or \code{scale_color_selection} to a ggplot

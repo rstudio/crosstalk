@@ -42,9 +42,14 @@ scale_color_selection <- function(color_false, color_true) {
 #' @param na.replace The value to use to replace \code{NA} values; choose either
 #'   \code{FALSE}, \code{NA}, or \code{TRUE} based on how you want values to be
 #'   treated when no selection is active
+#' @param reverse Whether the factor level order should be \code{c(FALSE, TRUE)}
+#'   (normal) or \code{c(TRUE, FALSE)} (reverse). The former is required for
+#'   ggplot2 2.2.0+, the latter for earlier versions.
 #' @rdname scale_fill_selection
 #' @export
-selection_factor <- function(x, na.replace = c(FALSE, NA, TRUE)) {
+selection_factor <- function(x, na.replace = c(FALSE, NA, TRUE),
+  reverse = packageVersion("ggplot2") < "2.2.0") {
+
   if (missing(na.replace))
     na.replace <- FALSE
 
@@ -54,7 +59,14 @@ selection_factor <- function(x, na.replace = c(FALSE, NA, TRUE)) {
     x$selected_
   }
   selection[is.na(selection)] <- na.replace
-  factor(selection, ordered = TRUE, levels = c(TRUE, FALSE))
+
+  lvls <- if (reverse) {
+    c(TRUE, FALSE)
+  } else {
+    c(FALSE, TRUE)
+  }
+
+  factor(selection, ordered = TRUE, levels = lvls)
 }
 
 #' Synchronize Shiny brush selection with shared data

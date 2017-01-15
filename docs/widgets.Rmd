@@ -72,3 +72,17 @@ devtools::install_github("rstudio/DT")
 
 
 ---
+
+
+[![D3TableFilter screenhsot](thumbnails/d3tf.png){.widget-thumbnail}](https://github.com/ThomasSiegmund/D3TableFilter)
+
+### [D3TableFilter](https://github.com/ThomasSiegmund/D3TableFilter)
+
+**Author:** [Thomas Siegmund](https://github.com/ThomasSiegmund)
+
+D3TableFilter is a versatile table widget, based on [TableFilter](https://github.com/koalyptus/TableFilter) and D3. It supports advanced filtering, sorting, editing, and styling of tables using D3. 
+
+```r
+devtools::install_github("ThomasSiegmund/D3TableFilter")
+```
+

@@ -406,9 +406,9 @@ myWidget(sd)</code></pre>
 <pre class="r"><code>myWidget &lt;- function(data, width = NULL, height = NULL) {
   if (is.SharedData(data)) {
     # Using Crosstalk
-    key &lt;- sharedData$key()
-    group &lt;- sharedData$groupName()
-    data &lt;- sharedData$origData()
+    key &lt;- data$key()
+    group &lt;- data$groupName()
+    data &lt;- data$origData()
   } else {
     # Not using Crosstalk
     key &lt;- NULL
@@ -423,7 +423,9 @@ myWidget(sd)</code></pre>
     )
   )
 
-  createWidget(&quot;myWidget&quot;, x, width=width, height=height)
+  createWidget(&quot;myWidget&quot;, x, width=width, height=height,
+    dependencies = crosstalk::crosstalkLibs()
+  )
 }</code></pre>
 <p>Now in your JavaScript binding’s <code>renderValue</code> method, you can access <code>x.settings.crosstalk_key</code> and <code>x.settings.crosstalk_group</code>. To tell if Crosstalk is enabled for the current <code>renderValue</code> invocation, test one of these values for truthiness.</p>
 <p>This example happens to pass the entire data frame to <code>createWidget</code>. That’s not necessary and in fact is probably not that common. Usually a subset of columns, possibly transformed, is all that’s included in the payload. That’s fine, as far as Crosstalk is concerned. All that matters is that you keep your data in sync with the key vector; if you subset or reorder the data, you must do the same to the key vector.</p>

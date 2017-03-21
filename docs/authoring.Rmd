@@ -109,9 +109,9 @@ After:
 myWidget <- function(data, width = NULL, height = NULL) {
   if (is.SharedData(data)) {
     # Using Crosstalk
-    key <- sharedData$key()
-    group <- sharedData$groupName()
-    data <- sharedData$origData()
+    key <- data$key()
+    group <- data$groupName()
+    data <- data$origData()
   } else {
     # Not using Crosstalk
     key <- NULL
@@ -126,7 +126,9 @@ myWidget <- function(data, width = NULL, height = NULL) {
     )
   )
 
-  createWidget("myWidget", x, width=width, height=height)
+  createWidget("myWidget", x, width=width, height=height,
+    dependencies = crosstalk::crosstalkLibs()
+  )
 }
 ```
 

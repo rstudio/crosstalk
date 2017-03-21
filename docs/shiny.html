@@ -360,9 +360,9 @@ shinyApp(ui, server)</code></pre>
 <h3>Integrating with ggplot2</h3>
 <p>We can use the capabilities above to integrate Crosstalk widgets with interactive ggplot2 plots driven by Shiny.</p>
 <p>For those very familiar with ggplot2 and Shiny, reflecting selection state using fill or color is straightforward but getting nice looking results is a bit tedious. For example, this code is simple but the output has some problems:</p>
-<pre class="r"><code>library(ggplot2)</code></pre>
-<pre><code>## Warning: package &#39;ggplot2&#39; was built under R version 3.3.2</code></pre>
-<pre class="r"><code># Simulated sharedData$data(withSelection = TRUE)
+<pre class="r"><code>library(ggplot2)
+
+# Simulated sharedData$data(withSelection = TRUE)
 df &lt;- cbind(iris, selected_ = c(TRUE, FALSE, FALSE)[sample(3, nrow(iris), replace = TRUE)])
 
 ggplot(df, aes(Species, fill = selected_)) +

@@ -4,7 +4,7 @@ title: List of compatible HTML widgets
 
 This page lists some HTML widgets that are compatible with Crosstalk.
 
-(To add a widget, please submit a PR with modifications to [this page](https://github.com/rstudio/crosstalk/edit/master/docs/authoring.Rmd).)
+(To add a widget, please submit a PR with modifications to [this page](https://github.com/rstudio/crosstalk/edit/master/docs/widgets.Rmd).)
 
 <style type="text/css">
 img.widget-thumbnail {
@@ -69,6 +69,19 @@ DT is a highly customizable data table library. It wraps the [DataTables plug-in
 devtools::install_github("rstudio/DT")
 ```
 
+---
+
+[![SummaryWidget screenshot](thumbnails/summarywidget.png){.widget-thumbnail}](https://kent37.github.io/summarywidget/)
+
+### [SummaryWidget](https://kent37.github.io/summarywidget/)
+
+**Author:** [Kent Johnson](https://github.com/kent37)
+
+A SummaryWidget displays a single summary statistic that updates when the Crosstalk selection changes. A SummaryWidget displays the count, sum or mean of one column of selected data.
+
+```r
+devtools::install_github("kent37/summarywidget")
+```
 
 
 ---

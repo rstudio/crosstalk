@@ -4,7 +4,7 @@
 
 <head>
 
-<meta charset="utf-8">
+<meta charset="utf-8" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 
@@ -229,7 +229,7 @@ $(document).ready(function () {
 
 
 <p>This page lists some HTML widgets that are compatible with Crosstalk.</p>
-<p>(To add a widget, please submit a PR with modifications to <a href="https://github.com/rstudio/crosstalk/edit/master/docs/authoring.Rmd">this page</a>.)</p>
+<p>(To add a widget, please submit a PR with modifications to <a href="https://github.com/rstudio/crosstalk/edit/master/docs/widgets.Rmd">this page</a>.)</p>
 <style type="text/css">
 img.widget-thumbnail {
   width: 225px;
@@ -267,6 +267,14 @@ img.widget-thumbnail {
 <p><strong>Author:</strong> <a href="https://github.com/rstudio">RStudio</a></p>
 <p>DT is a highly customizable data table library. It wraps the <a href="https://datatables.net/">DataTables plug-in for jQuery</a>.</p>
 <pre class="r"><code>devtools::install_github(&quot;rstudio/DT&quot;)</code></pre>
+<hr />
+<p><a href="https://kent37.github.io/summarywidget/"><img src="thumbnails/summarywidget.png" alt="SummaryWidget screenshot" class="widget-thumbnail" /></a></p>
+</div>
+<div id="summarywidget" class="section level3">
+<h3><a href="https://kent37.github.io/summarywidget/">SummaryWidget</a></h3>
+<p><strong>Author:</strong> <a href="https://github.com/kent37">Kent Johnson</a></p>
+<p>A SummaryWidget displays a single summary statistic that updates when the Crosstalk selection changes. A SummaryWidget displays the count, sum or mean of one column of selected data.</p>
+<pre class="r"><code>devtools::install_github(&quot;kent37/summarywidget&quot;)</code></pre>
 <hr />
 </div>
 

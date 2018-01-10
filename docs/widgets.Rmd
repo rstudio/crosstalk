@@ -85,3 +85,22 @@ devtools::install_github("kent37/summarywidget")
 
 
 ---
+
+[![rgl screenshot](thumbnails/rgl.png){.widget-thumbnail}](https://r-forge.r-project.org/projects/rgl/)
+
+### [rgl](https://r-forge.r-project.org/projects/rgl/)
+
+**Author:** Duncan Murdoch and Daniel Adler
+
+rgl is a 3D visualization system based on OpenGL. It
+provides a medium to high level interface for use in R,
+currently modelled on classic R graphics, with extensions
+to allow for interaction.  See the `?rgl::rglShared`
+help topic for details of `crosstalk` usage.
+
+```r
+devtools::install_github("r-forge/rgl")
+```
+
+
+---

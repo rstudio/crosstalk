@@ -30,4 +30,4 @@ output:
     toc_float: true
     include:
       after_body: _footer.html
-output_dir: .
+output_dir: "."

@@ -4,7 +4,7 @@
 
 <head>
 
-<meta charset="utf-8">
+<meta charset="utf-8" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 
@@ -20,32 +20,30 @@
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
-<link href="site_libs/highlightjs-1.1/textmate.css" rel="stylesheet" />
-<script src="site_libs/highlightjs-1.1/highlight.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
 <link href="site_libs/ionrangeslider-2.1.2/css/ion.rangeSlider.css" rel="stylesheet" />
 <link href="site_libs/ionrangeslider-2.1.2/css/ion.rangeSlider.skinShiny.css" rel="stylesheet" />
 <script src="site_libs/ionrangeslider-2.1.2/js/ion.rangeSlider.min.js"></script>
 <script src="site_libs/strftime-0.9.2/strftime-min.js"></script>
 <link href="site_libs/crosstalk-1.0.0/css/crosstalk.css" rel="stylesheet" />
 <script src="site_libs/crosstalk-1.0.0/js/crosstalk.min.js"></script>
-<script src="site_libs/htmlwidgets-0.8/htmlwidgets.js"></script>
-<link href="site_libs/leaflet-0.7.7/leaflet.css" rel="stylesheet" />
-<script src="site_libs/leaflet-0.7.7/leaflet.js"></script>
+<script src="site_libs/htmlwidgets-0.9/htmlwidgets.js"></script>
+<link href="site_libs/leaflet-1.2.0/leaflet.css" rel="stylesheet" />
+<script src="site_libs/leaflet-1.2.0/leaflet.js"></script>
 <link href="site_libs/leafletfix-1.0.0/leafletfix.css" rel="stylesheet" />
-<link href="site_libs/leaflet-label-0.2.2/leaflet.label.css" rel="stylesheet" />
-<script src="site_libs/leaflet-label-0.2.2/leaflet.label.js"></script>
-<script src="site_libs/Proj4Leaflet-0.7.2/proj4-compressed.js"></script>
-<script src="site_libs/Proj4Leaflet-0.7.2/proj4leaflet.js"></script>
-<script src="site_libs/leaflet-binding-1.1.0/leaflet.js"></script>
+<script src="site_libs/Proj4Leaflet-1.0.1/proj4-compressed.js"></script>
+<script src="site_libs/Proj4Leaflet-1.0.1/proj4leaflet.js"></script>
+<script src="site_libs/leaflet-binding-1.1.0.9000/leaflet.js"></script>
 <link href="site_libs/leaflet-easybutton-1.3.1/easy-button.css" rel="stylesheet" />
 <script src="site_libs/leaflet-easybutton-1.3.1/easy-button.js"></script>
 <script src="site_libs/leaflet-easybutton-1.3.1/EasyButton-binding.js"></script>
-<link href="site_libs/leaflet-locationfilter2-0.1.0/locationfilter.css" rel="stylesheet" />
-<script src="site_libs/leaflet-locationfilter2-0.1.0/locationfilter.js"></script>
-<script src="site_libs/leaflet-locationfilter2-0.1.0/locationfilter-bindings.js"></script>
+<link href="site_libs/leaflet-locationfilter2-0.1.1/locationfilter.css" rel="stylesheet" />
+<script src="site_libs/leaflet-locationfilter2-0.1.1/locationfilter.js"></script>
+<script src="site_libs/leaflet-locationfilter2-0.1.1/locationfilter-bindings.js"></script>
 <link href="site_libs/ionicons-2.0.1/ionicons.min.css" rel="stylesheet" />
 <link href="site_libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
-<script src="site_libs/datatables-binding-0.2.11/datatables.js"></script>
+<script src="site_libs/datatables-binding-0.2.12/datatables.js"></script>
 <link href="site_libs/dt-core-bootstrap-1.10.12/css/dataTables.bootstrap.min.css" rel="stylesheet" />
 <link href="site_libs/dt-core-bootstrap-1.10.12/css/dataTables.bootstrap.extra.css" rel="stylesheet" />
 <script src="site_libs/dt-core-bootstrap-1.10.12/js/jquery.dataTables.min.js"></script>
@@ -61,10 +59,12 @@
   }
 </style>
 <script type="text/javascript">
-if (window.hljs && document.readyState && document.readyState === "complete") {
-   window.setTimeout(function() {
-      hljs.initHighlighting();
-   }, 0);
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
 }
 </script>
 
@@ -272,7 +272,7 @@ $(document).ready(function () {
 <div class="fluid-row">
 <div class="col-md-6">
 <div id="htmlwidget-92aff8b30289d6ce143d" style="width:100%;height:400px;" class="leaflet html-widget"></div>
-<script type="application/json" data-for="htmlwidget-92aff8b30289d6ce143d">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addSelect","args":["SharedData53630a5c"]},{"method":"addTiles","args":["//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",null,null,{"minZoom":0,"maxZoom":18,"maxNativeZoom":null,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"continuousWorld":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":null,"unloadInvisibleTiles":null,"updateWhenIdle":null,"detectRetina":false,"reuseTiles":false,"attribution":"&copy; <a href=\"http://openstreetmap.org\">OpenStreetMap<\/a> contributors, <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA<\/a>"}]},{"method":"addMarkers","args":[[-22,-19.18,-20.33,-22.7,-15.61,-14.85,-20.07,-18.3,-15.86,-23.43,-18.07,-11.02,-23.33,-17.46,-21.29,-17.94,-17.7,-12.01,-30.17,-23.47,-21.31,-23.9,-15.44,-26.02,-17.68,-19.89,-18.04,-30.01,-16.28,-21.29,-10.79,-17.82,-27.19,-17.98,-10.78,-24.1,-15.2,-22,-35.94,-17.93,-18.77,-21.78,-19.3,-26,-17.74,-31.94,-20.88,-25.42,-24,-20.92,-21.48,-24.27,-20.37,-19.02,-13.56,-24.96,-13.66,-26.67,-30.69,-20.41,-27.63,-21.57,-19.3,-21.3,-14.43,-23.49,-33,-14.28,-23.73,-38.46,-14.32,-14.99,-15.79,-21.29,-17.99,-20.49,-27.08,-13.36,-11.37,-17.7,-17.04,-20.65,-26.06,-22.41,-16.3,-15.26,-17.8,-16.24,-22.13,-23.82,-21.62,-20.02,-26.1,-20.51,-19.36,-17.46,-16.03,-26.11,-16.46,-18.83],[180.53,169.33,168.71,181,167.5,184.87,181.75,183.2,166.85,180,181.54,167.01,180.18,181.9,185.77,180.6,182.2,166.29,182.02,180.24,180.84,179.9,167.18,181.2,186.8,183.84,181.84,181.15,166.94,180.85,166.06,181.27,182.18,181.61,166.1,184.5,184.68,185.5,178.52,167.89,169.24,183.11,183,178.43,181.31,180.57,184.95,182.65,182.75,181.5,183.78,179.88,182.1,184.23,166.49,180.22,172.23,182.4,182.1,181.74,182.93,185.62,185.86,180.92,167.26,179.07,182.4,167.26,182.53,176.03,167.33,171.39,166.83,185.8,168.98,181.69,183.44,172.76,166.55,181.7,186.8,182.22,180.05,183.99,186,183.13,181.32,185.75,180.38,180.09,182.4,184.09,182.3,182.3,186.36,181.32,185.43,178.3,180.79,182.26],null,null,null,{"clickable":true,"draggable":false,"keyboard":true,"title":"","alt":"","zIndexOffset":0,"opacity":1,"riseOnHover":false,"riseOffset":250},null,null,null,null,null,null,{"ctKey":["308","258","552","57","467","482","808","368","543","169","619","873","277","394","752","659","202","352","354","678","526","696","527","732","411","168","751","859","534","270","474","900","338","923","672","973","174","607","952","126","318","830","745","792","577","470","958","843","198","293","315","189","224","261","560","240","117","217","563","199","436","608","902","634","417","335","426","416","229","647","384","305","532","897","613","578","957","716","769","85","423","551","845","938","35","529","671","228","275","669","826","191","326","407","822","353","468","114","28","979"],"ctGroup":"SharedData53630a5c"}]}],"limits":{"lat":[-38.46,-10.78],"lng":[166.06,186.8]}},"evals":[],"jsHooks":[]}</script>
+<script type="application/json" data-for="htmlwidget-92aff8b30289d6ce143d">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addSelect","args":["SharedData53630a5c"]},{"method":"addTiles","args":["https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",null,null,{"minZoom":0,"maxZoom":18,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false,"attribution":"&copy; <a href=\"http://openstreetmap.org\">OpenStreetMap<\/a> contributors, <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA<\/a>"}]},{"method":"addMarkers","args":[[-22,-19.18,-20.33,-22.7,-15.61,-14.85,-20.07,-18.3,-15.86,-23.43,-18.07,-11.02,-23.33,-17.46,-21.29,-17.94,-17.7,-12.01,-30.17,-23.47,-21.31,-23.9,-15.44,-26.02,-17.68,-19.89,-18.04,-30.01,-16.28,-21.29,-10.79,-17.82,-27.19,-17.98,-10.78,-24.1,-15.2,-22,-35.94,-17.93,-18.77,-21.78,-19.3,-26,-17.74,-31.94,-20.88,-25.42,-24,-20.92,-21.48,-24.27,-20.37,-19.02,-13.56,-24.96,-13.66,-26.67,-30.69,-20.41,-27.63,-21.57,-19.3,-21.3,-14.43,-23.49,-33,-14.28,-23.73,-38.46,-14.32,-14.99,-15.79,-21.29,-17.99,-20.49,-27.08,-13.36,-11.37,-17.7,-17.04,-20.65,-26.06,-22.41,-16.3,-15.26,-17.8,-16.24,-22.13,-23.82,-21.62,-20.02,-26.1,-20.51,-19.36,-17.46,-16.03,-26.11,-16.46,-18.83],[180.53,169.33,168.71,181,167.5,184.87,181.75,183.2,166.85,180,181.54,167.01,180.18,181.9,185.77,180.6,182.2,166.29,182.02,180.24,180.84,179.9,167.18,181.2,186.8,183.84,181.84,181.15,166.94,180.85,166.06,181.27,182.18,181.61,166.1,184.5,184.68,185.5,178.52,167.89,169.24,183.11,183,178.43,181.31,180.57,184.95,182.65,182.75,181.5,183.78,179.88,182.1,184.23,166.49,180.22,172.23,182.4,182.1,181.74,182.93,185.62,185.86,180.92,167.26,179.07,182.4,167.26,182.53,176.03,167.33,171.39,166.83,185.8,168.98,181.69,183.44,172.76,166.55,181.7,186.8,182.22,180.05,183.99,186,183.13,181.32,185.75,180.38,180.09,182.4,184.09,182.3,182.3,186.36,181.32,185.43,178.3,180.79,182.26],null,null,null,{"interactive":true,"draggable":false,"keyboard":true,"title":"","alt":"","zIndexOffset":0,"opacity":1,"riseOnHover":false,"riseOffset":250},null,null,null,null,null,null,{"ctKey":["308","258","552","57","467","482","808","368","543","169","619","873","277","394","752","659","202","352","354","678","526","696","527","732","411","168","751","859","534","270","474","900","338","923","672","973","174","607","952","126","318","830","745","792","577","470","958","843","198","293","315","189","224","261","560","240","117","217","563","199","436","608","902","634","417","335","426","416","229","647","384","305","532","897","613","578","957","716","769","85","423","551","845","938","35","529","671","228","275","669","826","191","326","407","822","353","468","114","28","979"],"ctGroup":"SharedData53630a5c"}]}],"limits":{"lat":[-38.46,-10.78],"lng":[166.06,186.8]}},"evals":[],"jsHooks":[]}</script>
 </div>
 <div class="col-md-6">
 <div id="htmlwidget-f709eab933d765647895" style="width:100%;height:auto;" class="datatables html-widget"></div>
@@ -359,7 +359,7 @@ $(document).ready(function () {
   (function () {
     var script = document.createElement("script");
     script.type = "text/javascript";
-    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
     document.getElementsByTagName("head")[0].appendChild(script);
   })();
 </script>

@@ -114,7 +114,7 @@ devtools::install_github("r-forge/rgl")
 
 
 ```r
-devtools::install_github("sgratul/lineup_htmlwidget")
+devtools::install_github("sgratzl/lineup_htmlwidget")
 ```
 
 

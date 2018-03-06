@@ -572,7 +572,7 @@ var _selection = require("./selection");
 
 var _filter = require("./filter");
 
-require("./input");
+var _input = require("./input");
 
 require("./input_selectize");
 
@@ -607,7 +607,8 @@ var crosstalk = {
   var: var_,
   has: has,
   SelectionHandle: _selection.SelectionHandle,
-  FilterHandle: _filter.FilterHandle
+  FilterHandle: _filter.FilterHandle,
+  bind: _input.bind
 };
 
 /**
@@ -627,6 +628,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.register = register;
+exports.bind = bind;
 var $ = global.jQuery;
 
 var bindings = {};

@@ -13,7 +13,7 @@ export function register(reg) {
   }
 }
 
-function bind() {
+export function bind() {
   Object.keys(bindings).forEach(function(className) {
     let binding = bindings[className];
     $("." + binding.className).not(".crosstalk-input-bound").each(function(i, el) {

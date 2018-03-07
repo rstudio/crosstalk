@@ -655,7 +655,7 @@ function bind() {
 
 // Escape jQuery identifier
 function $escape(val) {
-  return val.replace(/([!"#$%&'()*+,.\/:;<=>?@\[\\\]^`{|}~])/g, "\\$1");
+  return val.replace(/([!"#$%&'()*+,./:;<=>?@[\\\]^`{|}~])/g, "\\$1");
 }
 
 function bindEl(el) {

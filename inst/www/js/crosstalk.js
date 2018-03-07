@@ -119,32 +119,32 @@ function nextId() {
   return id++;
 }
 
+/**
+ * Use this class to contribute to, and listen for changes to, the filter set
+ * for the given group of widgets. Filter input controls should create one
+ * `FilterHandle` and only call {@link FilterHandle#set}. Output widgets that
+ * wish to displayed filtered data should create one `FilterHandle` and use
+ * the {@link FilterHandle#filteredKeys} property and listen for change
+ * events.
+ *
+ * If two (or more) `FilterHandle` instances in the same webpage share the
+ * same group name, they will contribute to a single "filter set". Each
+ * `FilterHandle` starts out with a `null` value, which means they take
+ * nothing away from the set of data that should be shown. To make a
+ * `FilterHandle` actually remove data from the filter set, set its value to
+ * an array of keys which should be displayed. Crosstalk will aggregate the
+ * various key arrays by finding their intersection; only keys that are
+ * present in all non-null filter handles are considered part of the filter
+ * set.
+ *
+ * @param {string} [group] - The name of the Crosstalk group, or if none,
+ *   null or undefined (or any other falsy value). This can be changed later
+ *   via the {@link FilterHandle#setGroup} method.
+ * @param {Object} [extraInfo] - An object whose properties will be copied to
+ *   the event object whenever an event is emitted.
+ */
+
 var FilterHandle = exports.FilterHandle = function () {
-  /**
-   * @classdesc
-   * Use this class to contribute to, and listen for changes to, the filter set
-   * for the given group of widgets. Filter input controls should create one
-   * `FilterHandle` and only call {@link FilterHandle#set}. Output widgets that
-   * wish to displayed filtered data should create one `FilterHandle` and use
-   * the {@link FilterHandle#filteredKeys} property and listen for change
-   * events.
-   *
-   * If two (or more) `FilterHandle` instances in the same webpage share the
-   * same group name, they will contribute to a single "filter set". Each
-   * `FilterHandle` starts out with a `null` value, which means they take
-   * nothing away from the set of data that should be shown. To make a
-   * `FilterHandle` actually remove data from the filter set, set its value to
-   * an array of keys which should be displayed. Crosstalk will aggregate the
-   * various key arrays by finding their intersection; only keys that are
-   * present in all non-null filter handles are considered part of the filter
-   * set.
-   *
-   * @param {string} [group] - The name of the Crosstalk group, or if none,
-   *   null or undefined (or any other falsy value). This can be changed later
-   *   via the @{link FilterHandle#setGroup} method.
-   * @param {Object} [extraInfo] - An object whose properties will be copied to
-   *   the event object whenever an event is emitted.
-   */
   function FilterHandle(group, extraInfo) {
     _classCallCheck(this, FilterHandle);
 
@@ -241,6 +241,8 @@ var FilterHandle = exports.FilterHandle = function () {
      * @param {Object} [extraInfo] - Extra properties to be included on the event
      *   object that's passed to listeners (in addition to any options that were
      *   passed into the `FilterHandle` constructor).
+     * 
+     * @fires FilterHandle#change
      */
 
   }, {
@@ -265,6 +267,8 @@ var FilterHandle = exports.FilterHandle = function () {
      * @param {Object} [extraInfo] - Extra properties to be included on the event
      *   object that's passed to listeners (in addition to any options that were
      *   passed into the `FilterHandle` constructor).
+     * 
+     * @fires FilterHandle#change
      */
 
   }, {
@@ -329,16 +333,6 @@ var FilterHandle = exports.FilterHandle = function () {
      *   `FilterHandle` instance that made the change).
      */
 
-    /**
-     * @event FilterHandle#change
-     * @type {object}
-     * @property {object} value - The new value of the filter set, or `null`
-     *   if no filter set is active.
-     * @property {object} oldValue - The previous value of the filter set.
-     * @property {FilterHandle} sender - The `FilterHandle` instance that
-     *   changed the value.
-     */
-
   }, {
     key: "filteredKeys",
     get: function get() {
@@ -348,6 +342,16 @@ var FilterHandle = exports.FilterHandle = function () {
 
   return FilterHandle;
 }();
+
+/**
+ * @event FilterHandle#change
+ * @type {object}
+ * @property {object} value - The new value of the filter set, or `null`
+ *   if no filter set is active.
+ * @property {object} oldValue - The previous value of the filter set.
+ * @property {FilterHandle} sender - The `FilterHandle` instance that
+ *   changed the value.
+ */
 
 },{"./events":1,"./filterset":3,"./group":4,"./util":11}],3:[function(require,module,exports){
 "use strict";
@@ -1017,25 +1021,23 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+/**
+ * Use this class to read and write (and listen for changes to) the selection
+ * for a Crosstalk group. This is intended to be used for linked brushing.
+ *
+ * If two (or more) `SelectionHandle` instances in the same webpage share the
+ * same group name, they will share the same state. Setting the selection using
+ * one `SelectionHandle` instance will result in the `value` property instantly
+ * changing across the others, and `"change"` event listeners on all instances
+ * (including the one that initiated the sending) will fire.
+ *
+ * @param {string} [group] - The name of the Crosstalk group, or if none,
+ *   null or undefined (or any other falsy value). This can be changed later
+ *   via the [SelectionHandle#setGroup](#setGroup) method.
+ * @param {Object} [extraInfo] - An object whose properties will be copied to
+ *   the event object whenever an event is emitted.
+ */
 var SelectionHandle = exports.SelectionHandle = function () {
-
-  /**
-   * @classdesc
-   * Use this class to read and write (and listen for changes to) the selection
-   * for a Crosstalk group. This is intended to be used for linked brushing.
-   *
-   * If two (or more) `SelectionHandle` instances in the same webpage share the
-   * same group name, they will share the same state. Setting the selection using
-   * one `SelectionHandle` instance will result in the `value` property instantly
-   * changing across the others, and `"change"` event listeners on all instances
-   * (including the one that initiated the sending) will fire.
-   *
-   * @param {string} [group] - The name of the Crosstalk group, or if none,
-   *   null or undefined (or any other falsy value). This can be changed later
-   *   via the [SelectionHandle#setGroup](#setGroup) method.
-   * @param {Object} [extraInfo] - An object whose properties will be copied to
-   *   the event object whenever an event is emitted.
-   */
   function SelectionHandle() {
     var group = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     var extraInfo = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
@@ -1204,26 +1206,6 @@ var SelectionHandle = exports.SelectionHandle = function () {
       this._emitter.removeAllListeners();
       this.setGroup(null);
     }
-
-    /**
-     * @callback SelectionHandle~listener
-     * @param {Object} event - An object containing details of the event. For
-     *   `"change"` events, this includes the properties `value` (the new
-     *   value of the selection, or `undefined` if no selection is active),
-     *   `oldValue` (the previous value of the selection), and `sender` (the
-     *   `SelectionHandle` instance that made the change).
-     */
-
-    /**
-     * @event SelectionHandle#change
-     * @type {object}
-     * @property {object} value - The new value of the selection, or `undefined`
-     *   if no selection is active.
-     * @property {object} oldValue - The previous value of the selection.
-     * @property {SelectionHandle} sender - The `SelectionHandle` instance that
-     *   changed the value.
-     */
-
   }, {
     key: "value",
     get: function get() {
@@ -1233,6 +1215,25 @@ var SelectionHandle = exports.SelectionHandle = function () {
 
   return SelectionHandle;
 }();
+
+/**
+ * @callback SelectionHandle~listener
+ * @param {Object} event - An object containing details of the event. For
+ *   `"change"` events, this includes the properties `value` (the new
+ *   value of the selection, or `undefined` if no selection is active),
+ *   `oldValue` (the previous value of the selection), and `sender` (the
+ *   `SelectionHandle` instance that made the change).
+ */
+
+/**
+ * @event SelectionHandle#change
+ * @type {object}
+ * @property {object} value - The new value of the selection, or `undefined`
+ *   if no selection is active.
+ * @property {object} oldValue - The previous value of the selection.
+ * @property {SelectionHandle} sender - The `SelectionHandle` instance that
+ *   changed the value.
+ */
 
 },{"./events":1,"./group":4,"./util":11}],11:[function(require,module,exports){
 "use strict";

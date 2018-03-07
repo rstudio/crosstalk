@@ -8,13 +8,13 @@ cache: packages
 
 before_install:
   - . $HOME/.nvm/nvm.sh
-  - nvm install lts/carbon
-  - nvm use lts/carbon
+  - nvm install
+  - nvm use
   - npm -g install grunt-cli
   - npm install
   - grunt build
   - npm run coverage
-  - git diff --exit-code >/dev/null
+  - git diff --exit-code
 
 notifications:
   email:

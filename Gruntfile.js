@@ -47,7 +47,7 @@ module.exports = function (grunt) {
       test: {
         options: {
           reporter: "spec",
-          require: ["babel-register"],
+          require: ["babel-core/register"],
           // captureFile: 'results.txt', // Optionally capture the reporter output to a file
           quiet: false, // Optionally suppress output to standard out (defaults to false)
           clearRequireCache: false // Optionally clear the require cache before running tests (defaults to false)

@@ -239,8 +239,6 @@ $(document).ready(function () {
 <li><a href="#FilterHandle">FilterHandle</a>
 <ul>
 <li><a href="#new_FilterHandle_new">new crosstalk.FilterHandle([group], [extraInfo])</a></li>
-<li><em>instance</em>
-<ul>
 <li><a href="#FilterHandle+filteredKeys">.filteredKeys</a> ⇒ <code>Array.&lt;string&gt;</code> | <code>null</code></li>
 <li><a href="#FilterHandle+setGroup">.setGroup(group)</a></li>
 <li><a href="#FilterHandle+close">.close()</a></li>
@@ -249,11 +247,6 @@ $(document).ready(function () {
 <li><a href="#FilterHandle+on">.on(eventType, listener)</a> ⇒ <code>string</code></li>
 <li><a href="#FilterHandle+off">.off(eventType, listener)</a></li>
 <li><a href="#FilterHandle+event_change">“change”</a></li>
-</ul></li>
-<li><em>inner</em>
-<ul>
-<li><a href="#FilterHandle..listener">~listener</a> : <code>function</code></li>
-</ul></li>
 </ul></li>
 </ul>
 <p><a name="new_FilterHandle_new"></a></p>
@@ -276,7 +269,7 @@ $(document).ready(function () {
 <tr class="odd">
 <td>[group]</td>
 <td><code>string</code></td>
-<td>The name of the Crosstalk group, or if none, null or undefined (or any other falsy value). This can be changed later via the @{link FilterHandle#setGroup} method.</td>
+<td>The name of the Crosstalk group, or if none, null or undefined (or any other falsy value). This can be changed later via the <a href="#FilterHandle+setGroup">setGroup</a> method.</td>
 </tr>
 <tr class="even">
 <td>[extraInfo]</td>
@@ -289,14 +282,14 @@ $(document).ready(function () {
 </div>
 <div id="filterhandle.filteredkeys-array.string-null" class="section level3">
 <h3>filterHandle.filteredKeys ⇒ <code>Array.&lt;string&gt;</code> | <code>null</code></h3>
-<p><strong>Kind</strong>: instance property of <code><a href="#FilterHandle">FilterHandle</a></code><br />
+<p><strong>Kind</strong>: instance property of <a href="#FilterHandle"><code>FilterHandle</code></a><br />
 <strong>Returns</strong>: <code>Array.&lt;string&gt;</code> | <code>null</code> - - Either: 1) an array of keys that made it through all of the <code>FilterHandle</code> instances, or, 2) <code>null</code>, which means no filter is being applied (all data should be displayed).<br />
 <a name="FilterHandle+setGroup"></a></p>
 </div>
 <div id="filterhandle.setgroupgroup" class="section level3">
 <h3>filterHandle.setGroup(group)</h3>
 <p>Changes the Crosstalk group membership of this FilterHandle. If <code>set()</code> was previously called on this handle, switching groups will clear those keys from the old group’s filter set. These keys will not be applied to the new group’s filter set either. In other words, <code>setGroup()</code> effectively calls <code>clear()</code> before switching groups.</p>
-<p><strong>Kind</strong>: instance method of <code><a href="#FilterHandle">FilterHandle</a></code></p>
+<p><strong>Kind</strong>: instance method of <a href="#FilterHandle"><code>FilterHandle</code></a></p>
 <table style="width:58%;">
 <colgroup>
 <col width="19%" />
@@ -323,13 +316,14 @@ $(document).ready(function () {
 <div id="filterhandle.close" class="section level3">
 <h3>filterHandle.close()</h3>
 <p>Close the handle. This clears this handle’s contribution to the filter set, and unsubscribes all event listeners.</p>
-<p><strong>Kind</strong>: instance method of <code><a href="#FilterHandle">FilterHandle</a></code><br />
+<p><strong>Kind</strong>: instance method of <a href="#FilterHandle"><code>FilterHandle</code></a><br />
 <a name="FilterHandle+clear"></a></p>
 </div>
 <div id="filterhandle.clearextrainfo" class="section level3">
 <h3>filterHandle.clear([extraInfo])</h3>
 <p>Clear this handle’s contribution to the filter set.</p>
-<p><strong>Kind</strong>: instance method of <code><a href="#FilterHandle">FilterHandle</a></code></p>
+<p><strong>Kind</strong>: instance method of <a href="#FilterHandle"><code>FilterHandle</code></a><br />
+<strong>Emits</strong>: <a href="#FilterHandle+event_change"><code>change</code></a></p>
 <table style="width:58%;">
 <colgroup>
 <col width="19%" />
@@ -356,7 +350,8 @@ $(document).ready(function () {
 <div id="filterhandle.setkeys-extrainfo" class="section level3">
 <h3>filterHandle.set(keys, [extraInfo])</h3>
 <p>Set this handle’s contribution to the filter set. This array should consist of the keys of the rows that <em>should</em> be displayed; any keys that are not present in the array will be considered <em>filtered out</em>. Note that multiple <code>FilterHandle</code> instances in the group may each contribute an array of keys, and only those keys that appear in <em>all</em> of the arrays make it through the filter.</p>
-<p><strong>Kind</strong>: instance method of <code><a href="#FilterHandle">FilterHandle</a></code></p>
+<p><strong>Kind</strong>: instance method of <a href="#FilterHandle"><code>FilterHandle</code></a><br />
+<strong>Emits</strong>: <a href="#FilterHandle+event_change"><code>change</code></a></p>
 <table style="width:58%;">
 <colgroup>
 <col width="19%" />
@@ -388,7 +383,7 @@ $(document).ready(function () {
 <div id="filterhandle.oneventtype-listener-string" class="section level3">
 <h3>filterHandle.on(eventType, listener) ⇒ <code>string</code></h3>
 <p>Subscribe to events on this <code>FilterHandle</code>.</p>
-<p><strong>Kind</strong>: instance method of <code><a href="#FilterHandle">FilterHandle</a></code><br />
+<p><strong>Kind</strong>: instance method of <a href="#FilterHandle"><code>FilterHandle</code></a><br />
 <strong>Returns</strong>: <code>string</code> - - A token to pass to <a href="#FilterHandle+off">off</a> to cancel this subscription.</p>
 <table style="width:58%;">
 <colgroup>
@@ -411,7 +406,7 @@ $(document).ready(function () {
 </tr>
 <tr class="even">
 <td>listener</td>
-<td><code><a href="#FilterHandle..listener">listener</a></code></td>
+<td><code>FilterHandle~listener</code></td>
 <td>The callback function that will be invoked when the event occurs.</td>
 </tr>
 </tbody>
@@ -421,7 +416,7 @@ $(document).ready(function () {
 <div id="filterhandle.offeventtype-listener" class="section level3">
 <h3>filterHandle.off(eventType, listener)</h3>
 <p>Cancel event subscriptions created by <a href="#FilterHandle+on">on</a>.</p>
-<p><strong>Kind</strong>: instance method of <code><a href="#FilterHandle">FilterHandle</a></code></p>
+<p><strong>Kind</strong>: instance method of <a href="#FilterHandle"><code>FilterHandle</code></a></p>
 <table style="width:58%;">
 <colgroup>
 <col width="19%" />
@@ -443,7 +438,7 @@ $(document).ready(function () {
 </tr>
 <tr class="even">
 <td>listener</td>
-<td><code>string</code> | <code><a href="#FilterHandle..listener">listener</a></code></td>
+<td><code>string</code> | <code>FilterHandle~listener</code></td>
 <td>Either the callback function previously passed into <a href="#FilterHandle+on">on</a>, or the string that was returned from <a href="#FilterHandle+on">on</a>.</td>
 </tr>
 </tbody>
@@ -452,7 +447,7 @@ $(document).ready(function () {
 </div>
 <div id="change" class="section level3">
 <h3>“change”</h3>
-<p><strong>Kind</strong>: event emitted by <code><a href="#FilterHandle">FilterHandle</a></code><br />
+<p><strong>Kind</strong>: event emitted by <a href="#FilterHandle"><code>FilterHandle</code></a><br />
 <strong>Properties</strong></p>
 <table style="width:58%;">
 <colgroup>
@@ -480,34 +475,8 @@ $(document).ready(function () {
 </tr>
 <tr class="odd">
 <td>sender</td>
-<td><code><a href="#FilterHandle">FilterHandle</a></code></td>
+<td><a href="#FilterHandle"><code>FilterHandle</code></a></td>
 <td>The <code>FilterHandle</code> instance that changed the value.</td>
-</tr>
-</tbody>
-</table>
-<p><a name="FilterHandle..listener"></a></p>
-</div>
-<div id="filterhandlelistener-function" class="section level3">
-<h3>FilterHandle~listener : <code>function</code></h3>
-<p><strong>Kind</strong>: inner typedef of <code><a href="#FilterHandle">FilterHandle</a></code></p>
-<table style="width:58%;">
-<colgroup>
-<col width="19%" />
-<col width="19%" />
-<col width="19%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th>Param</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>event</td>
-<td><code>Object</code></td>
-<td>An object containing details of the event. For <code>&quot;change&quot;</code> events, this includes the properties <code>value</code> (the new value of the filter set, or <code>null</code> if no filter set is active), <code>oldValue</code> (the previous value of the filter set), and <code>sender</code> (the <code>FilterHandle</code> instance that made the change).</td>
 </tr>
 </tbody>
 </table>

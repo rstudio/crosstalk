@@ -22,17 +22,14 @@ set.
 
 * [FilterHandle](#FilterHandle)
     * [new crosstalk.FilterHandle([group], [extraInfo])](#new_FilterHandle_new)
-    * _instance_
-        * [.filteredKeys](#FilterHandle+filteredKeys) ⇒ <code>Array.&lt;string&gt;</code> &#124; <code>null</code>
-        * [.setGroup(group)](#FilterHandle+setGroup)
-        * [.close()](#FilterHandle+close)
-        * [.clear([extraInfo])](#FilterHandle+clear)
-        * [.set(keys, [extraInfo])](#FilterHandle+set)
-        * [.on(eventType, listener)](#FilterHandle+on) ⇒ <code>string</code>
-        * [.off(eventType, listener)](#FilterHandle+off)
-        * ["change"](#FilterHandle+event_change)
-    * _inner_
-        * [~listener](#FilterHandle..listener) : <code>function</code>
+    * [.filteredKeys](#FilterHandle+filteredKeys) ⇒ <code>Array.&lt;string&gt;</code> \| <code>null</code>
+    * [.setGroup(group)](#FilterHandle+setGroup)
+    * [.close()](#FilterHandle+close)
+    * [.clear([extraInfo])](#FilterHandle+clear)
+    * [.set(keys, [extraInfo])](#FilterHandle+set)
+    * [.on(eventType, listener)](#FilterHandle+on) ⇒ <code>string</code>
+    * [.off(eventType, listener)](#FilterHandle+off)
+    * ["change"](#FilterHandle+event_change)
 
 <a name="new_FilterHandle_new"></a>
 
@@ -40,14 +37,14 @@ set.
 
 | Param | Type | Description |
 | ------------- | ------------- | ------------- |
-| [group] | <code>string</code> | The name of the Crosstalk group, or if none,   null or undefined (or any other falsy value). This can be changed later   via the @{link FilterHandle#setGroup} method. |
+| [group] | <code>string</code> | The name of the Crosstalk group, or if none,   null or undefined (or any other falsy value). This can be changed later   via the [setGroup](#FilterHandle+setGroup) method. |
 | [extraInfo] | <code>Object</code> | An object whose properties will be copied to   the event object whenever an event is emitted. |
 
 <a name="FilterHandle+filteredKeys"></a>
 
-### filterHandle.filteredKeys ⇒ <code>Array.&lt;string&gt;</code> &#124; <code>null</code>
-**Kind**: instance property of <code>[FilterHandle](#FilterHandle)</code>  
-**Returns**: <code>Array.&lt;string&gt;</code> &#124; <code>null</code> - - Either: 1) an array of keys that made it through
+### filterHandle.filteredKeys ⇒ <code>Array.&lt;string&gt;</code> \| <code>null</code>
+**Kind**: instance property of [<code>FilterHandle</code>](#FilterHandle)  
+**Returns**: <code>Array.&lt;string&gt;</code> \| <code>null</code> - - Either: 1) an array of keys that made it through
   all of the `FilterHandle` instances, or, 2) `null`, which means no filter
   is being applied (all data should be displayed).  
 <a name="FilterHandle+setGroup"></a>
@@ -59,7 +56,7 @@ from the old group's filter set. These keys will not be applied to the new
 group's filter set either. In other words, `setGroup()` effectively calls
 `clear()` before switching groups.
 
-**Kind**: instance method of <code>[FilterHandle](#FilterHandle)</code>  
+**Kind**: instance method of [<code>FilterHandle</code>](#FilterHandle)  
 
 | Param | Type | Description |
 | ------------- | ------------- | ------------- |
@@ -71,13 +68,14 @@ group's filter set either. In other words, `setGroup()` effectively calls
 Close the handle. This clears this handle's contribution to the filter set,
 and unsubscribes all event listeners.
 
-**Kind**: instance method of <code>[FilterHandle](#FilterHandle)</code>  
+**Kind**: instance method of [<code>FilterHandle</code>](#FilterHandle)  
 <a name="FilterHandle+clear"></a>
 
 ### filterHandle.clear([extraInfo])
 Clear this handle's contribution to the filter set.
 
-**Kind**: instance method of <code>[FilterHandle](#FilterHandle)</code>  
+**Kind**: instance method of [<code>FilterHandle</code>](#FilterHandle)  
+**Emits**: [<code>change</code>](#FilterHandle+event_change)  
 
 | Param | Type | Description |
 | ------------- | ------------- | ------------- |
@@ -93,7 +91,8 @@ present in the array will be considered _filtered out_. Note that multiple
 and only those keys that appear in _all_ of the arrays make it through the
 filter.
 
-**Kind**: instance method of <code>[FilterHandle](#FilterHandle)</code>  
+**Kind**: instance method of [<code>FilterHandle</code>](#FilterHandle)  
+**Emits**: [<code>change</code>](#FilterHandle+event_change)  
 
 | Param | Type | Description |
 | ------------- | ------------- | ------------- |
@@ -105,45 +104,36 @@ filter.
 ### filterHandle.on(eventType, listener) ⇒ <code>string</code>
 Subscribe to events on this `FilterHandle`.
 
-**Kind**: instance method of <code>[FilterHandle](#FilterHandle)</code>  
+**Kind**: instance method of [<code>FilterHandle</code>](#FilterHandle)  
 **Returns**: <code>string</code> - - A token to pass to [off](#FilterHandle+off) to cancel
   this subscription.  
 
 | Param | Type | Description |
 | ------------- | ------------- | ------------- |
 | eventType | <code>string</code> | Indicates the type of events to listen to.   Currently, only `"change"` is supported. |
-| listener | <code>[listener](#FilterHandle..listener)</code> | The callback function that   will be invoked when the event occurs. |
+| listener | <code>FilterHandle~listener</code> | The callback function that   will be invoked when the event occurs. |
 
 <a name="FilterHandle+off"></a>
 
 ### filterHandle.off(eventType, listener)
 Cancel event subscriptions created by [on](#FilterHandle+on).
 
-**Kind**: instance method of <code>[FilterHandle](#FilterHandle)</code>  
+**Kind**: instance method of [<code>FilterHandle</code>](#FilterHandle)  
 
 | Param | Type | Description |
 | ------------- | ------------- | ------------- |
 | eventType | <code>string</code> | The type of event to unsubscribe. |
-| listener | <code>string</code> &#124; <code>[listener](#FilterHandle..listener)</code> | Either the callback   function previously passed into [on](#FilterHandle+on), or the   string that was returned from [on](#FilterHandle+on). |
+| listener | <code>string</code> \| <code>FilterHandle~listener</code> | Either the callback   function previously passed into [on](#FilterHandle+on), or the   string that was returned from [on](#FilterHandle+on). |
 
 <a name="FilterHandle+event_change"></a>
 
 ### "change"
-**Kind**: event emitted by <code>[FilterHandle](#FilterHandle)</code>  
+**Kind**: event emitted by [<code>FilterHandle</code>](#FilterHandle)  
 **Properties**
 
 | Name | Type | Description |
 | ------------- | ------------- | ------------- |
 | value | <code>object</code> | The new value of the filter set, or `null`   if no filter set is active. |
 | oldValue | <code>object</code> | The previous value of the filter set. |
-| sender | <code>[FilterHandle](#FilterHandle)</code> | The `FilterHandle` instance that   changed the value. |
-
-<a name="FilterHandle..listener"></a>
-
-### FilterHandle~listener : <code>function</code>
-**Kind**: inner typedef of <code>[FilterHandle](#FilterHandle)</code>  
-
-| Param | Type | Description |
-| ------------- | ------------- | ------------- |
-| event | <code>Object</code> | An object containing details of the event. For   `"change"` events, this includes the properties `value` (the new   value of the filter set, or `null` if no filter set is active),   `oldValue` (the previous value of the filter set), and `sender` (the   `FilterHandle` instance that made the change). |
+| sender | [<code>FilterHandle</code>](#FilterHandle) | The `FilterHandle` instance that   changed the value. |
 

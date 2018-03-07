@@ -8,9 +8,8 @@ cache: packages
 
 before_install:
   - . $HOME/.nvm/nvm.sh
-  - nvm install stable
-  - nvm use stable
-  - npm -g install npm@latest # Work around https://github.com/npm/npm/issues/14042
+  - nvm install lts/carbon
+  - nvm use lts/carbon
   - npm -g install grunt-cli
   - npm install
   - grunt build

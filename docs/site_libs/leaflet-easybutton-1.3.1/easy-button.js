@@ -169,8 +169,10 @@ L.Control.EasyButton = L.Control.extend({
 
     this.button = L.DomUtil.create(this.options.tagName, '');
 
-    if (this.options.tagName === 'button') {
-        this.button.setAttribute('type', 'button');
+    // the next three if statements should be collapsed into the options
+    // when it's time for breaking changes.
+    if (this.tagName === 'button') {
+        this.button.type = 'button';
     }
 
     if (this.options.id ){
@@ -189,7 +191,7 @@ L.Control.EasyButton = L.Control.extend({
     L.DomEvent.addListener(this.button,'click', function(e){
       L.DomEvent.stop(e);
       this._currentState.onClick(this, this._map ? this._map : null );
-      this._map && this._map.getContainer().focus();
+      this._map.getContainer().focus();
     }, this);
 
     // prep the contents of the control
@@ -277,12 +279,16 @@ L.Control.EasyButton = L.Control.extend({
     }
   },
 
+
+
   enable: function(){
     L.DomUtil.addClass(this.button, 'enabled');
     L.DomUtil.removeClass(this.button, 'disabled');
     this.button.setAttribute('aria-hidden', 'false');
     return this;
   },
+
+
 
   disable: function(){
     L.DomUtil.addClass(this.button, 'disabled');
@@ -291,21 +297,24 @@ L.Control.EasyButton = L.Control.extend({
     return this;
   },
 
-  onAdd: function(map){
-    var bar = L.easyBar([this], {
+
+  removeFrom: function (map) {
+
+    this._container.parentNode.removeChild(this._container);
+    this._map = null;
+
+    return this;
+  },
+
+  onAdd: function(){
+    var containerObj = L.easyBar([this], {
       position: this.options.position,
       leafletClasses: this.options.leafletClasses
     });
-    this._anonymousBar = bar;
-    this._container = bar.container;
-    return this._anonymousBar.container;
-  },
+    this._container = containerObj.container;
+    return this._container;
+  }
 
-  removeFrom: function (map) {
-    if (this._map === map)
-      this.remove();
-    return this;
-  },
 
 });
 

@@ -18,32 +18,31 @@ function nextId() {
   return id++;
 }
 
+/**
+ * Use this class to contribute to, and listen for changes to, the filter set
+ * for the given group of widgets. Filter input controls should create one
+ * `FilterHandle` and only call {@link FilterHandle#set}. Output widgets that
+ * wish to displayed filtered data should create one `FilterHandle` and use
+ * the {@link FilterHandle#filteredKeys} property and listen for change
+ * events.
+ *
+ * If two (or more) `FilterHandle` instances in the same webpage share the
+ * same group name, they will contribute to a single "filter set". Each
+ * `FilterHandle` starts out with a `null` value, which means they take
+ * nothing away from the set of data that should be shown. To make a
+ * `FilterHandle` actually remove data from the filter set, set its value to
+ * an array of keys which should be displayed. Crosstalk will aggregate the
+ * various key arrays by finding their intersection; only keys that are
+ * present in all non-null filter handles are considered part of the filter
+ * set.
+ *
+ * @param {string} [group] - The name of the Crosstalk group, or if none,
+ *   null or undefined (or any other falsy value). This can be changed later
+ *   via the {@link FilterHandle#setGroup} method.
+ * @param {Object} [extraInfo] - An object whose properties will be copied to
+ *   the event object whenever an event is emitted.
+ */
 export class FilterHandle {
-  /**
-   * @classdesc
-   * Use this class to contribute to, and listen for changes to, the filter set
-   * for the given group of widgets. Filter input controls should create one
-   * `FilterHandle` and only call {@link FilterHandle#set}. Output widgets that
-   * wish to displayed filtered data should create one `FilterHandle` and use
-   * the {@link FilterHandle#filteredKeys} property and listen for change
-   * events.
-   *
-   * If two (or more) `FilterHandle` instances in the same webpage share the
-   * same group name, they will contribute to a single "filter set". Each
-   * `FilterHandle` starts out with a `null` value, which means they take
-   * nothing away from the set of data that should be shown. To make a
-   * `FilterHandle` actually remove data from the filter set, set its value to
-   * an array of keys which should be displayed. Crosstalk will aggregate the
-   * various key arrays by finding their intersection; only keys that are
-   * present in all non-null filter handles are considered part of the filter
-   * set.
-   *
-   * @param {string} [group] - The name of the Crosstalk group, or if none,
-   *   null or undefined (or any other falsy value). This can be changed later
-   *   via the @{link FilterHandle#setGroup} method.
-   * @param {Object} [extraInfo] - An object whose properties will be copied to
-   *   the event object whenever an event is emitted.
-   */
   constructor(group, extraInfo) {
     this._eventRelay = new Events();
     this._emitter = new util.SubscriptionTracker(this._eventRelay);
@@ -130,6 +129,8 @@ export class FilterHandle {
    * @param {Object} [extraInfo] - Extra properties to be included on the event
    *   object that's passed to listeners (in addition to any options that were
    *   passed into the `FilterHandle` constructor).
+   * 
+   * @fires FilterHandle#change
    */
   clear(extraInfo) {
     if (!this._filterSet)
@@ -152,6 +153,8 @@ export class FilterHandle {
    * @param {Object} [extraInfo] - Extra properties to be included on the event
    *   object that's passed to listeners (in addition to any options that were
    *   passed into the `FilterHandle` constructor).
+   * 
+   * @fires FilterHandle#change
    */
   set(keys, extraInfo) {
     if (!this._filterSet)
@@ -210,13 +213,14 @@ export class FilterHandle {
    *   `FilterHandle` instance that made the change).
    */
 
-  /**
-   * @event FilterHandle#change
-   * @type {object}
-   * @property {object} value - The new value of the filter set, or `null`
-   *   if no filter set is active.
-   * @property {object} oldValue - The previous value of the filter set.
-   * @property {FilterHandle} sender - The `FilterHandle` instance that
-   *   changed the value.
-   */
 }
+
+/**
+ * @event FilterHandle#change
+ * @type {object}
+ * @property {object} value - The new value of the filter set, or `null`
+ *   if no filter set is active.
+ * @property {object} oldValue - The previous value of the filter set.
+ * @property {FilterHandle} sender - The `FilterHandle` instance that
+ *   changed the value.
+ */

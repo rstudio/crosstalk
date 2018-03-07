@@ -2,25 +2,24 @@ import Events from "./events";
 import grp from "./group";
 import * as util from "./util";
 
+/**
+ * Use this class to read and write (and listen for changes to) the selection
+ * for a Crosstalk group. This is intended to be used for linked brushing.
+ *
+ * If two (or more) `SelectionHandle` instances in the same webpage share the
+ * same group name, they will share the same state. Setting the selection using
+ * one `SelectionHandle` instance will result in the `value` property instantly
+ * changing across the others, and `"change"` event listeners on all instances
+ * (including the one that initiated the sending) will fire.
+ *
+ * @param {string} [group] - The name of the Crosstalk group, or if none,
+ *   null or undefined (or any other falsy value). This can be changed later
+ *   via the [SelectionHandle#setGroup](#setGroup) method.
+ * @param {Object} [extraInfo] - An object whose properties will be copied to
+ *   the event object whenever an event is emitted.
+ */
 export class SelectionHandle {
 
-  /**
-   * @classdesc
-   * Use this class to read and write (and listen for changes to) the selection
-   * for a Crosstalk group. This is intended to be used for linked brushing.
-   *
-   * If two (or more) `SelectionHandle` instances in the same webpage share the
-   * same group name, they will share the same state. Setting the selection using
-   * one `SelectionHandle` instance will result in the `value` property instantly
-   * changing across the others, and `"change"` event listeners on all instances
-   * (including the one that initiated the sending) will fire.
-   *
-   * @param {string} [group] - The name of the Crosstalk group, or if none,
-   *   null or undefined (or any other falsy value). This can be changed later
-   *   via the [SelectionHandle#setGroup](#setGroup) method.
-   * @param {Object} [extraInfo] - An object whose properties will be copied to
-   *   the event object whenever an event is emitted.
-   */
   constructor(group = null, extraInfo = null) {
     this._eventRelay = new Events();
     this._emitter = new util.SubscriptionTracker(this._eventRelay);
@@ -168,23 +167,23 @@ export class SelectionHandle {
     this._emitter.removeAllListeners();
     this.setGroup(null);
   }
-
-  /**
-   * @callback SelectionHandle~listener
-   * @param {Object} event - An object containing details of the event. For
-   *   `"change"` events, this includes the properties `value` (the new
-   *   value of the selection, or `undefined` if no selection is active),
-   *   `oldValue` (the previous value of the selection), and `sender` (the
-   *   `SelectionHandle` instance that made the change).
-   */
-
-  /**
-   * @event SelectionHandle#change
-   * @type {object}
-   * @property {object} value - The new value of the selection, or `undefined`
-   *   if no selection is active.
-   * @property {object} oldValue - The previous value of the selection.
-   * @property {SelectionHandle} sender - The `SelectionHandle` instance that
-   *   changed the value.
-   */
 }
+
+/**
+ * @callback SelectionHandle~listener
+ * @param {Object} event - An object containing details of the event. For
+ *   `"change"` events, this includes the properties `value` (the new
+ *   value of the selection, or `undefined` if no selection is active),
+ *   `oldValue` (the previous value of the selection), and `sender` (the
+ *   `SelectionHandle` instance that made the change).
+ */
+
+/**
+ * @event SelectionHandle#change
+ * @type {object}
+ * @property {object} value - The new value of the selection, or `undefined`
+ *   if no selection is active.
+ * @property {object} oldValue - The previous value of the selection.
+ * @property {SelectionHandle} sender - The `SelectionHandle` instance that
+ *   changed the value.
+ */

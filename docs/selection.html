@@ -238,7 +238,7 @@ $(document).ready(function () {
 <ul>
 <li><a href="#SelectionHandle">SelectionHandle</a>
 <ul>
-<li><a href="#new_SelectionHandle_new">new SelectionHandle([group], [extraInfo])</a></li>
+<li><a href="#new_SelectionHandle_new">new crosstalk.SelectionHandle([group], [extraInfo])</a></li>
 <li><em>instance</em>
 <ul>
 <li><a href="#SelectionHandle+value">.value</a></li>
@@ -257,11 +257,10 @@ $(document).ready(function () {
 </ul></li>
 </ul>
 <p><a name="new_SelectionHandle_new"></a></p>
-<div id="new-selectionhandlegroup-extrainfo" class="section level3">
-<h3>new SelectionHandle([group], [extraInfo])</h3>
-<table style="width:78%;">
+<div id="new-crosstalk.selectionhandlegroup-extrainfo" class="section level3">
+<h3>new crosstalk.SelectionHandle([group], [extraInfo])</h3>
+<table style="width:58%;">
 <colgroup>
-<col width="19%" />
 <col width="19%" />
 <col width="19%" />
 <col width="19%" />
@@ -270,7 +269,6 @@ $(document).ready(function () {
 <tr class="header">
 <th>Param</th>
 <th>Type</th>
-<th>Default</th>
 <th>Description</th>
 </tr>
 </thead>
@@ -278,13 +276,11 @@ $(document).ready(function () {
 <tr class="odd">
 <td>[group]</td>
 <td><code>string</code></td>
-<td><code>null</code></td>
 <td>The name of the Crosstalk group, or if none, null or undefined (or any other falsy value). This can be changed later via the <a href="#setGroup">SelectionHandle#setGroup</a> method.</td>
 </tr>
 <tr class="even">
 <td>[extraInfo]</td>
 <td><code>Object</code></td>
-<td><code></code></td>
 <td>An object whose properties will be copied to the event object whenever an event is emitted.</td>
 </tr>
 </tbody>
@@ -299,14 +295,14 @@ $(document).ready(function () {
 <li>If a selection is active, but no data points are selected, then this value will be an empty array.</li>
 <li>If a selection is active, and data points are selected, then the keys of the selected data points will be present in the array.</li>
 </ul>
-<p><strong>Kind</strong>: instance property of <code><a href="#SelectionHandle">SelectionHandle</a></code><br />
+<p><strong>Kind</strong>: instance property of <a href="#SelectionHandle"><code>SelectionHandle</code></a><br />
 <a name="SelectionHandle+setGroup"></a></p>
 </div>
 <div id="selectionhandle.setgroupgroup" class="section level3">
 <h3>selectionHandle.setGroup(group)</h3>
 <p>Changes the Crosstalk group membership of this SelectionHandle. The group being switched away from (if any) will not have its selection value modified as a result of calling <code>setGroup</code>, even if this handle was the most recent handle to set the selection of the group.</p>
 <p>The group being switched to (if any) will also not have its selection value modified as a result of calling <code>setGroup</code>. If you want to set the selection value of the new group, call <code>set</code> explicitly.</p>
-<p><strong>Kind</strong>: instance method of <code><a href="#SelectionHandle">SelectionHandle</a></code></p>
+<p><strong>Kind</strong>: instance method of <a href="#SelectionHandle"><code>SelectionHandle</code></a></p>
 <table style="width:58%;">
 <colgroup>
 <col width="19%" />
@@ -333,8 +329,8 @@ $(document).ready(function () {
 <div id="selectionhandle.setselectedkeys-extrainfo" class="section level3">
 <h3>selectionHandle.set(selectedKeys, [extraInfo])</h3>
 <p>Overwrites the current selection for the group, and raises the <code>&quot;change&quot;</code> event among all of the group’s ’<code>SelectionHandle</code> instances (including this one).</p>
-<p><strong>Kind</strong>: instance method of <code><a href="#SelectionHandle">SelectionHandle</a></code><br />
-<strong>Emits</strong>: <code><a href="#SelectionHandle+event_change">change</a></code></p>
+<p><strong>Kind</strong>: instance method of <a href="#SelectionHandle"><code>SelectionHandle</code></a><br />
+<strong>Emits</strong>: <a href="#SelectionHandle+event_change"><code>change</code></a></p>
 <table style="width:58%;">
 <colgroup>
 <col width="19%" />
@@ -366,8 +362,8 @@ $(document).ready(function () {
 <div id="selectionhandle.clearextrainfo" class="section level3">
 <h3>selectionHandle.clear([extraInfo])</h3>
 <p>Overwrites the current selection for the group, and raises the <code>&quot;change&quot;</code> event among all of the group’s ’<code>SelectionHandle</code> instances (including this one).</p>
-<p><strong>Kind</strong>: instance method of <code><a href="#SelectionHandle">SelectionHandle</a></code><br />
-<strong>Emits</strong>: <code><a href="#SelectionHandle+event_change">change</a></code></p>
+<p><strong>Kind</strong>: instance method of <a href="#SelectionHandle"><code>SelectionHandle</code></a><br />
+<strong>Emits</strong>: <a href="#SelectionHandle+event_change"><code>change</code></a></p>
 <table style="width:58%;">
 <colgroup>
 <col width="19%" />
@@ -394,7 +390,7 @@ $(document).ready(function () {
 <div id="selectionhandle.oneventtype-listener-string" class="section level3">
 <h3>selectionHandle.on(eventType, listener) ⇒ <code>string</code></h3>
 <p>Subscribes to events on this <code>SelectionHandle</code>.</p>
-<p><strong>Kind</strong>: instance method of <code><a href="#SelectionHandle">SelectionHandle</a></code><br />
+<p><strong>Kind</strong>: instance method of <a href="#SelectionHandle"><code>SelectionHandle</code></a><br />
 <strong>Returns</strong>: <code>string</code> - - A token to pass to <a href="#SelectionHandle+off">off</a> to cancel this subscription.</p>
 <table style="width:58%;">
 <colgroup>
@@ -417,7 +413,7 @@ $(document).ready(function () {
 </tr>
 <tr class="even">
 <td>listener</td>
-<td><code><a href="#SelectionHandle..listener">listener</a></code></td>
+<td><a href="#SelectionHandle..listener"><code>listener</code></a></td>
 <td>The callback function that will be invoked when the event occurs.</td>
 </tr>
 </tbody>
@@ -427,7 +423,7 @@ $(document).ready(function () {
 <div id="selectionhandle.offeventtype-listener" class="section level3">
 <h3>selectionHandle.off(eventType, listener)</h3>
 <p>Cancels event subscriptions created by <a href="#SelectionHandle+on">on</a>.</p>
-<p><strong>Kind</strong>: instance method of <code><a href="#SelectionHandle">SelectionHandle</a></code></p>
+<p><strong>Kind</strong>: instance method of <a href="#SelectionHandle"><code>SelectionHandle</code></a></p>
 <table style="width:58%;">
 <colgroup>
 <col width="19%" />
@@ -449,7 +445,7 @@ $(document).ready(function () {
 </tr>
 <tr class="even">
 <td>listener</td>
-<td><code>string</code> | <code><a href="#SelectionHandle..listener">listener</a></code></td>
+<td><code>string</code> | <a href="#SelectionHandle..listener"><code>listener</code></a></td>
 <td>Either the callback function previously passed into <a href="#SelectionHandle+on">on</a>, or the string that was returned from <a href="#SelectionHandle+on">on</a>.</td>
 </tr>
 </tbody>
@@ -460,12 +456,12 @@ $(document).ready(function () {
 <h3>selectionHandle.close()</h3>
 <p>Shuts down the <code>SelectionHandle</code> object.</p>
 <p>Removes all event listeners that were added through this handle.</p>
-<p><strong>Kind</strong>: instance method of <code><a href="#SelectionHandle">SelectionHandle</a></code><br />
+<p><strong>Kind</strong>: instance method of <a href="#SelectionHandle"><code>SelectionHandle</code></a><br />
 <a name="SelectionHandle+event_change"></a></p>
 </div>
 <div id="change" class="section level3">
 <h3>“change”</h3>
-<p><strong>Kind</strong>: event emitted by <code><a href="#SelectionHandle">SelectionHandle</a></code><br />
+<p><strong>Kind</strong>: event emitted by <a href="#SelectionHandle"><code>SelectionHandle</code></a><br />
 <strong>Properties</strong></p>
 <table style="width:58%;">
 <colgroup>
@@ -493,7 +489,7 @@ $(document).ready(function () {
 </tr>
 <tr class="odd">
 <td>sender</td>
-<td><code><a href="#SelectionHandle">SelectionHandle</a></code></td>
+<td><a href="#SelectionHandle"><code>SelectionHandle</code></a></td>
 <td>The <code>SelectionHandle</code> instance that changed the value.</td>
 </tr>
 </tbody>
@@ -502,7 +498,7 @@ $(document).ready(function () {
 </div>
 <div id="selectionhandlelistener-function" class="section level3">
 <h3>SelectionHandle~listener : <code>function</code></h3>
-<p><strong>Kind</strong>: inner typedef of <code><a href="#SelectionHandle">SelectionHandle</a></code></p>
+<p><strong>Kind</strong>: inner typedef of <a href="#SelectionHandle"><code>SelectionHandle</code></a></p>
 <table style="width:58%;">
 <colgroup>
 <col width="19%" />

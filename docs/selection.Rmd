@@ -13,7 +13,7 @@ changing across the others, and `"change"` event listeners on all instances
 **Kind**: global class  
 
 * [SelectionHandle](#SelectionHandle)
-    * [new SelectionHandle([group], [extraInfo])](#new_SelectionHandle_new)
+    * [new crosstalk.SelectionHandle([group], [extraInfo])](#new_SelectionHandle_new)
     * _instance_
         * [.value](#SelectionHandle+value)
         * [.setGroup(group)](#SelectionHandle+setGroup)
@@ -28,12 +28,12 @@ changing across the others, and `"change"` event listeners on all instances
 
 <a name="new_SelectionHandle_new"></a>
 
-### new SelectionHandle([group], [extraInfo])
+### new crosstalk.SelectionHandle([group], [extraInfo])
 
-| Param | Type | Default | Description |
-| ------------- | ------------- | ------------- | ------------- |
-| [group] | <code>string</code> | <code>null</code> | The name of the Crosstalk group, or if none,   null or undefined (or any other falsy value). This can be changed later   via the [SelectionHandle#setGroup](#setGroup) method. |
-| [extraInfo] | <code>Object</code> | <code></code> | An object whose properties will be copied to   the event object whenever an event is emitted. |
+| Param | Type | Description |
+| ------------- | ------------- | ------------- |
+| [group] | <code>string</code> | The name of the Crosstalk group, or if none,   null or undefined (or any other falsy value). This can be changed later   via the [SelectionHandle#setGroup](#setGroup) method. |
+| [extraInfo] | <code>Object</code> | An object whose properties will be copied to   the event object whenever an event is emitted. |
 
 <a name="SelectionHandle+value"></a>
 
@@ -47,7 +47,7 @@ Retrieves the current selection for the group represented by this
 - If a selection is active, and data points are selected, then the keys
   of the selected data points will be present in the array.
 
-**Kind**: instance property of <code>[SelectionHandle](#SelectionHandle)</code>  
+**Kind**: instance property of [<code>SelectionHandle</code>](#SelectionHandle)  
 <a name="SelectionHandle+setGroup"></a>
 
 ### selectionHandle.setGroup(group)
@@ -60,7 +60,7 @@ The group being switched to (if any) will also not have its selection value
 modified as a result of calling `setGroup`. If you want to set the
 selection value of the new group, call `set` explicitly.
 
-**Kind**: instance method of <code>[SelectionHandle](#SelectionHandle)</code>  
+**Kind**: instance method of [<code>SelectionHandle</code>](#SelectionHandle)  
 
 | Param | Type | Description |
 | ------------- | ------------- | ------------- |
@@ -73,8 +73,8 @@ Overwrites the current selection for the group, and raises the `"change"`
 event among all of the group's '`SelectionHandle` instances (including
 this one).
 
-**Kind**: instance method of <code>[SelectionHandle](#SelectionHandle)</code>  
-**Emits**: <code>[change](#SelectionHandle+event_change)</code>  
+**Kind**: instance method of [<code>SelectionHandle</code>](#SelectionHandle)  
+**Emits**: [<code>change</code>](#SelectionHandle+event_change)  
 
 | Param | Type | Description |
 | ------------- | ------------- | ------------- |
@@ -88,8 +88,8 @@ Overwrites the current selection for the group, and raises the `"change"`
 event among all of the group's '`SelectionHandle` instances (including
 this one).
 
-**Kind**: instance method of <code>[SelectionHandle](#SelectionHandle)</code>  
-**Emits**: <code>[change](#SelectionHandle+event_change)</code>  
+**Kind**: instance method of [<code>SelectionHandle</code>](#SelectionHandle)  
+**Emits**: [<code>change</code>](#SelectionHandle+event_change)  
 
 | Param | Type | Description |
 | ------------- | ------------- | ------------- |
@@ -100,26 +100,26 @@ this one).
 ### selectionHandle.on(eventType, listener) ⇒ <code>string</code>
 Subscribes to events on this `SelectionHandle`.
 
-**Kind**: instance method of <code>[SelectionHandle](#SelectionHandle)</code>  
+**Kind**: instance method of [<code>SelectionHandle</code>](#SelectionHandle)  
 **Returns**: <code>string</code> - - A token to pass to [off](#SelectionHandle+off) to cancel
   this subscription.  
 
 | Param | Type | Description |
 | ------------- | ------------- | ------------- |
 | eventType | <code>string</code> | Indicates the type of events to listen to.   Currently, only `"change"` is supported. |
-| listener | <code>[listener](#SelectionHandle..listener)</code> | The callback function that   will be invoked when the event occurs. |
+| listener | [<code>listener</code>](#SelectionHandle..listener) | The callback function that   will be invoked when the event occurs. |
 
 <a name="SelectionHandle+off"></a>
 
 ### selectionHandle.off(eventType, listener)
 Cancels event subscriptions created by [on](#SelectionHandle+on).
 
-**Kind**: instance method of <code>[SelectionHandle](#SelectionHandle)</code>  
+**Kind**: instance method of [<code>SelectionHandle</code>](#SelectionHandle)  
 
 | Param | Type | Description |
 | ------------- | ------------- | ------------- |
 | eventType | <code>string</code> | The type of event to unsubscribe. |
-| listener | <code>string</code> &#124; <code>[listener](#SelectionHandle..listener)</code> | Either the callback   function previously passed into [on](#SelectionHandle+on), or the   string that was returned from [on](#SelectionHandle+on). |
+| listener | <code>string</code> \| [<code>listener</code>](#SelectionHandle..listener) | Either the callback   function previously passed into [on](#SelectionHandle+on), or the   string that was returned from [on](#SelectionHandle+on). |
 
 <a name="SelectionHandle+close"></a>
 
@@ -128,23 +128,23 @@ Shuts down the `SelectionHandle` object.
 
 Removes all event listeners that were added through this handle.
 
-**Kind**: instance method of <code>[SelectionHandle](#SelectionHandle)</code>  
+**Kind**: instance method of [<code>SelectionHandle</code>](#SelectionHandle)  
 <a name="SelectionHandle+event_change"></a>
 
 ### "change"
-**Kind**: event emitted by <code>[SelectionHandle](#SelectionHandle)</code>  
+**Kind**: event emitted by [<code>SelectionHandle</code>](#SelectionHandle)  
 **Properties**
 
 | Name | Type | Description |
 | ------------- | ------------- | ------------- |
 | value | <code>object</code> | The new value of the selection, or `undefined`   if no selection is active. |
 | oldValue | <code>object</code> | The previous value of the selection. |
-| sender | <code>[SelectionHandle](#SelectionHandle)</code> | The `SelectionHandle` instance that   changed the value. |
+| sender | [<code>SelectionHandle</code>](#SelectionHandle) | The `SelectionHandle` instance that   changed the value. |
 
 <a name="SelectionHandle..listener"></a>
 
 ### SelectionHandle~listener : <code>function</code>
-**Kind**: inner typedef of <code>[SelectionHandle](#SelectionHandle)</code>  
+**Kind**: inner typedef of [<code>SelectionHandle</code>](#SelectionHandle)  
 
 | Param | Type | Description |
 | ------------- | ------------- | ------------- |

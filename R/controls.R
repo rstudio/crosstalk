@@ -218,9 +218,9 @@ inlineCheckbox <- function(id, value, label) {
 #'   (POSIXt), \code{step} is in seconds.
 #' @param round \code{TRUE} to round all values to the nearest integer;
 #'   \code{FALSE} if no rounding is desired; or an integer to round to that
-#'   number of digits (for example, 1 will round to the nearest 10, and -2 will
-#'   round to the nearest .01). Any rounding will be applied after snapping to
-#'   the nearest step.
+#'   number of decimal places (for example, 1 will round to the nearest 0.1, and
+#'   -2 will round to the nearest 100). Any rounding will be applied after
+#'   snapping to the nearest step.
 #' @param ticks \code{FALSE} to hide tick marks, \code{TRUE} to show them
 #'   according to some simple heuristics.
 #' @param animate \code{TRUE} to show simple animation controls with default
@@ -317,6 +317,10 @@ filter_slider <- function(id, label, sharedData, column, step = NULL,
     dataType <- "number"
   }
 
+  if (isTRUE(round))
+    round <- 0
+  else if (!is.numeric(round))
+    round <- NULL
   step <- findStepSize(min, max, step)
   # Avoid ugliness from floating point errors, e.g.
   # findStepSize(min(quakes$mag), max(quakes$mag), NULL)
@@ -367,6 +371,7 @@ filter_slider <- function(id, label, sharedData, column, step = NULL,
     `data-keyboard` = TRUE,
     `data-keyboard-step` = step / (max - min) * 100,
     `data-drag-interval` = dragRange,
+    `data-round` = round,
     # The following are ignored by the ion.rangeSlider, but are used by Shiny.
     `data-data-type` = dataType,
     `data-time-format` = timeFormat,

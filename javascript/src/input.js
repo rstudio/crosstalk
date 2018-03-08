@@ -13,7 +13,7 @@ export function register(reg) {
   }
 }
 
-function bind() {
+export function bind() {
   Object.keys(bindings).forEach(function(className) {
     let binding = bindings[className];
     $("." + binding.className).not(".crosstalk-input-bound").each(function(i, el) {
@@ -24,7 +24,7 @@ function bind() {
 
 // Escape jQuery identifier
 function $escape(val) {
-  return val.replace(/([!"#$%&'()*+,.\/:;<=>?@\[\\\]^`{|}~])/g, "\\$1");
+  return val.replace(/([!"#$%&'()*+,./:;<=>?@[\\\]^`{|}~])/g, "\\$1");
 }
 
 function bindEl(el) {

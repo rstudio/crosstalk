@@ -8,14 +8,13 @@ cache: packages
 
 before_install:
   - . $HOME/.nvm/nvm.sh
-  - nvm install stable
-  - nvm use stable
-  - npm -g install npm@latest # Work around https://github.com/npm/npm/issues/14042
+  - nvm install
+  - nvm use
   - npm -g install grunt-cli
   - npm install
   - grunt build
   - npm run coverage
-  - git diff --exit-code >/dev/null
+  - git diff --exit-code
 
 notifications:
   email:

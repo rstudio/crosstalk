@@ -1,7 +1,7 @@
 import group from "./group";
 import { SelectionHandle } from "./selection";
 import { FilterHandle } from "./filter";
-import "./input";
+import { bind } from "./input";
 import "./input_selectize";
 import "./input_checkboxgroup";
 import "./input_slider";
@@ -31,7 +31,8 @@ const crosstalk = {
   var: var_,
   has: has,
   SelectionHandle: SelectionHandle,
-  FilterHandle: FilterHandle
+  FilterHandle: FilterHandle,
+  bind: bind
 };
 
 /**

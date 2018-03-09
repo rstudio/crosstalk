@@ -1,4 +1,4 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function(){function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s}return e})()({1:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -682,33 +682,31 @@ function bindInstance(binding, el) {
 }
 
 if (global.Shiny) {
-  (function () {
-    var inputBinding = new global.Shiny.InputBinding();
-    var $ = global.jQuery;
-    $.extend(inputBinding, {
-      find: function find(scope) {
-        return $(scope).find(".crosstalk-input");
-      },
-      initialize: function initialize(el) {
-        if (!$(el).hasClass("crosstalk-input-bound")) {
-          bindEl(el);
-        }
-      },
-      getId: function getId(el) {
-        return el.id;
-      },
-      getValue: function getValue(el) {},
-      setValue: function setValue(el, value) {},
-      receiveMessage: function receiveMessage(el, data) {},
-      subscribe: function subscribe(el, callback) {
-        $(el).data("crosstalk-instance").resume();
-      },
-      unsubscribe: function unsubscribe(el) {
-        $(el).data("crosstalk-instance").suspend();
+  var inputBinding = new global.Shiny.InputBinding();
+  var _$ = global.jQuery;
+  _$.extend(inputBinding, {
+    find: function find(scope) {
+      return _$(scope).find(".crosstalk-input");
+    },
+    initialize: function initialize(el) {
+      if (!_$(el).hasClass("crosstalk-input-bound")) {
+        bindEl(el);
       }
-    });
-    global.Shiny.inputBindings.register(inputBinding, "crosstalk.inputBinding");
-  })();
+    },
+    getId: function getId(el) {
+      return el.id;
+    },
+    getValue: function getValue(el) {},
+    setValue: function setValue(el, value) {},
+    receiveMessage: function receiveMessage(el, data) {},
+    subscribe: function subscribe(el, callback) {
+      _$(el).data("crosstalk-instance").resume();
+    },
+    unsubscribe: function unsubscribe(el) {
+      _$(el).data("crosstalk-instance").suspend();
+    }
+  });
+  global.Shiny.inputBindings.register(inputBinding, "crosstalk.inputBinding");
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
@@ -745,18 +743,16 @@ input.register({
         lastKnownKeys = null;
         ctHandle.clear();
       } else {
-        (function () {
-          var keys = {};
-          checked.each(function () {
-            data.map[this.value].forEach(function (key) {
-              keys[key] = true;
-            });
+        var keys = {};
+        checked.each(function () {
+          data.map[this.value].forEach(function (key) {
+            keys[key] = true;
           });
-          var keyArray = Object.keys(keys);
-          keyArray.sort();
-          lastKnownKeys = keyArray;
-          ctHandle.set(keyArray);
-        })();
+        });
+        var keyArray = Object.keys(keys);
+        keyArray.sort();
+        lastKnownKeys = keyArray;
+        ctHandle.set(keyArray);
       }
     });
 
@@ -822,18 +818,16 @@ input.register({
         lastKnownKeys = null;
         ctHandle.clear();
       } else {
-        (function () {
-          var keys = {};
-          selectize.items.forEach(function (group) {
-            data.map[group].forEach(function (key) {
-              keys[key] = true;
-            });
+        var keys = {};
+        selectize.items.forEach(function (group) {
+          data.map[group].forEach(function (key) {
+            keys[key] = true;
           });
-          var keyArray = Object.keys(keys);
-          keyArray.sort();
-          lastKnownKeys = keyArray;
-          ctHandle.set(keyArray);
-        })();
+        });
+        var keyArray = Object.keys(keys);
+        keyArray.sort();
+        lastKnownKeys = keyArray;
+        ctHandle.set(keyArray);
       }
     });
 

@@ -18,6 +18,7 @@ input.register({
     let $el = $(el).find("input");
     let dataType = $el.data("data-type");
     let timeFormat = $el.data("time-format");
+    let round = $el.data("round");
     let timeFormatter;
 
     // Set up formatting functions
@@ -37,6 +38,12 @@ input.register({
       opts.prettify = function(num) {
         return timeFormatter(timeFormat, new Date(num));
       };
+    } else if (dataType === "number") {
+      if (typeof round !== "undefined")
+        opts.prettify = function(num) {
+          let factor = Math.pow(10, round);
+          return Math.round(num * factor) / factor;
+        };
     }
 
     $el.ionRangeSlider(opts);

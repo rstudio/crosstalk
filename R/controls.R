@@ -260,7 +260,7 @@ inlineCheckbox <- function(id, value, label) {
 filter_slider <- function(id, label, sharedData, column, step = NULL,
   round = FALSE, ticks = TRUE, animate = FALSE, width = NULL, sep = ",",
   pre = NULL, post = NULL, timeFormat = NULL,
-  timezone = NULL, dragRange = TRUE)
+  timezone = NULL, dragRange = TRUE, min = NULL, max = NULL)
 {
   # TODO: Check that this works well with factors
   # TODO: Handle empty data frame, NA/NaN/Inf/-Inf values
@@ -272,8 +272,10 @@ filter_slider <- function(id, label, sharedData, column, step = NULL,
   df <- sharedData$data(withKey = TRUE)
   col <- lazyeval::f_eval(column, df)
   values <- na.omit(col)
-  min <- min(values)
-  max <- max(values)
+  if (is.null(min))
+    min <- min(values)
+  if (is.null(max))
+    max <- max(values)
   value <- range(values)
 
   ord <- order(col)

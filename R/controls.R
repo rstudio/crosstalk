@@ -231,10 +231,6 @@ inlineCheckbox <- function(id, value, label) {
 #' @param sep Separator between thousands places in numbers.
 #' @param pre A prefix string to put in front of the value.
 #' @param post A suffix string to put after the value.
-#' @param dragRange This option is used only if it is a range slider (with two
-#'   values). If \code{TRUE} (the default), the range can be dragged. In other
-#'   words, the min and max can be dragged together. If \code{FALSE}, the range
-#'   cannot be dragged.
 #' @param timeFormat Only used if the values are Date or POSIXt objects. A time
 #'   format string, to be passed to the Javascript strftime library. See
 #'   \url{https://github.com/samsonjs/strftime} for more details. The allowed
@@ -247,7 +243,14 @@ inlineCheckbox <- function(id, value, label) {
 #'   \code{"+HHMM"} or \code{"-HHMM"}. If \code{NULL} (the default), times will
 #'   be displayed in the browser's time zone. The value \code{"+0000"} will
 #'   result in UTC time.
-#'
+#' @param dragRange This option is used only if it is a range slider (with two
+#'   values). If \code{TRUE} (the default), the range can be dragged. In other
+#'   words, the min and max can be dragged together. If \code{FALSE}, the range
+#'   cannot be dragged.
+#' @param min The leftmost value of the slider. By default, set to the minimal
+#'   number in input data.
+#' @param max The rightmost value of the slider. By default, set to the maximal
+#'   number in input data.
 #' @examples
 #' ## Only run examples in interactive R sessions
 #' if (interactive()) {

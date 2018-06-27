@@ -104,13 +104,13 @@ devtools::install_github("r-forge/rgl")
 
 ---
 
-[![lineup screenshot](thumbnails/lineup.png){.widget-thumbnail}](https://github.com/sgratzl/lineupjs)
+[![lineup screenshot](thumbnails/lineup.png){.widget-thumbnail}](https://lineup.js.org)
 
-### [LineUp](https://github.com/sgratzl/lineupjs)
+### [LineUp](https://lineup.js.org)
 
-**Author:** [Samuel Gratzl](https://github.com/sgratzl) and the [Caleydo Team](http://caleydo.org)
+**Author:** [Samuel Gratzl](https://github.com/sgratzl), [Datavisyn](http://datavisyn.io) and the [Caleydo Team](http://caleydo.org)
 
-[LineUp](https://github.com/sgratzl/lineupjs) is an interactive technique designed to create, visualize and explore rankings of items based on a set of heterogeneous attributes.
+[LineUp](https://lineup.js.org) is an interactive technique designed to create, visualize and explore rankings of items based on a set of heterogeneous attributes.
 
 
 ```r

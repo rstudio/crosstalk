@@ -7,7 +7,8 @@
 \usage{
 filter_slider(id, label, sharedData, column, step = NULL, round = FALSE,
   ticks = TRUE, animate = FALSE, width = NULL, sep = ",", pre = NULL,
-  post = NULL, timeFormat = NULL, timezone = NULL, dragRange = TRUE)
+  post = NULL, timeFormat = NULL, timezone = NULL, dragRange = TRUE,
+  min = NULL, max = NULL)
 
 animation_options(interval = 1000, loop = FALSE, playButton = NULL,
   pauseButton = NULL)
@@ -68,6 +69,12 @@ result in UTC time.}
 values). If \code{TRUE} (the default), the range can be dragged. In other
 words, the min and max can be dragged together. If \code{FALSE}, the range
 cannot be dragged.}
+
+\item{min}{The leftmost value of the slider. By default, set to the minimal
+number in input data.}
+
+\item{max}{The rightmost value of the slider. By default, set to the maximal
+number in input data.}
 
 \item{interval}{The interval, in milliseconds, between each animation step.}
 

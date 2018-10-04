@@ -104,3 +104,22 @@ devtools::install_github("r-forge/rgl")
 
 
 ---
+
+[![sigmajs screenshot](thumbnails/sigmajs.png){.widget-thumbnail}](https://sigmajs.john-coene.com)
+
+### [sigmajs](https://sigmajs.john-coene.com)
+
+**Author:** John Coene
+
+The package sigmajs bridges the sigma.js JavaScript library and R via the htmlwidgets package, it also extends the original 
+JavaScript library (sigma.js) by providing additional functions, namely using the `igraph` package
+to enable the user to layout and cluster graphs. Finally sigmajs is also integrated with
+the crosstalk package which lets graphs be wired to other htmlwidgets
+such as `plotly` and `leafelt`.
+
+```r
+install.packages("sigmajs")
+```
+
+
+---

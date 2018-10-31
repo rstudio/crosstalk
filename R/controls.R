@@ -3,11 +3,12 @@ bootstrapLib <- function(theme = NULL) {
   # environment may use a bootstrap version that has a theme, and
   # we don't want to trump that just for our little controls.
   # Ideally we should find a better solution for this.
-  htmlDependency("bootstrap", "3.3.2",
-    system.file("lib/bootstrap", package = "crosstalk"),
-    script = c(
-      "js/bootstrap.min.js"
-    ),
+  htmlDependency(
+    name = "bootstrap",
+    version = "3.3.2",
+    package = "crosstalk",
+    src = file.path("lib", "bootstrap"),
+    script = "js/bootstrap.min.js",
     stylesheet = if (is.null(theme)) "css/bootstrap.min.css",
     meta = list(viewport = "width=device-width, initial-scale=1")
   )
@@ -15,8 +16,10 @@ bootstrapLib <- function(theme = NULL) {
 
 selectizeLib <- function(bootstrap = TRUE) {
   htmlDependency(
-    "selectize", "0.11.2",
-    system.file("lib/selectize", package = "crosstalk"),
+    name = "selectize",
+    version = "0.11.2",
+    package = "crosstalk",
+    src = "lib/selectize",
     stylesheet = if (bootstrap) "css/selectize.bootstrap3.css",
     script = "js/selectize.min.js"
   )
@@ -24,8 +27,10 @@ selectizeLib <- function(bootstrap = TRUE) {
 
 jqueryLib <- function() {
   htmlDependency(
-    "jquery", "1.11.3",
-    system.file("lib/jquery", package = "crosstalk"),
+    name = "jquery",
+    version = "1.11.3",
+    package = "crosstalk",
+    src = "lib/jquery",
     script = "jquery.min.js"
   )
 }
@@ -33,16 +38,22 @@ jqueryLib <- function() {
 ionrangesliderLibs <- function() {
   list(
     jqueryLib(),
-    htmlDependency("ionrangeslider", "2.1.2",
-      system.file("lib/ionrangeslider", package = "crosstalk"),
+    htmlDependency(
+      name = "ionrangeslider",
+      version = "2.1.2",
+      package = "crosstalk",
+      src = "lib/ionrangeslider",
       script = "js/ion.rangeSlider.min.js",
       # ion.rangeSlider also needs normalize.css, which is already included in
       # Bootstrap.
       stylesheet = c("css/ion.rangeSlider.css",
         "css/ion.rangeSlider.skinShiny.css")
     ),
-    htmlDependency("strftime", "0.9.2",
-      system.file("lib/strftime", package = "crosstalk"),
+    htmlDependency(
+      name = "strftime",
+      version = "0.9.2",
+      package = "crosstalk",
+      src = "lib/strftime",
       script = "strftime-min.js"
     )
   )

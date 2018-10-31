@@ -16,8 +16,11 @@ init <- function() {
 crosstalkLibs <- function() {
   list(
     jqueryLib(),
-    htmltools::htmlDependency("crosstalk", packageVersion("crosstalk"),
-      src = system.file("www", package = "crosstalk"),
+    htmltools::htmlDependency(
+      name = "crosstalk",
+      version = packageVersion("crosstalk"),
+      package = "crosstalk",
+      src = "www",
       script = "js/crosstalk.min.js",
       stylesheet = "css/crosstalk.css"
     )

@@ -14,7 +14,7 @@ before_install:
   - npm install
   - grunt build
   - npm run coverage
-  - git diff --exit-code
+  - git diff --exit-code inst
 
 notifications:
   email:

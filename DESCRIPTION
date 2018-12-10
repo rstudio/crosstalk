@@ -33,7 +33,7 @@ Description: Provides building blocks for allowing HTML widgets to communicate
     supports linked brushing and filtering.
 License: MIT + file LICENSE
 Imports:
-    htmltools (>= 0.3.5),
+    htmltools (>= 0.3.6),
     jsonlite,
     lazyeval,
     R6,

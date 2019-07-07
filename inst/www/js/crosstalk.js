@@ -801,6 +801,7 @@ input.register({
     var items = util.dataframeToD3(data.items);
     var opts = {
       options: first.concat(items),
+      items: data.selected,
       valueField: "value",
       labelField: "label",
       searchField: "label"
@@ -813,7 +814,7 @@ input.register({
     var ctHandle = new _filter.FilterHandle(data.group);
 
     var lastKnownKeys = void 0;
-    selectize.on("change", function () {
+    function updateFilter() {
       if (selectize.items.length === 0) {
         lastKnownKeys = null;
         ctHandle.clear();
@@ -829,7 +830,9 @@ input.register({
         lastKnownKeys = keyArray;
         ctHandle.set(keyArray);
       }
-    });
+    }
+    selectize.on("change", updateFilter);
+    updateFilter();
 
     return {
       suspend: function suspend() {

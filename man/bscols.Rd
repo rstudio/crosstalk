@@ -53,4 +53,3 @@ bscols(widths = c(2, 4),
   div(style = css(width="100\%", height="400px", background_color="blue"))
 )
 }
-

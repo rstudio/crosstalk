@@ -18,4 +18,3 @@ brush}
 Waits for a brush to change, and propagates that change to the
 \code{sharedData} object.
 }
-

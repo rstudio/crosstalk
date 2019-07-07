@@ -15,4 +15,3 @@ logical
 \description{
 Check if an object is an instance of \code{\link{SharedData}} or not.
 }
-

@@ -127,7 +127,8 @@ makeGroupOptions <- function(sharedData, group, allLevels, selected = NULL) {
 #'   present in the data?
 #' @param multiple Can multiple values be selected?
 #' @param columns Number of columns the options should be arranged into.
-#' @param selected Default value(s) to be selected.
+#' @param selected Default value(s) to be selected. Should be character, or
+#'   coercible to character.
 #'
 #' @examples
 #' ## Only run examples in interactive R sessions

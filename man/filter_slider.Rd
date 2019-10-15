@@ -5,10 +5,10 @@
 \alias{animation_options}
 \title{Range filter control}
 \usage{
-filter_slider(id, label, sharedData, column, step = NULL, round = FALSE,
-  ticks = TRUE, animate = FALSE, width = NULL, sep = ",", pre = NULL,
-  post = NULL, timeFormat = NULL, timezone = NULL, dragRange = TRUE,
-  min = NULL, max = NULL)
+filter_slider(id, label, sharedData, column, step = NULL,
+  round = FALSE, ticks = TRUE, animate = FALSE, width = NULL,
+  sep = ",", pre = NULL, post = NULL, timeFormat = NULL,
+  timezone = NULL, dragRange = TRUE, min = NULL, max = NULL)
 
 animation_options(interval = 1000, loop = FALSE, playButton = NULL,
   pauseButton = NULL)
@@ -40,7 +40,7 @@ according to some simple heuristics.}
 
 \item{animate}{\code{TRUE} to show simple animation controls with default
 settings; \code{FALSE} not to; or a custom settings list, such as those
-created using \code{\link{animationOptions}}.}
+created using \code{\link[shiny]{animationOptions}}.}
 
 \item{width}{The width of the slider control (see
 \code{\link[htmltools]{validateCssUnit}} for valid formats)}

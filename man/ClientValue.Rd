@@ -39,6 +39,7 @@ value, and so can only be done in a reactive context (e.g. in a
   }
 }
 }
+
 \examples{
 library(shiny)
 
@@ -59,4 +60,3 @@ server <- function(input, output, session) {
 
 }
 \keyword{datasets}
-

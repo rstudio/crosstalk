@@ -236,7 +236,7 @@ inlineCheckbox <- function(id, value, label) {
 #'   according to some simple heuristics.
 #' @param animate \code{TRUE} to show simple animation controls with default
 #'   settings; \code{FALSE} not to; or a custom settings list, such as those
-#'   created using \code{\link{animationOptions}}.
+#'   created using \code{\link[shiny]{animationOptions}}.
 #' @param width The width of the slider control (see
 #'   \code{\link[htmltools]{validateCssUnit}} for valid formats)
 #' @param sep Separator between thousands places in numbers.
@@ -417,7 +417,7 @@ filter_slider <- function(id, label, sharedData, column, step = NULL,
 
   # Add animation buttons
   if (identical(animate, TRUE))
-    animate <- animationOptions()
+    animate <- shiny::animationOptions()
 
   if (!is.null(animate) && !identical(animate, FALSE)) {
     if (is.null(animate$playButton))

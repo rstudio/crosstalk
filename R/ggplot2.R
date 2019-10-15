@@ -85,7 +85,7 @@ maintain_selection <- function(sharedData, brushId, ownerId = "") {
   force(brushId)
   session <- shiny::getDefaultReactiveDomain()
 
-  observeEvent(session$input[[brushId]], {
+  shiny::observeEvent(session$input[[brushId]], {
     df <- sharedData$data(withKey = TRUE, withFilter = TRUE)
     df <- shiny::brushedPoints(df, session$input[[brushId]])
     sharedData$selection(df$key_, ownerId)

@@ -1,7 +1,7 @@
 Package: crosstalk
 Type: Package
 Title: Inter-Widget Interactivity for HTML Widgets
-Version: 1.0.1
+Version: 1.0.1.9000
 Authors@R: c(
     person("Joe", "Cheng", role = c("aut", "cre"), email = "joe@rstudio.com"),
     person(family = "RStudio", role = "cph"),
@@ -36,9 +36,11 @@ Imports:
     htmltools (>= 0.3.6),
     jsonlite,
     lazyeval,
-    R6,
-    shiny (>= 0.11),
+    R6
+Suggests:
+    shiny,
     ggplot2
 URL: https://rstudio.github.io/crosstalk/
 BugReports: https://github.com/rstudio/crosstalk/issues
-RoxygenNote: 5.0.1
+RoxygenNote: 6.1.1
+Encoding: UTF-8

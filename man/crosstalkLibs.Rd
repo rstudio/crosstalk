@@ -10,4 +10,3 @@ crosstalkLibs()
 List of \code{\link[htmltools]{htmlDependency}} objects necessary for
 Crosstalk to function. Intended for widget authors.
 }
-

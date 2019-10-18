@@ -133,7 +133,7 @@ createUniqueId <- function (bytes, prefix = "", suffix = "") {
 #'
 #' \describe{
 #'   \item{\code{data}}{
-#'     A data frame-like object, or a Shiny \link[=reactive]{reactive
+#'     A data frame-like object, or a Shiny \link[shiny:reactive]{reactive
 #'     expression} that returns a data frame-like object.
 #'   }
 #'   \item{\code{key}}{
@@ -209,7 +209,7 @@ createUniqueId <- function (bytes, prefix = "", suffix = "") {
 #'   }
 #' }
 #'
-#' @import R6 shiny
+#' @import R6
 #' @export
 SharedData <- R6Class(
   "SharedData",
@@ -242,7 +242,7 @@ SharedData <- R6Class(
       }
 
       if (shiny::is.reactive(private$.data)) {
-        observeEvent(private$.data(), {
+        shiny::observeEvent(private$.data(), {
           self$clearSelection()
         })
       }

@@ -24,7 +24,7 @@ plots).
 
 \describe{
   \item{\code{data}}{
-    A data frame-like object, or a Shiny \link[=reactive]{reactive
+    A data frame-like object, or a Shiny \link[shiny:reactive]{reactive
     expression} that returns a data frame-like object.
   }
   \item{\code{key}}{
@@ -102,5 +102,5 @@ plots).
   }
 }
 }
-\keyword{datasets}
 
+\keyword{datasets}

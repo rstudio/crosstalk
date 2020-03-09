@@ -1,6 +1,8 @@
 ## crosstalk 1.0.1.9000
 
-* Shiny and ggplot2 are now Suggested packages instead of Imported packages.
+* `shiny` and `ggplot2` are now Suggested packages instead of Imported packages.
+
+* Upgrade to Bootstrap v3.4.1 and jQuery v3.4.1.
 
 ## crosstalk 1.0.1
 

@@ -16,4 +16,4 @@
 ^docs$
 ^doc$
 ^coverage$
-
+^.nvmrc$

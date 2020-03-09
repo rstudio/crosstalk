@@ -1,4 +1,4 @@
-## crosstalk 1.0.1.9000
+## crosstalk 1.1.0
 
 * `shiny` and `ggplot2` are now Suggested packages instead of Imported packages.
 

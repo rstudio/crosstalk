@@ -494,6 +494,7 @@ animation_options <- function(interval=1000,
 #' @return A \code{\link[htmltools]{browsable}} HTML element.
 #'
 #' @examples
+#' \donttest{
 #' library(htmltools)
 #'
 #' # If width is unspecified, equal widths will be used
@@ -516,6 +517,7 @@ animation_options <- function(interval=1000,
 #'   div(style = css(width="100%", height="400px", background_color="red")),
 #'   div(style = css(width="100%", height="400px", background_color="blue"))
 #' )
+#' }
 #' @export
 bscols <- function(..., widths = NA, device = c("xs", "sm", "md", "lg")) {
   device <- match.arg(device)

@@ -90,7 +90,7 @@ ClientValue <- R6Class(
     .rv = "ANY"
   ),
   public = list(
-    initialize = function(name, group = "default", session = shiny::getDefaultReactiveDomain()) {
+    initialize = function(name, group = "default", session = getDefaultReactiveDomain()) {
       private$.session <- session
       private$.name <- name
       private$.group <- group
@@ -226,7 +226,7 @@ SharedData <- R6Class(
       private$.data <- data
       private$.filterCV <- ClientValue$new("filter", group)
       private$.selectionCV <- ClientValue$new("selection", group)
-      private$.rv <- shiny::reactiveValues()
+      private$.rv <- reactiveValues()
       private$.group <- group
 
       if (inherits(key, "formula")) {
@@ -241,13 +241,13 @@ SharedData <- R6Class(
         stop("Unknown key type")
       }
 
-      if (shiny::is.reactive(private$.data)) {
+      if (is.reactive(private$.data)) {
         shiny::observeEvent(private$.data(), {
           self$clearSelection()
         })
       }
 
-      domain <- shiny::getDefaultReactiveDomain()
+      domain <- getDefaultReactiveDomain()
       if (!is.null(domain)) {
         observe({
           selection <- private$.selectionCV$get()
@@ -260,7 +260,7 @@ SharedData <- R6Class(
       }
     },
     origData = function() {
-      if (shiny::is.reactive(private$.data)) {
+      if (is.reactive(private$.data)) {
         private$.data()
       } else {
         private$.data
@@ -270,7 +270,7 @@ SharedData <- R6Class(
       private$.group
     },
     key = function() {
-      df <- if (shiny::is.reactive(private$.data)) {
+      df <- if (is.reactive(private$.data)) {
         private$.data()
       } else {
         private$.data
@@ -291,7 +291,7 @@ SharedData <- R6Class(
         character()
     },
     data = function(withSelection = FALSE, withFilter = TRUE, withKey = FALSE) {
-      df <- if (shiny::is.reactive(private$.data)) {
+      df <- if (is.reactive(private$.data)) {
         private$.data()
       } else {
         private$.data
@@ -333,7 +333,7 @@ SharedData <- R6Class(
 
         # .updateSelection needs logical array of length nrow(data)
         # .selectionCV$sendUpdate needs character array of keys
-        isolate({
+        shiny::isolate({
           if (is.null(value)) {
             self$.updateSelection(NULL)
             private$.selectionCV$sendUpdate(NULL)

@@ -81,6 +81,8 @@ selection_factor <- function(x, na.replace = c(FALSE, NA, TRUE),
 #'
 #' @export
 maintain_selection <- function(sharedData, brushId, ownerId = "") {
+  stopIfNotShiny("maintain_selection() requires the shiny package")
+
   force(sharedData)
   force(brushId)
   session <- shiny::getDefaultReactiveDomain()

@@ -90,8 +90,16 @@ ClientValue <- R6Class(
     .rv = "ANY"
   ),
   public = list(
-    initialize = function(name, group = "default", session = getDefaultReactiveDomain()) {
-      private$.session <- session
+    initialize = function(name, group = "default", session = shiny::getDefaultReactiveDomain()) {
+      if (!missing(session) || shinyInstalled()) {
+        private$.session <- session
+      } else {
+        # If session wasn't explicitly provided and Shiny isn't installed, we can't use
+        # the default value for session because it uses a shiny:: function. Instead,
+        # set it to NULL. This is hacky and weird but ClientValue doesn't really need
+        # to work well if Shiny isn't installed, it just needs to not throw.
+        private$.session <- NULL
+      }
       private$.name <- name
       private$.group <- group
       private$.qualifiedName <- paste0(".clientValue-", group, "-", name)
@@ -100,6 +108,7 @@ ClientValue <- R6Class(
       private$.session$input[[private$.qualifiedName]]
     },
     sendUpdate = function(value) {
+      stopIfNotShiny("ClientValue$sendUpdate() requires the shiny package")
       private$.session$sendCustomMessage("update-client-value", list(
         name = private$.name,
         group = private$.group,
@@ -324,6 +333,8 @@ SharedData <- R6Class(
     # Public API for selection getting/setting. Setting a selection will
     # cause an event to be propagated to the client.
     selection = function(value, ownerId = "") {
+      stopIfNotShiny("SharedData$selection() requires the shiny package")
+
       if (missing(value)) {
         return(private$.rv$selected)
       } else {
@@ -353,6 +364,7 @@ SharedData <- R6Class(
       }
     },
     clearSelection = function(ownerId = "") {
+      stopIfNotShiny("SharedData$clearSelection() requires the shiny package")
       self$selection(list(), ownerId = "")
     },
     # Update selection without sending event

@@ -32,7 +32,6 @@ input.register({
 
     let lastKnownKeys;
     function updateFilter() {
-      // console.log("in select updateFilter()");
       if (selectize.items.length === 0) {
         lastKnownKeys = null;
         ctHandle.clear();
@@ -50,7 +49,10 @@ input.register({
       }
     }
     selectize.on("change", updateFilter);
-    updateFilter();
+    // https://stackoverflow.com/a/2926235/1527747
+    $(window).on("load", function() {
+      updateFilter();
+    });
 
     return {
       suspend: function() {

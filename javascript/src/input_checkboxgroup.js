@@ -16,7 +16,6 @@ input.register({
     let lastKnownKeys;
     let $el = $(el);
     function updateFilter() {
-      // console.log("in checkbox updateFilter()");
       let checked = $el.find("input[type='checkbox']:checked");
       if (checked.length === 0) {
         lastKnownKeys = null;

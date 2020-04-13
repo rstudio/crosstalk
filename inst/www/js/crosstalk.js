@@ -737,7 +737,8 @@ input.register({
 
     var lastKnownKeys = void 0;
     var $el = $(el);
-    $el.on("change", "input[type='checkbox']", function () {
+    function updateFilter() {
+      // console.log("in checkbox updateFilter()");
       var checked = $el.find("input[type='checkbox']:checked");
       if (checked.length === 0) {
         lastKnownKeys = null;
@@ -754,6 +755,11 @@ input.register({
         lastKnownKeys = keyArray;
         ctHandle.set(keyArray);
       }
+    }
+    $el.on("change", "input[type='checkbox']", updateFilter);
+    // https://stackoverflow.com/a/2926235/1527747
+    $(window).on("load", function () {
+      updateFilter();
     });
 
     return {
@@ -815,6 +821,7 @@ input.register({
 
     var lastKnownKeys = void 0;
     function updateFilter() {
+      // console.log("in select updateFilter()");
       if (selectize.items.length === 0) {
         lastKnownKeys = null;
         ctHandle.clear();

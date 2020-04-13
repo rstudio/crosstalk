@@ -41,4 +41,4 @@ Imports:
     ggplot2
 URL: https://rstudio.github.io/crosstalk/
 BugReports: https://github.com/rstudio/crosstalk/issues
-RoxygenNote: 6.1.1
+RoxygenNote: 7.1.0

@@ -4,9 +4,8 @@
 \name{ClientValue}
 \alias{ClientValue}
 \title{ClientValue object}
-\format{An \code{\link{R6Class}} generator object}
-\usage{
-ClientValue
+\format{
+An \code{\link{R6Class}} generator object
 }
 \description{
 An object that can be used in a \href{http://shiny.rstudio.com}{Shiny} server
@@ -59,4 +58,61 @@ server <- function(input, output, session) {
 }
 
 }
-\keyword{datasets}
+\section{Methods}{
+\subsection{Public methods}{
+\itemize{
+\item \href{#method-new}{\code{ClientValue$new()}}
+\item \href{#method-get}{\code{ClientValue$get()}}
+\item \href{#method-sendUpdate}{\code{ClientValue$sendUpdate()}}
+\item \href{#method-clone}{\code{ClientValue$clone()}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-new"></a>}}
+\if{latex}{\out{\hypertarget{method-new}{}}}
+\subsection{Method \code{new()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{ClientValue$new(
+  name,
+  group = "default",
+  session = shiny::getDefaultReactiveDomain()
+)}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-get"></a>}}
+\if{latex}{\out{\hypertarget{method-get}{}}}
+\subsection{Method \code{get()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{ClientValue$get()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-sendUpdate"></a>}}
+\if{latex}{\out{\hypertarget{method-sendUpdate}{}}}
+\subsection{Method \code{sendUpdate()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{ClientValue$sendUpdate(value)}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-clone}{}}}
+\subsection{Method \code{clone()}}{
+The objects of this class are cloneable with this method.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{ClientValue$clone(deep = FALSE)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{deep}}{Whether to make a deep clone.}
+}
+\if{html}{\out{</div>}}
+}
+}
+}

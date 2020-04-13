@@ -5,13 +5,32 @@
 \alias{animation_options}
 \title{Range filter control}
 \usage{
-filter_slider(id, label, sharedData, column, step = NULL,
-  round = FALSE, ticks = TRUE, animate = FALSE, width = NULL,
-  sep = ",", pre = NULL, post = NULL, timeFormat = NULL,
-  timezone = NULL, dragRange = TRUE, min = NULL, max = NULL)
+filter_slider(
+  id,
+  label,
+  sharedData,
+  column,
+  step = NULL,
+  round = FALSE,
+  ticks = TRUE,
+  animate = FALSE,
+  width = NULL,
+  sep = ",",
+  pre = NULL,
+  post = NULL,
+  timeFormat = NULL,
+  timezone = NULL,
+  dragRange = TRUE,
+  min = NULL,
+  max = NULL
+)
 
-animation_options(interval = 1000, loop = FALSE, playButton = NULL,
-  pauseButton = NULL)
+animation_options(
+  interval = 1000,
+  loop = FALSE,
+  playButton = NULL,
+  pauseButton = NULL
+)
 }
 \arguments{
 \item{id}{An HTML element ID; must be unique within the web page}

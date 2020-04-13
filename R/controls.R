@@ -190,7 +190,7 @@ columnize <- function(columnCount, elements) {
 #'
 #' @rdname filter_select
 #' @export
-filter_checkbox <- function(id, label, sharedData, group, allLevels = FALSE, inline = FALSE, columns = 1) {
+filter_checkbox <- function(id, label, sharedData, group, allLevels = FALSE, inline = FALSE, columns = 1, selected=NULL) {
   options <- makeGroupOptions(sharedData, group, allLevels)
 
   labels <- options$items$label
@@ -205,7 +205,7 @@ filter_checkbox <- function(id, label, sharedData, group, allLevels = FALSE, inl
       tags$div(class = "crosstalk-options-group",
         columnize(columns,
           mapply(labels, values, FUN = function(label, value) {
-            makeCheckbox(id, value, label)
+            makeCheckbox(id, value, label, value %in% selected)
           }, SIMPLIFY = FALSE, USE.NAMES = FALSE)
         )
       ),
@@ -218,18 +218,25 @@ filter_checkbox <- function(id, label, sharedData, group, allLevels = FALSE, inl
   ))
 }
 
-blockCheckbox <- function(id, value, label) {
+blockCheckbox <- function(id, value, label, checked) {
+  ifelse(checked,
+    cbox <- tags$input(type = "checkbox", name = id, value = value, checked=NA),
+    cbox <- tags$input(type = "checkbox", name = id, value = value))
   tags$div(class = "checkbox",
     tags$label(
-      tags$input(type = "checkbox", name = id, value = value),
+      cbox,
       tags$span(label)
     )
   )
 }
 
-inlineCheckbox <- function(id, value, label) {
+inlineCheckbox <- function(id, value, label, checked) {
+  ifelse(checked,
+    cbox <- tags$input(type = "checkbox", name = id, value = value, checked=NA),
+    cbox <- tags$input(type = "checkbox", name = id, value = value))
+
   tags$label(class = "checkbox-inline",
-    tags$input(type = "checkbox", name = id, value = value),
+    cbox,
     tags$span(label)
   )
 }

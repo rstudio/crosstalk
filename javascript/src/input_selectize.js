@@ -32,6 +32,7 @@ input.register({
 
     let lastKnownKeys;
     function updateFilter() {
+      // console.log("in select updateFilter()");
       if (selectize.items.length === 0) {
         lastKnownKeys = null;
         ctHandle.clear();

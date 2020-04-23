@@ -10,8 +10,11 @@ scale_fill_selection(color_false, color_true)
 
 scale_color_selection(color_false, color_true)
 
-selection_factor(x, na.replace = c(FALSE, NA, TRUE),
-  reverse = packageVersion("ggplot2") < "2.2.0")
+selection_factor(
+  x,
+  na.replace = c(FALSE, NA, TRUE),
+  reverse = packageVersion("ggplot2") < "2.2.0"
+)
 }
 \arguments{
 \item{color_false}{The color that should be mapped to unselected rows}

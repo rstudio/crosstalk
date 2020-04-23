@@ -5,11 +5,17 @@
 \alias{filter_checkbox}
 \title{Categorical filter controls}
 \usage{
-filter_select(id, label, sharedData, group, allLevels = FALSE,
-  multiple = TRUE)
+filter_select(id, label, sharedData, group, allLevels = FALSE, multiple = TRUE)
 
-filter_checkbox(id, label, sharedData, group, allLevels = FALSE,
-  inline = FALSE, columns = 1)
+filter_checkbox(
+  id,
+  label,
+  sharedData,
+  group,
+  allLevels = FALSE,
+  inline = FALSE,
+  columns = 1
+)
 }
 \arguments{
 \item{id}{An HTML element ID; must be unique within the web page}

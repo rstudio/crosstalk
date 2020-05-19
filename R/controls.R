@@ -28,7 +28,7 @@ selectizeLib <- function(bootstrap = TRUE) {
 jqueryLib <- function() {
   htmlDependency(
     name = "jquery",
-    version = "3.5.0",
+    version = "3.5.1",
     package = "crosstalk",
     src = "lib/jquery",
     script = "jquery.min.js"

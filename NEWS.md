@@ -1,6 +1,6 @@
 ## crosstalk 1.1.0.9000
 
-* Upgrade to jQuery v3.5.0.
+* Upgrade to jQuery v3.5.1.
 
 ## crosstalk 1.1.0.1
 

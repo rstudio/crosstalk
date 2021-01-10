@@ -38,7 +38,7 @@ run_main_test <- function() {
 test_that("SharedData basic scenarios", {
   run_main_test()
 
-  expect_error(SharedData$new(iris)$selection(), "reactive context")
+  expect_error(SharedData$new(iris)$selection(), "reactive")
   shiny::isolate(expect_identical(SharedData$new(iris)$selection(), NULL))
 })
 

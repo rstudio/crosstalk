@@ -1,4 +1,9 @@
-# Crosstalk [![Build Status](https://travis-ci.org/rstudio/crosstalk.svg?branch=master)](https://travis-ci.org/rstudio/crosstalk)
+# Crosstalk
+
+<!-- badges: start -->
+[![CRAN](https://www.r-pkg.org/badges/version/crosstalk)](https://CRAN.R-project.org/package=crosstalk)
+[![R-CMD-check](https://github.com/rstudio/crosstalk/workflows/R-CMD-check/badge.svg)](https://github.com/rstudio/crosstalk/actions)
+<!-- badges: end -->
 
 Crosstalk is a package for R that enhances the [htmlwidgets](http://htmlwidgets.org) package. It extends htmlwidgets with a set of classes, functions, and conventions for implementing cross-widget interactions (currently, linked brushing and filtering).
 

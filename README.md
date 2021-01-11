@@ -5,7 +5,7 @@
 [![R-CMD-check](https://github.com/rstudio/crosstalk/workflows/R-CMD-check/badge.svg)](https://github.com/rstudio/crosstalk/actions)
 <!-- badges: end -->
 
-Crosstalk is a package for R that enhances the [htmlwidgets](http://htmlwidgets.org) package. It extends htmlwidgets with a set of classes, functions, and conventions for implementing cross-widget interactions (currently, linked brushing and filtering).
+Crosstalk is a package for R that enhances the [htmlwidgets](http://www.htmlwidgets.org) package. It extends htmlwidgets with a set of classes, functions, and conventions for implementing cross-widget interactions (currently, linked brushing and filtering).
 
 Find out more at the documentation website: http://rstudio.github.io/crosstalk/
 

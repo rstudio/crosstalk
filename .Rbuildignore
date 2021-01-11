@@ -13,6 +13,7 @@
 ^app\.R$
 ^crosstalk\.gif$
 ^jsdoc.conf.json$
+^revdep$
 ^docs$
 ^doc$
 ^coverage$

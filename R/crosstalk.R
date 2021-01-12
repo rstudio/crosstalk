@@ -29,34 +29,16 @@ crosstalkLibs <- function() {
 
 #' ClientValue object
 #'
-#' An object that can be used in a \href{http://shiny.rstudio.com}{Shiny} server
+#' @description
+#' An object that can be used in a \href{https://shiny.rstudio.com/}{Shiny} server
 #' function to get or set a crosstalk variable that exists on the client. The
 #' client copy of the variable is the canonical copy, so there is no direct
 #' "set" method that immediately changes the value; instead, there is a
-#' \code{sendUpdate} method that sends a request to the browser to change the
-#' value, which will then cause the new value to be relayed back to the server.
+#' `sendUpdate` method that sends a request to the browser to change the value,
+#' which will then cause the new value to be relayed back to the server.
 #'
-#' @section Methods:
-#' \describe{
-#'   \item{\code{initialize(name, group = "default", session = shiny::getDefaultReactiveDomain())}}{
-#'     Create a new ClientValue object to reflect the crosstalk variable
-#'     specified by \code{group} and \code{name}. The \code{session} indicates
-#'     which Shiny session to connect to, and defaults to the current session.
-#'   }
-#'   \item{\code{get()}}{
-#' Read the value. This is a reactive operation akin to reading a reactive
-#' value, and so can only be done in a reactive context (e.g. in a
-#' \code{\link[shiny]{reactive}}, \code{\link[shiny]{observe}}, or
-#' \code{\link[shiny]{isolate}} block).
-#'   }
-#'   \item{\code{sendUpdate(value)}}{
-#'     Send a message to the browser asking it to update the crosstalk var to
-#'     the given value. This update does not happen synchronously, that is, a
-#'     call to \code{get()} immediately following \code{sendUpdate(value)} will
-#'     not reflect the new value. The value must be serializable as JSON using
-#'     jsonlite.
-#'   }
-#' }
+#' This object is used to implement \code{\link{SharedData}} and should not need
+#' to be used directly by users.
 #'
 #' @examples
 #' library(shiny)
@@ -76,9 +58,7 @@ crosstalkLibs <- function() {
 #'   })
 #' }
 #'
-#' @docType class
 #' @import R6
-#' @format An \code{\link{R6Class}} generator object
 #' @export
 ClientValue <- R6Class(
   "ClientValue",
@@ -90,6 +70,14 @@ ClientValue <- R6Class(
     .rv = "ANY"
   ),
   public = list(
+    #' @description
+    #' Creates a new ClientValue object to reflect the crosstalk variable
+    #' specified by `group` and `name`.
+    #'
+    #' @param name The name of the crosstalk variable.
+    #' @param group The name of the crosstalk variable group.
+    #' @param session The Shiny session to connect to; defaults to the current
+    #'   session.
     initialize = function(name, group = "default", session = shiny::getDefaultReactiveDomain()) {
       if (!missing(session) || shinyInstalled()) {
         private$.session <- session
@@ -104,9 +92,22 @@ ClientValue <- R6Class(
       private$.group <- group
       private$.qualifiedName <- paste0(".clientValue-", group, "-", name)
     },
+
+    #' @description
+    #' Read the value. This is a reactive operation akin to reading a reactive
+    #' value, and so can only be done in a reactive context (e.g. in a
+    #' `shiny::reactive()`, `shiny::observe()`, or `shiny::isolate()` block).
     get = function() {
       private$.session$input[[private$.qualifiedName]]
     },
+
+    #' @description
+    #' Send a message to the browser asking it to update the crosstalk var to
+    #' the given value. This update does not happen synchronously, that is, a
+    #' call to `get()` immediately following `sendUpdate(value)` will not
+    #' reflect the new value.
+    #' @param value The new value for the crosstalk variable. Must be
+    #'   serializable as JSON using `jsonlite`.
     sendUpdate = function(value) {
       stopIfNotShiny("ClientValue$sendUpdate() requires the shiny package")
       private$.session$sendCustomMessage("update-client-value", list(
@@ -126,97 +127,18 @@ createUniqueId <- function (bytes, prefix = "", suffix = "") {
 }
 
 
-#' An R6 class that represents a shared data frame
+#' Shared data frame
 #'
-#' ...or sufficiently data frame-like object. The primary use for
-#' \code{SharedData} is to be passed to Crosstalk-compatible widgets in place
-#' of a data frame. Each \code{SharedData$new(...)} call makes a new "group"
-#' of widgets that link to each other, but not to widgets in other groups.
-#' You can also use a \code{SharedData} object from Shiny code in order to
-#' react to filtering and brushing from non-widget visualizations (like ggplot2
-#' plots).
+#' @description
+#' An R6 class that represents a shared data frame, or sufficiently data
+#' frame-like object.
 #'
-#' @section Constructor:
-#'
-#' \code{SharedData$new(data, key = NULL, group = createUniqueId(4, prefix = "SharedData"))}
-#'
-#' \describe{
-#'   \item{\code{data}}{
-#'     A data frame-like object, or a Shiny \link[shiny:reactive]{reactive
-#'     expression} that returns a data frame-like object.
-#'   }
-#'   \item{\code{key}}{
-#'     Character vector or one-sided formula that indicates the name of the
-#'     column that represents the key or ID of the data frame. These \emph{must}
-#'     be unique, and ideally will be something intrinsic to the data (a proper
-#'     ID) rather than a transient property like row index.
-#'
-#'     If \code{NULL}, then \code{row.names(data)} will be used.
-#'   }
-#'   \item{\code{group}}{
-#'     The "identity" of the Crosstalk group that widgets will join when you
-#'     pass them this \code{SharedData} object. In some cases, you will want to
-#'     have multiple independent \code{SharedData} objects link up to form a
-#'     single web of widgets that all share selection and filtering state; in
-#'     those cases, you'll give those \code{SharedData} objects the same group
-#'     name. (One example: in Shiny, ui.R and server.R might each need their own
-#'     \code{SharedData} instance, even though they're intended to represent a
-#'     single group.)
-#'   }
-#' }
-#'
-#' @section Methods:
-#'
-#' \describe{
-#'   \item{\code{data(withSelection = FALSE, withFilter = TRUE, withKey = FALSE)}}{
-#'     Return the data (or read and return the data if the data is a Shiny
-#'     reactive expression). If \code{withSelection}, add a \code{selection_}
-#'     column with logical values indicating which rows are in the current
-#'     selection, or \code{NA} if no selection is currently active. If
-#'     \code{withFilter} (the default), only return rows that are part of the
-#'     current filter settings, if any. If \code{withKey}, add a \code{key_}
-#'     column with the key values of each row (normally not needed since the
-#'     key is either one of the other columns or else just the row names).
-#'
-#'     When running in Shiny, calling \code{data()} is a reactive operation
-#'     that will invalidate if the selection or filter change (assuming that
-#'     information was requested), or if the original data is a reactive
-#'     expression that has invalidated.
-#'   }
-#'   \item{\code{origData()}}{
-#'     Return the data frame that was used to create this \code{SharedData}
-#'     instance. If a reactive expression, evaluate the reactive expression.
-#'     Equivalent to \code{data(FALSE, FALSE, FALSE)}.
-#'   }
-#'   \item{\code{groupName()}}{
-#'     Returns the value of \code{group} that was used to create this instance.
-#'   }
-#'   \item{\code{key()}}{
-#'     Returns the vector of key values. Filtering is not applied.
-#'   }
-#'   \item{\code{selection(value, ownerId = "")}}{
-#'     If called without arguments, returns a logical vector of rows that are
-#'     currently selected (brushed), or \code{NULL} if no selection exists.
-#'     Intended to be called from a Shiny reactive context, and invalidates
-#'     whenever the selection changes.
-#'
-#'     If called with one or two arguments, expects \code{value} to be a logical
-#'     vector of \code{nrow(origData())} length, indicating which rows are
-#'     currently selected (brushed). This value is propagated to the web browser
-#'     (assumes an active Shiny app or Shiny R Markdown document).
-#'
-#'     Set the \code{ownerId} argument to the \code{outputId} of a widget if
-#'     conceptually that widget "initiated" the selection (prevents that widget
-#'     from clearing its visual selection box, which is normally cleared when
-#'     the selection changes). For example, if setting the selection based on a
-#'     \code{\link[shiny]{plotOutput}} brush, then \code{ownerId} should be the
-#'     \code{outputId} of the \code{plotOutput}.
-#'   }
-#'   \item{\code{clearSelection(ownerId = "")}}{
-#'     Clears the selection. For the meaning of \code{ownerId}, see the
-#'     \code{selection} method.
-#'   }
-#' }
+#' The primary use for \code{SharedData} is to be passed to Crosstalk-compatible
+#' widgets in place of a data frame. Each \code{SharedData$new(...)} call makes
+#' a new "group" of widgets that link to each other, but not to widgets in other
+#' groups. You can also use a \code{SharedData} object from Shiny code in order
+#' to react to filtering and brushing from non-widget visualizations (like
+#' ggplot2 plots).
 #'
 #' @import R6
 #' @export
@@ -228,9 +150,31 @@ SharedData <- R6Class(
     .filterCV = "ANY",
     .selectionCV = "ANY",
     .rv = "ANY",
-    .group = "ANY"
+    .group = "ANY",
+    # Update selection without sending event
+    .updateSelection = function(value) {
+      force(value)
+      `$<-`(private$.rv, "selected", value)
+    }
   ),
   public = list(
+    #' @param data A data frame-like object, or a Shiny
+    #'   \link[shiny:reactive]{reactive expression} that returns a data
+    #'   frame-like object.
+    #' @param key Character vector or one-sided formula that indicates the name
+    #'   of the column that represents the key or ID of the data frame. These
+    #'   \emph{must} be unique, and ideally will be something intrinsic to the
+    #'   data (a proper ID) rather than a transient property like row index.
+    #'
+    #'   If \code{NULL}, then \code{row.names(data)} will be used.
+    #' @param group The "identity" of the Crosstalk group that widgets will join
+    #'   when you pass them this \code{SharedData} object. In some cases, you
+    #'   will want to have multiple independent \code{SharedData} objects link
+    #'   up to form a single web of widgets that all share selection and
+    #'   filtering state; in those cases, you'll give those \code{SharedData}
+    #'   objects the same group name. (One example: in Shiny, ui.R and server.R
+    #'   might each need their own \code{SharedData} instance, even though
+    #'   they're intended to represent a single group.)
     initialize = function(data, key = NULL, group = createUniqueId(4, prefix = "SharedData")) {
       private$.data <- data
       private$.filterCV <- ClientValue$new("filter", group)
@@ -261,13 +205,17 @@ SharedData <- R6Class(
         observe({
           selection <- private$.selectionCV$get()
           if (!is.null(selection) && length(selection) > 0) {
-            self$.updateSelection(self$key() %in% selection)
+            private$.updateSelection(self$key() %in% selection)
           } else {
-            self$.updateSelection(NULL)
+            private$.updateSelection(NULL)
           }
         })
       }
     },
+    #' @description Return the data frame that was used to create this
+    #' \code{SharedData} instance. If a reactive expression, evaluate the
+    #' reactive expression. Equivalent to \code{SharedData$data(FALSE, FALSE,
+    #' FALSE)}.
     origData = function() {
       if (is.reactive(private$.data)) {
         private$.data()
@@ -275,9 +223,12 @@ SharedData <- R6Class(
         private$.data
       }
     },
+    #' @description Returns the value of \code{group} that was used to create
+    #' this instance.
     groupName = function() {
       private$.group
     },
+    #' @description Returns the vector of key values. Filtering is not applied.
     key = function() {
       df <- if (is.reactive(private$.data)) {
         private$.data()
@@ -299,6 +250,22 @@ SharedData <- R6Class(
       else
         character()
     },
+    #' @description
+    #' Return the data (or read and return the data if the data is a Shiny
+    #' reactive expression).
+    #'
+    #' When running in Shiny, calling \code{data()} is a reactive operation that
+    #' will invalidate if the selection or filter change (assuming that
+    #' information was requested), or if the original data is a reactive
+    #' expression that has invalidated.
+    #' @param withSelection If `TRUE`, add a \code{selection_} column with
+    #'   logical values indicating which rows are in the current selection, or
+    #'   \code{NA} if no selection is currently active.
+    #' @param withFilter If `TRUE` (the default), only return rows that are part
+    #'   of the current filter settings, if any.
+    #' @param withKey If `TRUE`, add a \code{key_} column with the key values of
+    #'   each row (normally not needed since the key is either one of the other
+    #'   columns or else just the row names).
     data = function(withSelection = FALSE, withFilter = TRUE, withKey = FALSE) {
       df <- if (is.reactive(private$.data)) {
         private$.data()
@@ -332,6 +299,26 @@ SharedData <- R6Class(
     },
     # Public API for selection getting/setting. Setting a selection will
     # cause an event to be propagated to the client.
+    #' @description Get or set the current selection in the client.
+    #'
+    #' If called without arguments, returns a logical vector of rows that are
+    #' currently selected (brushed), or \code{NULL} if no selection exists.
+    #' Intended to be called from a Shiny reactive context, and invalidates
+    #' whenever the selection changes.
+    #'
+    #' If called with one or two arguments, sets the selection based on the
+    #' given value indirectly, by sending the value to the web browser (assumes
+    #' an active Shiny app or Shiny R Markdown document).
+    #'
+    #' @param value If provided, a logical vector of `nrow(origData())` length,
+    #'   indicating which rows are currently selected (brushed).
+    #'
+    #' @param ownerId Set this argument to the `outputId` of a widget if
+    #'   conceptually that widget "initiated" the selection (prevents that
+    #'   widget from clearing its visual selection box, which is normally
+    #'   cleared when the selection changes). For example, if setting the
+    #'   selection based on a [shiny::plotOutput()] brush, then
+    #'   `ownerId` should be the `outputId` of that `plotOutput`.
     selection = function(value, ownerId = "") {
       stopIfNotShiny("SharedData$selection() requires the shiny package")
 
@@ -346,15 +333,15 @@ SharedData <- R6Class(
         # .selectionCV$sendUpdate needs character array of keys
         shiny::isolate({
           if (is.null(value)) {
-            self$.updateSelection(NULL)
+            private$.updateSelection(NULL)
             private$.selectionCV$sendUpdate(NULL)
           } else {
             key <- self$key()
             if (is.character(value)) {
-              self$.updateSelection(key %in% value)
+              private$.updateSelection(key %in% value)
               private$.selectionCV$sendUpdate(value)
             } else if (is.logical(value)) {
-              self$.updateSelection(value)
+              private$.updateSelection(value)
               private$.selectionCV$sendUpdate(key[value])
             } else if (is.numeric(value)) {
               self$selection(1:nrow(self$data(FALSE)) %in% value)
@@ -363,14 +350,13 @@ SharedData <- R6Class(
         })
       }
     },
+    #' @description Clears the selection indirectly, by sending an instruction
+    #' to the client that it should do so.
+    #'
+    #' @param ownerId See the [SharedData$selection()] method.
     clearSelection = function(ownerId = "") {
       stopIfNotShiny("SharedData$clearSelection() requires the shiny package")
       self$selection(list(), ownerId = "")
-    },
-    # Update selection without sending event
-    .updateSelection = function(value) {
-      force(value)
-      `$<-`(private$.rv, "selected", value)
     }
   )
 )

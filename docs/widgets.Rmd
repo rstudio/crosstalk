@@ -104,3 +104,18 @@ devtools::install_github("r-forge/rgl")
 
 
 ---
+
+[![echarty screenshot](thumbnails/echarty.png){.widget-thumbnail}](https://helgasoft.github.io/echarty/)
+
+### [echarty](https://helgasoft.github.io/echarty/)
+
+**Author:** [Helgasoft](https://github.com/helgasoft)
+
+A minimal R/Shiny interface to JavaScript library [ECharts](https://echarts.apache.org/en/index.html). Supports all cross-widget interactions for 2D charts - brushing (send + receive) and filtering (send + receive). 3D charts are brush-receivers.
+
+```r
+devtools::install_github("helgasoft/echarty")
+```
+
+
+---

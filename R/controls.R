@@ -472,7 +472,7 @@ animation_options <- function(interval=1000,
 #'   The width vector will be recycled if there are more \code{...} arguments.
 #'   \code{NA} columns will evenly split the remaining columns that are left
 #'   after the widths are recycled and non-\code{NA} values are subtracted.
-#' @param device The class of device which is targeted by these widths; with
+#' @param device Deprecated. The class of device which is targeted by these widths; with
 #'   smaller screen sizes the layout will collapse to a one-column,
 #'   top-to-bottom display instead. xs: never collapse, sm: collapse below
 #'   768px, md: 992px, lg: 1200px.
@@ -505,9 +505,15 @@ animation_options <- function(interval=1000,
 #' )
 #' }
 #' @export
-bscols <- function(..., widths = NA, device = c("xs", "sm", "md", "lg")) {
-  device <- match.arg(device)
-  .Deprecated("device is deprecated")
+bscols <- function(..., widths = NA, device = NULL) {
+
+  if(!is.null(device)){
+    device <- match.arg(
+      device,
+      c("xs", "sm", "md", "lg")
+    )
+    .Deprecated("device is deprecated")
+  }
 
   if (length(list(...)) == 0) {
     widths = c()

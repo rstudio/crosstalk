@@ -4,7 +4,7 @@
 \alias{bscols}
 \title{Arrange HTML elements or widgets in Bootstrap columns}
 \usage{
-bscols(..., widths = NA, device = c("xs", "sm", "md", "lg"))
+bscols(..., widths = NA, device = NULL)
 }
 \arguments{
 \item{...}{\code{htmltools} tag objects, lists, text, HTML widgets, or
@@ -16,7 +16,7 @@ The width vector will be recycled if there are more \code{...} arguments.
 \code{NA} columns will evenly split the remaining columns that are left
 after the widths are recycled and non-\code{NA} values are subtracted.}
 
-\item{device}{The class of device which is targeted by these widths; with
+\item{device}{Deprecated. The class of device which is targeted by these widths; with
 smaller screen sizes the layout will collapse to a one-column,
 top-to-bottom display instead. xs: never collapse, sm: collapse below
 768px, md: 992px, lg: 1200px.}

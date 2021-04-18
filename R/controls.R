@@ -1,19 +1,3 @@
-bootstrapLib <- function(theme = NULL) {
-  # Intentionally use an older version of bootstrap. The rendering
-  # environment may use a bootstrap version that has a theme, and
-  # we don't want to trump that just for our little controls.
-  # Ideally we should find a better solution for this.
-  htmlDependency(
-    name = "bootstrap",
-    version = "3.3.2",
-    package = "crosstalk",
-    src = file.path("lib", "bootstrap"),
-    script = "js/bootstrap.min.js",
-    stylesheet = if (is.null(theme)) "css/bootstrap.min.css",
-    meta = list(viewport = "width=device-width, initial-scale=1")
-  )
-}
-
 selectizeLib <- function(bootstrap = TRUE) {
   htmlDependency(
     name = "selectize",
@@ -46,7 +30,9 @@ ionrangesliderLibs <- function() {
       script = "js/ion.rangeSlider.min.js",
       # ion.rangeSlider also needs normalize.css, which is already included in
       # Bootstrap.
-      stylesheet = c("css/ion.rangeSlider.css",
+      stylesheet = c(
+        "css/normalize.css",
+        "css/ion.rangeSlider.css",
         "css/ion.rangeSlider.skinShiny.css")
     ),
     htmlDependency(
@@ -143,7 +129,7 @@ filter_select <- function(id, label, sharedData, group, allLevels = FALSE,
         )
       )
     ),
-    c(list(jqueryLib(), bootstrapLib(), selectizeLib()), crosstalkLibs())
+    c(list(jqueryLib(), selectizeLib()), crosstalkLibs())
   ))
 }
 
@@ -192,7 +178,7 @@ filter_checkbox <- function(id, label, sharedData, group, allLevels = FALSE, inl
         jsonlite::toJSON(options, dataframe = "columns", pretty = TRUE)
       )
     ),
-    c(list(jqueryLib(), bootstrapLib()), crosstalkLibs())
+    c(list(jqueryLib()), crosstalkLibs())
   ))
 }
 
@@ -521,6 +507,7 @@ animation_options <- function(interval=1000,
 #' @export
 bscols <- function(..., widths = NA, device = c("xs", "sm", "md", "lg")) {
   device <- match.arg(device)
+  .Deprecated("device is deprecated")
 
   if (length(list(...)) == 0) {
     widths = c()
@@ -542,18 +529,18 @@ bscols <- function(..., widths = NA, device = c("xs", "sm", "md", "lg")) {
     }
   }
 
-  ui <- tags$div(class = "container-fluid crosstalk-bscols",
+  ui <- tags$div(class = "crosstalk-container crosstalk-bscols",
     # Counteract knitr pre/code output blocks
-    tags$div(class = "fluid-row",
+    tags$div(class = "crosstalk-row",
       unname(mapply(list(...), widths, FUN = function(el, width) {
-        div(class = sprintf("col-%s-%s", device, width),
+        div(class = sprintf("crosstalk-column column-%s", width),
           el
         )
       }, SIMPLIFY = FALSE))
     )
   )
 
-  browsable(attachDependencies(ui, list(jqueryLib(), bootstrapLib())))
+  browsable(attachDependencies(ui, list(jqueryLib())))
 }
 
 controlLabel <- function(controlName, label) {

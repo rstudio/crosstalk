@@ -1,10 +1,5 @@
 /* Adjust margins outwards, so column contents line up with the edges of the
    parent of container-fluid. */
-.container-fluid.crosstalk-bscols {
-  margin-left: -30px;
-  margin-right: -30px;
-  white-space: normal;
-}
 
 /* But don't adjust the margins outwards if we're directly under the body,
    i.e. we were the top-level of something at the console. */
@@ -23,5 +18,67 @@ body > .container-fluid.crosstalk-bscols {
   .crosstalk-input-checkboxgroup .crosstalk-options-group .crosstalk-options-column {
     display: block;
     padding-right: inherit;
+  }
+}
+
+.crosstalk-options-group{
+  padding-bottom: 12px;
+}
+
+.crosstalk-container{
+  padding-top: 15px;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.crosstalk-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.crosstalk-column {
+  flex-basis: 100%;
+}
+
+@media screen and (min-width: 800px) {
+  .column {
+    flex: 1;
+  }
+  .column-1 {
+    flex: 8.3%;
+  }
+  .column-2 {
+    flex: 16.7%;
+  }
+  .column-3 {
+    flex: 23%;
+  }
+  .column-4{
+    flex: 33%;
+  }
+  .column-5{
+    flex: 41%;
+  }
+  .column-6{
+    flex: 50%;
+  }
+  .column-7{
+    flex: 58%;
+  }
+  .column-8{
+    flex: 66%;
+  }
+  .column-9{
+    flex: 75%;
+  }
+  .column-10{
+    flex: 83%;
+  }
+  .column-11{
+    flex: 91%;
+  }
+  .column-12{
+    flex: 100%;
   }
 }

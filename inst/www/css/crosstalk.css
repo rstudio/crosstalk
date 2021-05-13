@@ -41,6 +41,11 @@ body > .container-fluid.crosstalk-bscols {
   flex-direction: row;
 }
 
+.crosstalk-columns{
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
 .crosstalk-column {
   flex: 1;
 }

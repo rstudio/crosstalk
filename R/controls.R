@@ -539,7 +539,7 @@ bscols <- function(..., widths = NA, device = NULL) {
     # Counteract knitr pre/code output blocks
     tags$div(class = "crosstalk-row",
       unname(mapply(list(...), widths, FUN = function(el, width) {
-        div(class = sprintf("crosstalk-column column-%s", width),
+        div(class = sprintf("crosstalk-column-%s", width),
           el
         )
       }, SIMPLIFY = FALSE))

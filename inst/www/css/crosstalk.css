@@ -1,3 +1,7 @@
+* {
+  box-sizing: border-box;
+}
+
 /* Adjust margins outwards, so column contents line up with the edges of the
    parent of container-fluid. */
 
@@ -33,52 +37,63 @@ body > .container-fluid.crosstalk-bscols {
 
 .crosstalk-row {
   display: flex;
-  flex-direction: row;
   flex-wrap: wrap;
 }
 
-.crosstalk-column {
-  flex-basis: 100%;
+.column {
+  flex: 1;
+}
+.column-1 {
+  flex: 8.3%;
+}
+.column-2 {
+  flex: 16.7%;
+}
+.column-3 {
+  flex: 23%;
+}
+.column-4{
+  flex: 33%;
+}
+.column-5{
+  flex: 41%;
+}
+.column-6{
+  flex: 50%;
+}
+.column-7{
+  flex: 58%;
+}
+.column-8{
+  flex: 66%;
+}
+.column-9{
+  flex: 75%;
+}
+.column-10{
+  flex: 83%;
+}
+.column-11{
+  flex: 91%;
+}
+.column-12{
+  flex: 100%;
 }
 
-@media screen and (min-width: 800px) {
-  .column {
-    flex: 1;
-  }
-  .column-1 {
-    flex: 8.3%;
-  }
-  .column-2 {
-    flex: 16.7%;
-  }
-  .column-3 {
-    flex: 23%;
-  }
-  .column-4{
-    flex: 33%;
-  }
-  .column-5{
-    flex: 41%;
-  }
-  .column-6{
-    flex: 50%;
-  }
-  .column-7{
-    flex: 58%;
-  }
-  .column-8{
-    flex: 66%;
-  }
-  .column-9{
-    flex: 75%;
-  }
-  .column-10{
-    flex: 83%;
-  }
-  .column-11{
-    flex: 91%;
-  }
-  .column-12{
+@media (max-width: 800px) {
+  .column,
+  .column-1,
+  .column-2,
+  .column-3,
+  .column-4,
+  .column-5,
+  .column-6,
+  .column-7,
+  .column-8,
+  .column-9,
+  .column-10,
+  .column-11,
+  .column-12 {
     flex: 100%;
   }
 }

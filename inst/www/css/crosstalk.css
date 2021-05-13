@@ -37,7 +37,8 @@ body > .container-fluid.crosstalk-bscols {
 
 .crosstalk-row {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  flex-direction: row;
 }
 
 .crosstalk-column {

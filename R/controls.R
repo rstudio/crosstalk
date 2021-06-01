@@ -1,3 +1,15 @@
+bootstrapLib <- function() {
+  # we only import the grid
+  htmlDependency(
+    name = "bootstrap-grid",
+    version = "3.4.1", # must be updated with tools/updateBootstrapGrid.R
+    package = "crosstalk",
+    src = file.path("lib", "bootstrap"),
+    stylesheet = "css/bootstrap-grid.min.css",
+    meta = list(viewport = "width=device-width, initial-scale=1")
+  )
+}
+
 selectizeLib <- function(bootstrap = TRUE) {
   htmlDependency(
     name = "selectize",
@@ -505,15 +517,8 @@ animation_options <- function(interval=1000,
 #' )
 #' }
 #' @export
-bscols <- function(..., widths = NA, device = NULL) {
-
-  if(!is.null(device)){
-    device <- match.arg(
-      device,
-      c("xs", "sm", "md", "lg")
-    )
-    .Deprecated("device is deprecated")
-  }
+bscols <- function(..., widths = NA, device = c("xs", "sm", "md", "lg")) {
+  device <- match.arg(device)
 
   if (length(list(...)) == 0) {
     widths = c()
@@ -535,18 +540,18 @@ bscols <- function(..., widths = NA, device = NULL) {
     }
   }
 
-  ui <- tags$div(class = "crosstalk-container crosstalk-bscols",
+  ui <- tags$div(class = "container-fluid crosstalk-bscols",
     # Counteract knitr pre/code output blocks
-    tags$div(class = "crosstalk-row",
+    tags$div(class = "fluid-row",
       unname(mapply(list(...), widths, FUN = function(el, width) {
-        div(class = sprintf("crosstalk-columns crosstalk-column-%s", width),
+        div(class = sprintf("col-%s-%s", device, width),
           el
         )
       }, SIMPLIFY = FALSE))
     )
   )
 
-  browsable(attachDependencies(ui, list(jqueryLib())))
+  browsable(attachDependencies(ui, list(jqueryLib(), bootstrapLib())))
 }
 
 controlLabel <- function(controlName, label) {

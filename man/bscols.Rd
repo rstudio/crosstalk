@@ -4,7 +4,7 @@
 \alias{bscols}
 \title{Arrange HTML elements or widgets in Bootstrap columns}
 \usage{
-bscols(..., widths = NA, device = NULL)
+bscols(..., widths = NA, device = c("xs", "sm", "md", "lg"))
 }
 \arguments{
 \item{...}{\code{htmltools} tag objects, lists, text, HTML widgets, or

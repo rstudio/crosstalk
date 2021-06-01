@@ -19,3 +19,4 @@
 ^coverage$
 ^.nvmrc$
 ^\.github$
+^tools$

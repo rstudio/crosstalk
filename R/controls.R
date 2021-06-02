@@ -4,8 +4,8 @@ bootstrapLib <- function() {
     name = "bootstrap-grid",
     version = "3.4.1", # must be updated with tools/updateBootstrapGrid.R
     package = "crosstalk",
-    src = file.path("lib", "bootstrap"),
-    stylesheet = "css/bootstrap-grid.min.css",
+    src = "lib/bootstrap",
+    stylesheet = "bootstrap-grid.min.css",
     meta = list(viewport = "width=device-width, initial-scale=1")
   )
 }

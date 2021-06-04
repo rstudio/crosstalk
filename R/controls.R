@@ -544,7 +544,7 @@ bscols <- function(..., widths = NA, device = c("xs", "sm", "md", "lg")) {
     # Counteract knitr pre/code output blocks
     tags$div(class = "row",
       unname(mapply(list(...), widths, FUN = function(el, width) {
-        div(class = bsclass(device, width),
+        div(class = sprintf("col-%s-%s", device, width),
           el
         )
       }, SIMPLIFY = FALSE))
@@ -552,14 +552,6 @@ bscols <- function(..., widths = NA, device = c("xs", "sm", "md", "lg")) {
   )
 
   browsable(attachDependencies(ui, list(jqueryLib(), bootstrapLib())))
-}
-
-bsclass <- function(device, width){
-  switch(
-    device,
-    xs = sprintf('col-%s', width),
-    sprintf("col-%s-%s", device, width)
-  )
 }
 
 controlLabel <- function(controlName, label) {

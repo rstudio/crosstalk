@@ -8,3 +8,4 @@ sass::sass(
     output_style = "compressed"
   )
 )
+

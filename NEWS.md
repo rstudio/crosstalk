@@ -1,6 +1,6 @@
 ## crosstalk 1.1.1.9000
 
-
+- Remove Bootstrap dependency
 
 ## crosstalk 1.1.1
 

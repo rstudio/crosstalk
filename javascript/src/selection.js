@@ -158,6 +158,14 @@ export class SelectionHandle {
     return this._emitter.off(eventType, listener);
   }
 
+  invokeChangeHandler(extraInfo) {
+    const evt = this._mergeExtraInfo(extraInfo);
+    evt.value = this.value;
+    evt.oldValue = null;
+
+    this._emitter.trigger("change", evt, this);
+  }
+
   /**
    * Shuts down the `SelectionHandle` object.
    *

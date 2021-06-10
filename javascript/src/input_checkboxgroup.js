@@ -15,7 +15,7 @@ input.register({
 
     let lastKnownKeys;
     let $el = $(el);
-    $el.on("change", "input[type='checkbox']", function() {
+    function updateFilter() {
       let checked = $el.find("input[type='checkbox']:checked");
       if (checked.length === 0) {
         lastKnownKeys = null;
@@ -32,7 +32,20 @@ input.register({
         lastKnownKeys = keyArray;
         ctHandle.set(keyArray);
       }
-    });
+    }
+    $el.on("change", "input[type='checkbox']", updateFilter);
+
+    // Update filter now in case this code happens to execute
+    // after widget(s) are done rendering
+    updateFilter();
+
+    // Schedule another update when all widgets are done rendering
+    // This is especially relevant for `runtime: shiny` where widgets
+    // likely haven't rendered at this point and may only register
+    // FilterHandle.on("change", ...) callbacks in their renderValue
+    if (window.HTMLWidgets) {
+      window.HTMLWidgets.addPostRenderHandler(updateFilter);
+    }
 
     return {
       suspend: function() {

@@ -22,7 +22,8 @@ filter_checkbox(
   group,
   allLevels = FALSE,
   inline = FALSE,
-  columns = 1
+  columns = 1,
+  selected = NULL
 )
 }
 \arguments{

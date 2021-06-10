@@ -290,6 +290,8 @@ inlineCheckbox <- function(id, value, label, checked) {
 #'   number in input data.
 #' @param max The rightmost value of the slider. By default, set to the maximal
 #'   number in input data.
+#' @param selected default range to select. Should be a numeric vector of length
+#'   2 within `min` and `max`.
 #' @examples
 #' ## Only run examples in interactive R sessions
 #' if (interactive()) {

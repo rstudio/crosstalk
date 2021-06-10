@@ -803,7 +803,8 @@ input.register({
       options: first.concat(items),
       valueField: "value",
       labelField: "label",
-      searchField: "label"
+      searchField: "label",
+      items: data.selected
     };
 
     var select = $(el).find("select")[0];
@@ -811,6 +812,9 @@ input.register({
     var selectize = $(select).selectize(opts)[0].selectize;
 
     var ctHandle = new _filter.FilterHandle(data.group);
+
+    // set default selection
+    if (data.selected.length > 0) ctHandle.set(data.map[data.selected]);
 
     var lastKnownKeys = void 0;
     selectize.on("change", function () {

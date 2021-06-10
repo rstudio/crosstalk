@@ -20,8 +20,7 @@ input.register({
       options: first.concat(items),
       valueField: "value",
       labelField: "label",
-      searchField: "label",
-      items: data.selected,
+      searchField: "label"
     };
 
     let select = $(el).find("select")[0];
@@ -29,11 +28,6 @@ input.register({
     let selectize = $(select).selectize(opts)[0].selectize;
 
     let ctHandle = new FilterHandle(data.group);
-
-    // set default selection 
-    // check if empty array []
-    if(data.selected.length > 0)
-      ctHandle.set(data.map[data.selected]);
 
     let lastKnownKeys;
     selectize.on("change", function() {

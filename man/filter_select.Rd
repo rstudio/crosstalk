@@ -5,15 +5,7 @@
 \alias{filter_checkbox}
 \title{Categorical filter controls}
 \usage{
-filter_select(
-  id,
-  label,
-  sharedData,
-  group,
-  allLevels = FALSE,
-  multiple = TRUE,
-  selected = NULL
-)
+filter_select(id, label, sharedData, group, allLevels = FALSE, multiple = TRUE)
 
 filter_checkbox(
   id,
@@ -22,8 +14,7 @@ filter_checkbox(
   group,
   allLevels = FALSE,
   inline = FALSE,
-  columns = 1,
-  selected = NULL
+  columns = 1
 )
 }
 \arguments{
@@ -42,8 +33,6 @@ should all the levels be displayed as options, or only ones that are
 present in the data?}
 
 \item{multiple}{Can multiple values be selected?}
-
-\item{selected}{The values that should be initially selected, if any.}
 
 \item{inline}{If \code{TRUE}, render checkbox options horizontally instead of vertically.}
 

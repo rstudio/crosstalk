@@ -57,7 +57,7 @@ ionrangesliderLibs <- function() {
   )
 }
 
-makeGroupOptions <- function(sharedData, group, allLevels, selected) {
+makeGroupOptions <- function(sharedData, group, allLevels) {
   df <- sharedData$data(
     withSelection = FALSE,
     withFilter = FALSE,
@@ -90,8 +90,7 @@ makeGroupOptions <- function(sharedData, group, allLevels, selected) {
   options <- list(
     items = data.frame(value = lvls_str, label = lvls_str, stringsAsFactors = FALSE),
     map = setNames(vals, lvls_str),
-    group = sharedData$groupName(),
-    selected = as.list(selected) # we need an array
+    group = sharedData$groupName()
   )
 
   options
@@ -113,9 +112,6 @@ makeGroupOptions <- function(sharedData, group, allLevels, selected) {
 #'   present in the data?
 #' @param multiple Can multiple values be selected?
 #' @param columns Number of columns the options should be arranged into.
-#' @param selected selected: The initially selected value (or multiple values if 
-#'   ‘multiple = TRUE’). If not specified then defaults to the first value for 
-#'    single-select lists and no values for multiple select lists.
 #'
 #' @examples
 #' ## Only run examples in interactive R sessions
@@ -128,9 +124,9 @@ makeGroupOptions <- function(sharedData, group, allLevels, selected) {
 #'
 #' @export
 filter_select <- function(id, label, sharedData, group, allLevels = FALSE,
-  multiple = TRUE, selected = NULL) {
+  multiple = TRUE) {
 
-  options <- makeGroupOptions(sharedData, group, allLevels, selected)
+  options <- makeGroupOptions(sharedData, group, allLevels)
 
   htmltools::browsable(attachDependencies(
     tags$div(id = id, class = "form-group crosstalk-input-select crosstalk-input",
@@ -167,13 +163,11 @@ columnize <- function(columnCount, elements) {
 }
 
 #' @param inline If \code{TRUE}, render checkbox options horizontally instead of vertically.
-#' @param selected The values that should be initially selected, if any.
 #'
 #' @rdname filter_select
 #' @export
-filter_checkbox <- function(id, label, sharedData, group, allLevels = FALSE, inline = FALSE, 
-  columns = 1, selected = NULL) {
-  options <- makeGroupOptions(sharedData, group, allLevels, selected)
+filter_checkbox <- function(id, label, sharedData, group, allLevels = FALSE, inline = FALSE, columns = 1) {
+  options <- makeGroupOptions(sharedData, group, allLevels)
 
   labels <- options$items$label
   values <- options$items$value

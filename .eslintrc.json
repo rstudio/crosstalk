@@ -9,6 +9,7 @@
         "sourceType": "module"
     },
     "rules": {
+        "no-prototype-builtins": "off",
         "indent": [
             "error",
             2

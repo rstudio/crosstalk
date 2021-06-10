@@ -302,7 +302,7 @@ inlineCheckbox <- function(id, value, label, checked) {
 filter_slider <- function(id, label, sharedData, column, step = NULL,
   round = FALSE, ticks = TRUE, animate = FALSE, width = NULL, sep = ",",
   pre = NULL, post = NULL, timeFormat = NULL,
-  timezone = NULL, dragRange = TRUE, min = NULL, max = NULL)
+  timezone = NULL, dragRange = TRUE, min = NULL, max = NULL, selected = NULL)
 {
   # TODO: Check that this works well with factors
   # TODO: Handle empty data frame, NA/NaN/Inf/-Inf values
@@ -319,6 +319,16 @@ filter_slider <- function(id, label, sharedData, column, step = NULL,
   if (is.null(max))
     max <- max(values)
   value <- range(values)
+
+  if (!is.null(selected)) {
+    if (!is.numeric(selected) || length(selected) != 2) {
+      stop("selected must be a numeric vector of length 2")
+    }
+    selected <- sort(selected)
+    if (min(selected) < min || max < max(selected)) {
+      stop("selected range must be within min/max range")
+    }
+  }
 
   ord <- order(col)
   options <- list(
@@ -403,8 +413,8 @@ filter_slider <- function(id, label, sharedData, column, step = NULL,
     `data-type` = if (length(value) > 1) "double",
     `data-min` = formatNoSci(min),
     `data-max` = formatNoSci(max),
-    `data-from` = formatNoSci(value[1]),
-    `data-to` = if (length(value) > 1) formatNoSci(value[2]),
+    `data-from` = selected[1] %||% formatNoSci(value[1]),
+    `data-to` = selected[2] %||% if (length(value) > 1) formatNoSci(value[2]),
     `data-step` = formatNoSci(step),
     `data-grid` = ticks,
     `data-grid-num` = n_ticks,

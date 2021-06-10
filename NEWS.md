@@ -1,6 +1,6 @@
 ## crosstalk 1.1.1.9000
 
-* Add `selected` parameter for to specifying default selections in `filter_select()` and `filter_checkbox()`.
+* Add `selected` parameter for to specifying default selections in `filter_select()`, `filter_checkbox()`, and `filter_slider()`.
 
 ## crosstalk 1.1.1
 

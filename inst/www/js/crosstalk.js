@@ -978,8 +978,6 @@ input.register({
     }
     $el.on("change.crosstalkSliderInput", updateFilter);
 
-    updateFilter();
-
     // Update filter now in case this code happens to execute
     // after widget(s) are done rendering
     updateFilter();

@@ -290,8 +290,8 @@ inlineCheckbox <- function(id, value, label, checked) {
 #'   number in input data.
 #' @param max The rightmost value of the slider. By default, set to the maximal
 #'   number in input data.
-#' @param selected default range to select. Should be a numeric vector of length
-#'   2 within `min` and `max`.
+#' @param selected default range to select. Should be a vector of length
+#'   2 within the bounds defined by `min` and `max`.
 #' @examples
 #' ## Only run examples in interactive R sessions
 #' if (interactive()) {
@@ -321,16 +321,6 @@ filter_slider <- function(id, label, sharedData, column, step = NULL,
   if (is.null(max))
     max <- max(values)
   value <- range(values)
-
-  if (!is.null(selected)) {
-    if (!is.numeric(selected) || length(selected) != 2) {
-      stop("selected must be a numeric vector of length 2")
-    }
-    selected <- sort(selected)
-    if (min(selected) < min || max < max(selected)) {
-      stop("selected range must be within min/max range")
-    }
-  }
 
   ord <- order(col)
   options <- list(
@@ -411,12 +401,23 @@ filter_slider <- function(id, label, sharedData, column, step = NULL,
     n_ticks <- NULL
   }
 
+  # Make sure selected range is within (min, max) range
+  if (!is.null(selected)) {
+    if (length(selected) != 2) {
+      stop("`selected` must be a vector of length 2", call. = FALSE)
+    }
+    if (inherits(selected, c("Date", "POSIXt"))) {
+      selected <- to_ms(selected)
+    }
+    selected <- sort(selected)
+  }
+
   sliderProps <- dropNulls(list(
     `data-type` = if (length(value) > 1) "double",
     `data-min` = formatNoSci(min),
     `data-max` = formatNoSci(max),
-    `data-from` = selected[1] %||% formatNoSci(value[1]),
-    `data-to` = selected[2] %||% if (length(value) > 1) formatNoSci(value[2]),
+    `data-from` = formatNoSci(selected[1] %||% value[1]),
+    `data-to` = formatNoSci(selected[2] %||% if (length(value) > 1) value[2]),
     `data-step` = formatNoSci(step),
     `data-grid` = ticks,
     `data-grid-num` = n_ticks,
@@ -602,6 +603,10 @@ controlLabel <- function(controlName, label) {
   } else {
     tags$label(class = "control-label", `for` = controlName, label)
   }
+}
+
+"%||%" <- function(x, y) {
+  if (is.null(x)) y else x
 }
 
 # Given a vector or list, drop all the NULL items in it

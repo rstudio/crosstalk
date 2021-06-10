@@ -96,8 +96,8 @@ number in input data.}
 \item{max}{The rightmost value of the slider. By default, set to the maximal
 number in input data.}
 
-\item{selected}{default range to select. Should be a numeric vector of length
-2 within `min` and `max`.}
+\item{selected}{default range to select. Should be a vector of length
+2 within the bounds defined by `min` and `max`.}
 
 \item{interval}{The interval, in milliseconds, between each animation step.}
 

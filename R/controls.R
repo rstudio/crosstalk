@@ -1,5 +1,4 @@
-bootstrapLib <- function() {
-  # we only import the grid
+bootstrapGrid <- function() {
   htmlDependency(
     name = "bootstrap-grid",
     version = "3.4.1", # must be updated with tools/updateBootstrapGrid.R
@@ -549,7 +548,7 @@ bscols <- function(..., widths = NA, device = c("xs", "sm", "md", "lg")) {
     )
   )
 
-  browsable(attachDependencies(ui, list(jqueryLib(), bootstrapLib())))
+  browsable(attachDependencies(ui, list(jqueryLib(), bootstrapGrid())))
 }
 
 controlLabel <- function(controlName, label) {

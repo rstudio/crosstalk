@@ -42,7 +42,8 @@ Imports:
 Suggests:
     shiny,
     ggplot2,
-    testthat (>= 2.1.0)
+    testthat (>= 2.1.0),
+    sass
 URL: https://rstudio.github.io/crosstalk/
 BugReports: https://github.com/rstudio/crosstalk/issues
 RoxygenNote: 7.1.1

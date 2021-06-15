@@ -43,7 +43,6 @@ ionrangesliderLibs <- function() {
       # ion.rangeSlider also needs normalize.css, which is already included in
       # Bootstrap.
       stylesheet = c(
-        "css/normalize.css",
         "css/ion.rangeSlider.css",
         "css/ion.rangeSlider.skinShiny.css")
     ),

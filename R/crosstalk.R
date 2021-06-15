@@ -22,7 +22,7 @@ crosstalkLibs <- function() {
       package = "crosstalk",
       src = "www",
       script = "js/crosstalk.min.js",
-      stylesheet = "css/crosstalk.css"
+      stylesheet = "css/crosstalk.min.css"
     )
   )
 }

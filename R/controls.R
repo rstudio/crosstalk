@@ -13,7 +13,7 @@ bootstrapLib <- function() {
 selectizeLib <- function(bootstrap = TRUE) {
   htmlDependency(
     name = "selectize",
-    version = "0.11.4",
+    version = "0.12.4",
     package = "crosstalk",
     src = "lib/selectize",
     stylesheet = if (bootstrap) "css/selectize.bootstrap3.css",

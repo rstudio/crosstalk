@@ -2,7 +2,7 @@
 
 ### Breaking changes
 
-* Removed the Bootstrap HTML dependency attached to `filter_select()`, `filter_checkbox()`, and `bscols()`. This allows `{crosstalk}` to be used in a non-Bootstrap CSS framework (e.g., `{distill}`) without de-grading the overall look. If this change happens to break functionality or de-grade the overall appearance of your `{crosstalk}` site, consider adding `bslib::bs_theme_dependencies(bslib::theme(version = 3))` to the UI definition, which will add back the Bootstrap dependency.
+* Removed the Bootstrap HTML dependency attached to `filter_select()`, `filter_checkbox()`, and `bscols()`. This allows `{crosstalk}` to be used in a non-Bootstrap CSS framework (e.g., `{distill}`) without de-grading the overall look. If this change happens to break functionality or de-grade the overall appearance of your `{crosstalk}` site, consider adding `bslib::bs_theme_dependencies(bslib::bs_theme(version = 3))` to the UI definition, which will add back the Bootstrap dependency.
 
 ### Improvements
 

@@ -1,5 +1,6 @@
 ## crosstalk 1.1.1.9000
 
+- Update selectize.js
 - Remove Bootstrap dependency
 
 ## crosstalk 1.1.1

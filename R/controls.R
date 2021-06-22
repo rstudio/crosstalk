@@ -369,6 +369,7 @@ filter_slider <- function(id, label, sharedData, column, step = NULL,
   }
 
   sliderProps <- dropNulls(list(
+    `data-skin` = "shiny",
     `data-type` = if (length(value) > 1) "double",
     `data-min` = formatNoSci(min),
     `data-max` = formatNoSci(max),

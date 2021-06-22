@@ -40,30 +40,29 @@ writeLines(
 # Now compile Sass -> CSS so that if the default styles are requested, we
 # can serve them up without compilation (The distributed CSS includes all
 # the skins in the same CSS file, but we want them split up)
-skin_path <- file.path(
-	"www",
-	"shared", 
-	"ionrangeslider", 
-	"scss",
-	"shiny.scss"
-)
-shiny_skin <- system.file(skin_path, package = "shiny")
+unlink(file.path(target, "css"), recursive = TRUE)
+dir.create(file.path(target, "css"))
 
+# copy shiny skin css
 file.copy(
-	shiny_skin,
-	file.path(target, "scss")
+	file.path(
+    rprojroot::find_package_root_file(),
+    "tools",
+    "ion.rangeSlider.skinShiny.css"
+  ),
+	file.path(target, "css", "ion.rangeSlider.skinShiny.css")
 )
 
 library(sass)
-unlink(file.path(target, "css"), recursive = TRUE)
 withr::with_dir(
   target, {
-    dir.create("css")
-    sass_partial(
-      sass_file("scss/shiny.scss"),
+    sass(
+      sass_file("scss/_base.scss"),
       bslib::bs_theme(version = 3),
       output = "css/ion.rangeSlider.css",
       options = sass_options()
     )
   }
 )
+
+unlink(tmpdir, recursive = TRUE)

@@ -53,11 +53,21 @@ file.copy(
 	file.path(target, "css", "ion.rangeSlider.skinShiny.css")
 )
 
+# copy shiny.scss file 
+# without it handles do not show
+file.copy(
+  system.file(
+    file.path("www", "shared", "ionrangeslider", "scss", "shiny.scss"), 
+    package = "shiny"
+  ), 
+  file.path(target, "scss", "shiny.scss")
+)
+
 library(sass)
 withr::with_dir(
   target, {
     sass(
-      sass_file("scss/_base.scss"),
+      sass_file("scss/shiny.scss"),
       bslib::bs_theme(version = 3),
       output = "css/ion.rangeSlider.css",
       options = sass_options()

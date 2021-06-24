@@ -68,7 +68,6 @@ withr::with_dir(
   target, {
     sass(
       sass_file("scss/shiny.scss"),
-      bslib::bs_theme(version = 3),
       output = "css/ion.rangeSlider.css",
       options = sass_options()
     )

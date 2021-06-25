@@ -29,7 +29,7 @@
     &-handle {
         @include pos-a();
         box-sizing: border-box;
-        cursor: default;
+        cursor: pointer;
         z-index: 1;
 
         &.single,

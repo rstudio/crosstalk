@@ -42,7 +42,7 @@
   position: absolute;
   display: block;
   box-sizing: border-box;
-  cursor: default;
+  cursor: pointer;
   z-index: 1;
 }
 
@@ -230,7 +230,7 @@
 .irs--shiny .irs-from,
 .irs--shiny .irs-to,
 .irs--shiny .irs-single {
-  color: color-contrast(#428bca);
+  color: #fff;
   text-shadow: none;
   padding: 1px 3px;
   background-color: #428bca;

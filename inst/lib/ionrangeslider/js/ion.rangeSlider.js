@@ -819,6 +819,7 @@
          */
         pointerDown: function (target, e) {
             e.preventDefault();
+            e.stopPropagation();
             var x = e.pageX || e.originalEvent.touches && e.originalEvent.touches[0].pageX;
             if (e.button === 2) {
                 return;
@@ -862,6 +863,7 @@
          */
         pointerClick: function (target, e) {
             e.preventDefault();
+            e.stopPropagation();
             var x = e.pageX || e.originalEvent.touches && e.originalEvent.touches[0].pageX;
             if (e.button === 2) {
                 return;
@@ -1727,7 +1729,12 @@
             if (this.has_tab_index) {
                 this.$cache.input.prop("tabindex", -1);
             } else {
-                this.$cache.input.removeProp("tabindex");
+                try {
+                    this.$cache.input.removeProp("tabindex");
+                } catch(e) {
+                    // Do nothing (PhantomJS can throw an error with the
+                    // above, #2587)
+                }
             }
 
             this.has_tab_index = !this.has_tab_index;

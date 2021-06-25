@@ -2,8 +2,6 @@ tmpdir <- tempdir()
 
 # https://github.com/IonDen/ion.rangeSlider
 version <- "2.3.1"
-# types_version <- version
-types_version <- "2.3.0"
 
 zip_src <- sprintf("https://github.com/IonDen/ion.rangeSlider/archive/%s.zip", version)
 zip_target <- file.path(tmpdir, "ion.zip")

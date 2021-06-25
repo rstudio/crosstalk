@@ -35,7 +35,7 @@ ionrangesliderLibs <- function() {
     jqueryLib(),
     htmlDependency(
       name = "ionrangeslider",
-      version = "2.1.2",
+      version = "2.3.1",
       package = "crosstalk",
       src = "lib/ionrangeslider",
       script = "js/ion.rangeSlider.min.js",

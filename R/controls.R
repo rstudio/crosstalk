@@ -87,8 +87,7 @@ is_bs_theme <- function(x) {
   is_available("bslib") && bslib::is_bs_theme(x)
 }
 
-
-makeGroupOptions <- function(sharedData, group, allLevels) {
+makeGroupOptions <- function(sharedData, group, allLevels, selected = NULL) {
   df <- sharedData$data(
     withSelection = FALSE,
     withFilter = FALSE,
@@ -118,10 +117,23 @@ makeGroupOptions <- function(sharedData, group, allLevels) {
 
   lvls_str <- as.character(lvls)
 
+  if (!is.null(selected)) {
+    selected <- unique(as.character(selected))
+    present <- selected %in% lvls_str
+    if (any(!present)) {
+      warning(call. = FALSE,
+        "Default selection was specified that was not present in the data [",
+        paste0("'", selected[!present], "'", collapse = ","),
+        "]"
+      )
+      selected <- selected[present]
+    }
+  }
   options <- list(
     items = data.frame(value = lvls_str, label = lvls_str, stringsAsFactors = FALSE),
     map = setNames(vals, lvls_str),
-    group = sharedData$groupName()
+    group = sharedData$groupName(),
+    selected = selected
   )
 
   options
@@ -143,6 +155,8 @@ makeGroupOptions <- function(sharedData, group, allLevels) {
 #'   present in the data?
 #' @param multiple Can multiple values be selected?
 #' @param columns Number of columns the options should be arranged into.
+#' @param selected Default value(s) to be selected. Should be character, or
+#'   coercible to character.
 #'
 #' @examples
 #' ## Only run examples in interactive R sessions
@@ -155,9 +169,16 @@ makeGroupOptions <- function(sharedData, group, allLevels) {
 #'
 #' @export
 filter_select <- function(id, label, sharedData, group, allLevels = FALSE,
-  multiple = TRUE) {
+  multiple = TRUE, selected = NULL) {
 
-  options <- makeGroupOptions(sharedData, group, allLevels)
+  if (!multiple && length(selected) > 1) {
+    warning(call. = FALSE, "filter_select called with multiple=FALSE ",
+      "but more than one selected value; only the first element will ",
+      "be used")
+    selected <- selected[[1]]
+  }
+
+  options <- makeGroupOptions(sharedData, group, allLevels, selected)
 
   htmltools::browsable(attachDependencies(
     tags$div(id = id, class = "form-group crosstalk-input-select crosstalk-input",
@@ -197,7 +218,7 @@ columnize <- function(columnCount, elements) {
 #'
 #' @rdname filter_select
 #' @export
-filter_checkbox <- function(id, label, sharedData, group, allLevels = FALSE, inline = FALSE, columns = 1) {
+filter_checkbox <- function(id, label, sharedData, group, allLevels = FALSE, inline = FALSE, columns = 1, selected = NULL) {
   options <- makeGroupOptions(sharedData, group, allLevels)
 
   labels <- options$items$label
@@ -212,7 +233,7 @@ filter_checkbox <- function(id, label, sharedData, group, allLevels = FALSE, inl
       tags$div(class = "crosstalk-options-group",
         columnize(columns,
           mapply(labels, values, FUN = function(label, value) {
-            makeCheckbox(id, value, label)
+            makeCheckbox(id, value, label, value %in% selected)
           }, SIMPLIFY = FALSE, USE.NAMES = FALSE)
         )
       ),
@@ -225,18 +246,24 @@ filter_checkbox <- function(id, label, sharedData, group, allLevels = FALSE, inl
   ))
 }
 
-blockCheckbox <- function(id, value, label) {
+blockCheckbox <- function(id, value, label, checked) {
   tags$div(class = "checkbox",
     tags$label(
-      tags$input(type = "checkbox", name = id, value = value),
+      tags$input(
+        type = "checkbox", name = id, value = value,
+        checked = if (isTRUE(checked)) NA
+      ),
       tags$span(label)
     )
   )
 }
 
-inlineCheckbox <- function(id, value, label) {
+inlineCheckbox <- function(id, value, label, checked) {
   tags$label(class = "checkbox-inline",
-    tags$input(type = "checkbox", name = id, value = value),
+    tags$input(
+      type = "checkbox", name = id, value = value,
+      checked = if (isTRUE(checked)) NA
+    ),
     tags$span(label)
   )
 }
@@ -291,6 +318,8 @@ inlineCheckbox <- function(id, value, label) {
 #'   number in input data.
 #' @param max The rightmost value of the slider. By default, set to the maximal
 #'   number in input data.
+#' @param selected default range to select. Should be a vector of length
+#'   2 within the bounds defined by `min` and `max`.
 #' @examples
 #' ## Only run examples in interactive R sessions
 #' if (interactive()) {
@@ -303,7 +332,7 @@ inlineCheckbox <- function(id, value, label) {
 filter_slider <- function(id, label, sharedData, column, step = NULL,
   round = FALSE, ticks = TRUE, animate = FALSE, width = NULL, sep = ",",
   pre = NULL, post = NULL, timeFormat = NULL,
-  timezone = NULL, dragRange = TRUE, min = NULL, max = NULL)
+  timezone = NULL, dragRange = TRUE, min = NULL, max = NULL, selected = NULL)
 {
   # TODO: Check that this works well with factors
   # TODO: Handle empty data frame, NA/NaN/Inf/-Inf values
@@ -400,13 +429,24 @@ filter_slider <- function(id, label, sharedData, column, step = NULL,
     n_ticks <- NULL
   }
 
+  # Make sure selected range is within (min, max) range
+  if (!is.null(selected)) {
+    if (length(selected) != 2) {
+      stop("`selected` must be a vector of length 2", call. = FALSE)
+    }
+    if (inherits(selected, c("Date", "POSIXt"))) {
+      selected <- to_ms(selected)
+    }
+    selected <- sort(selected)
+  }
+
   sliderProps <- dropNulls(list(
     `data-skin` = "shiny",
     `data-type` = if (length(value) > 1) "double",
     `data-min` = formatNoSci(min),
     `data-max` = formatNoSci(max),
-    `data-from` = formatNoSci(value[1]),
-    `data-to` = if (length(value) > 1) formatNoSci(value[2]),
+    `data-from` = formatNoSci(selected[1] %||% value[1]),
+    `data-to` = formatNoSci(selected[2] %||% if (length(value) > 1) value[2]),
     `data-step` = formatNoSci(step),
     `data-grid` = ticks,
     `data-grid-num` = n_ticks,
@@ -592,6 +632,10 @@ controlLabel <- function(controlName, label) {
   } else {
     tags$label(class = "control-label", `for` = controlName, label)
   }
+}
+
+"%||%" <- function(x, y) {
+  if (is.null(x)) y else x
 }
 
 # Given a vector or list, drop all the NULL items in it

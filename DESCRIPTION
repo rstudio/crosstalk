@@ -43,7 +43,8 @@ Suggests:
     shiny,
     ggplot2,
     testthat (>= 2.1.0),
-    sass
+    sass,
+    bslib
 URL: https://rstudio.github.io/crosstalk/
 BugReports: https://github.com/rstudio/crosstalk/issues
 Encoding: UTF-8

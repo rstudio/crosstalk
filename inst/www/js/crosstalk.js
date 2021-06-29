@@ -241,7 +241,7 @@ var FilterHandle = exports.FilterHandle = function () {
      * @param {Object} [extraInfo] - Extra properties to be included on the event
      *   object that's passed to listeners (in addition to any options that were
      *   passed into the `FilterHandle` constructor).
-     * 
+     *
      * @fires FilterHandle#change
      */
 
@@ -267,7 +267,7 @@ var FilterHandle = exports.FilterHandle = function () {
      * @param {Object} [extraInfo] - Extra properties to be included on the event
      *   object that's passed to listeners (in addition to any options that were
      *   passed into the `FilterHandle` constructor).
-     * 
+     *
      * @fires FilterHandle#change
      */
 
@@ -316,6 +316,15 @@ var FilterHandle = exports.FilterHandle = function () {
     key: "off",
     value: function off(eventType, listener) {
       return this._emitter.off(eventType, listener);
+    }
+  }, {
+    key: "invokeChangeHandler",
+    value: function invokeChangeHandler(extraInfo) {
+      var evt = this._mergeExtraInfo(extraInfo);
+      evt.value = this.filteredKeys;
+      evt.oldValue = null;
+
+      this._emitter.trigger("change", evt, this);
     }
   }, {
     key: "_onChange",
@@ -1197,6 +1206,15 @@ var SelectionHandle = exports.SelectionHandle = function () {
     value: function off(eventType, listener) {
       return this._emitter.off(eventType, listener);
     }
+  }, {
+    key: "invokeChangeHandler",
+    value: function invokeChangeHandler(extraInfo) {
+      var evt = this._mergeExtraInfo(extraInfo);
+      evt.value = this.value;
+      evt.oldValue = null;
+
+      this._emitter.trigger("change", evt, this);
+    }
 
     /**
      * Shuts down the `SelectionHandle` object.
@@ -1371,6 +1389,11 @@ var SubscriptionTracker = exports.SubscriptionTracker = function () {
         delete this._subs[sub];
       }
       return sub;
+    }
+  }, {
+    key: "trigger",
+    value: function trigger(eventType, arg, thisObj) {
+      this._emitter.trigger(eventType, arg, thisObj);
     }
   }, {
     key: "removeAllListeners",

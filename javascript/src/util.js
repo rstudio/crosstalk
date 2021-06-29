@@ -108,6 +108,10 @@ export class SubscriptionTracker {
     return sub;
   }
 
+  trigger(eventType, arg, thisObj) {
+    this._emitter.trigger(eventType, arg, thisObj);
+  }
+
   removeAllListeners() {
     let current_subs = this._subs;
     this._subs = {};

@@ -129,7 +129,7 @@ export class FilterHandle {
    * @param {Object} [extraInfo] - Extra properties to be included on the event
    *   object that's passed to listeners (in addition to any options that were
    *   passed into the `FilterHandle` constructor).
-   * 
+   *
    * @fires FilterHandle#change
    */
   clear(extraInfo) {
@@ -153,7 +153,7 @@ export class FilterHandle {
    * @param {Object} [extraInfo] - Extra properties to be included on the event
    *   object that's passed to listeners (in addition to any options that were
    *   passed into the `FilterHandle` constructor).
-   * 
+   *
    * @fires FilterHandle#change
    */
   set(keys, extraInfo) {
@@ -196,6 +196,14 @@ export class FilterHandle {
    */
   off(eventType, listener) {
     return this._emitter.off(eventType, listener);
+  }
+
+  invokeChangeHandler(extraInfo) {
+    const evt = this._mergeExtraInfo(extraInfo);
+    evt.value = this.filteredKeys;
+    evt.oldValue = null;
+
+    this._emitter.trigger("change", evt, this);
   }
 
   _onChange(extraInfo) {

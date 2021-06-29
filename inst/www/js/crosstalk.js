@@ -761,14 +761,6 @@ input.register({
     // after widget(s) are done rendering
     updateFilter();
 
-    // Schedule another update when all widgets are done rendering
-    // This is especially relevant for `runtime: shiny` where widgets
-    // likely haven't rendered at this point and may only register
-    // FilterHandle.on("change", ...) callbacks in their renderValue
-    if (window.HTMLWidgets) {
-      window.HTMLWidgets.addPostRenderHandler(updateFilter);
-    }
-
     return {
       suspend: function suspend() {
         ctHandle.clear();
@@ -849,14 +841,6 @@ input.register({
     // Update filter now in case this code happens to execute
     // after widget(s) are done rendering
     updateFilter();
-
-    // Schedule another update when all widgets are done rendering
-    // This is especially relevant for `runtime: shiny` where widgets
-    // likely haven't rendered at this point and may only register
-    // FilterHandle.on("change", ...) callbacks in their renderValue
-    if (window.HTMLWidgets) {
-      window.HTMLWidgets.addPostRenderHandler(updateFilter);
-    }
 
     return {
       suspend: function suspend() {
@@ -981,14 +965,6 @@ input.register({
     // Update filter now in case this code happens to execute
     // after widget(s) are done rendering
     updateFilter();
-
-    // Schedule another update when all widgets are done rendering
-    // This is especially relevant for `runtime: shiny` where widgets
-    // likely haven't rendered at this point and may only register
-    // FilterHandle.on("change", ...) callbacks in their renderValue
-    if (window.HTMLWidgets) {
-      window.HTMLWidgets.addPostRenderHandler(updateFilter);
-    }
 
     return {
       suspend: function suspend() {

@@ -53,7 +53,7 @@ bscols(
 )
 ```
 
-Click and drag to brush data points in the above plots; noticed that their brushing states are linked. This is because they share the same `SharedData` object. If you created a separated `SharedData` object for each plot, even with the same underlying data frame, the plots would not be linked.
+Click and drag to brush data points in the above plots; notice that their brushing states are linked. This is because they share the same `SharedData` object. If you created a separated `SharedData` object for each plot, even with the same underlying data frame, the plots would not be linked.
 
 Note that we're not limited to linking only two plots, nor do we need to limit ourselves to the same type of widget. Any Crosstalk-compatible widget can be linked with any other.
 

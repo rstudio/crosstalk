@@ -30,21 +30,16 @@ jqueryLib <- function() {
   )
 }
 
-ionrangesliderLibs <- function() {
+# Essentially the same as shiny:::ionRangeSliderDependency()
+ionRangeSliderLibs <- function() {
   list(
     jqueryLib(),
     htmlDependency(
-      name = "ionrangeslider",
-      version = "2.3.1",
+      "ionrangeslider-javascript",
+      ionRangeSliderVersion,
       package = "crosstalk",
       src = "lib/ionrangeslider",
       script = "js/ion.rangeSlider.min.js",
-      # ion.rangeSlider also needs normalize.css, which is already included in
-      # Bootstrap.
-      stylesheet = c(
-        "css/ion.rangeSlider.css",
-        "css/ion.rangeSlider.skinShiny.css"
-      )
     ),
     htmlDependency(
       name = "strftime",
@@ -52,9 +47,46 @@ ionrangesliderLibs <- function() {
       package = "crosstalk",
       src = "lib/strftime",
       script = "strftime-min.js"
-    )
+    ),
+    if (is_available("bslib")) {
+      bslib::bs_dependency_defer(ionRangeSliderDependencyCSS)
+    } else {
+      ionRangeSliderDependencyCSS()
+    }
   )
 }
+
+ionRangeSliderDependencyCSS <- function(theme = NULL) {
+  if (!is_bs_theme(theme)) {
+    return(htmlDependency(
+      "ionrangeslider-css",
+      ionRangeSliderVersion,
+      package = "crosstalk",
+      src = "lib/ionrangeslider",
+      stylesheet = "css/ion.rangeSlider.css"
+    ))
+  }
+
+  bslib::bs_dependency(
+    input = list(
+      list(accent = "$component-active-bg"),
+      sass::sass_file(
+        system.file(package = "crosstalk", "lib/ionrangeslider/scss/shiny.scss")
+      )
+    ),
+    theme = theme,
+    name = "ionrangeslider-css",
+    version = ionRangeSliderVersion,
+    cache_key_extra = fastPackageVersion("crosstalk")
+  )
+}
+
+ionRangeSliderVersion <- "2.3.1"
+
+is_bs_theme <- function(x) {
+  is_available("bslib") && bslib::is_bs_theme(x)
+}
+
 
 makeGroupOptions <- function(sharedData, group, allLevels) {
   df <- sharedData$data(
@@ -440,7 +472,7 @@ filter_slider <- function(id, label, sharedData, column, step = NULL,
 
   htmltools::browsable(attachDependencies(
     sliderTag,
-    c(ionrangesliderLibs(), crosstalkLibs())
+    c(ionRangeSliderLibs(), crosstalkLibs())
   ))
 }
 
@@ -572,4 +604,13 @@ dropNulls <- function(x) {
 formatNoSci <- function(x) {
   if (is.null(x)) return(NULL)
   format(x, scientific = FALSE, digits = 15)
+}
+
+
+is_available <- function(package, version = NULL) {
+  installed <- nzchar(system.file(package = package))
+  if (is.null(version)) {
+    return(installed)
+  }
+  installed && isTRUE(fastPackageVersion(package) >= version)
 }

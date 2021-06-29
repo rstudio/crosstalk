@@ -18,13 +18,23 @@ crosstalkLibs <- function() {
     jqueryLib(),
     htmltools::htmlDependency(
       name = "crosstalk",
-      version = packageVersion("crosstalk"),
+      version = fastPackageVersion("crosstalk"),
       package = "crosstalk",
       src = "www",
       script = "js/crosstalk.min.js",
       stylesheet = "css/crosstalk.min.css"
     )
   )
+}
+
+# Since I/O can be expensive, only utils::packageVersion() if the package isn't already loaded
+fastPackageVersion <- function(pkg) {
+  ns <- .getNamespace(pkg)
+  if (is.null(ns)) {
+    utils::packageVersion(pkg)
+  } else {
+    as.package_version(ns$.__NAMESPACE__.$spec[["version"]])
+  }
 }
 
 #' ClientValue object

@@ -1,4 +1,4 @@
-## crosstalk 1.1.1.9000
+## crosstalk 1.2.0
 
 ### Breaking changes
 

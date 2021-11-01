@@ -1,0 +1,5 @@
+url: http://rstudio.github.io/crosstalk
+
+# Do not display dev version by default
+development:
+  mode: auto

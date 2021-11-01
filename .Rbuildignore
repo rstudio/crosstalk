@@ -20,3 +20,5 @@
 ^.nvmrc$
 ^\.github$
 ^tools$
+^_pkgdown\.yml$
+^pkgdown$

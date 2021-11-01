@@ -9,8 +9,9 @@ on:
 name: Package checks
 
 jobs:
-  website:
-    uses: rstudio/shinycoreci/.github/workflows/call-website.yaml@v1
+  ## Needs custom setup. See ./docs/build-site.sh
+  # website:
+  #   uses: rstudio/shinycoreci/.github/workflows/call-website.yaml@v1
   routine:
     uses: rstudio/shinycoreci/.github/workflows/call-routine.yaml@v1
   R-CMD-check:

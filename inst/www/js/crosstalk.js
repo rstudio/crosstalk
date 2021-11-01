@@ -737,7 +737,7 @@ input.register({
 
     var lastKnownKeys = void 0;
     var $el = $(el);
-    $el.on("change", "input[type='checkbox']", function () {
+    function updateFilter() {
       var checked = $el.find("input[type='checkbox']:checked");
       if (checked.length === 0) {
         lastKnownKeys = null;
@@ -754,7 +754,12 @@ input.register({
         lastKnownKeys = keyArray;
         ctHandle.set(keyArray);
       }
-    });
+    }
+    $el.on("change", "input[type='checkbox']", updateFilter);
+
+    // Update filter now in case this code happens to execute
+    // after widget(s) are done rendering
+    updateFilter();
 
     return {
       suspend: function suspend() {
@@ -801,6 +806,7 @@ input.register({
     var items = util.dataframeToD3(data.items);
     var opts = {
       options: first.concat(items),
+      items: data.selected,
       valueField: "value",
       labelField: "label",
       searchField: "label"
@@ -813,7 +819,7 @@ input.register({
     var ctHandle = new _filter.FilterHandle(data.group);
 
     var lastKnownKeys = void 0;
-    selectize.on("change", function () {
+    function updateFilter() {
       if (selectize.items.length === 0) {
         lastKnownKeys = null;
         ctHandle.clear();
@@ -829,7 +835,12 @@ input.register({
         lastKnownKeys = keyArray;
         ctHandle.set(keyArray);
       }
-    });
+    }
+    selectize.on("change", updateFilter);
+
+    // Update filter now in case this code happens to execute
+    // after widget(s) are done rendering
+    updateFilter();
 
     return {
       suspend: function suspend() {
@@ -930,7 +941,7 @@ input.register({
 
     var lastKnownKeys = null;
 
-    $el.on("change.crosstalkSliderInput", function (event) {
+    function updateFilter() {
       if (!$el.data("updating") && !$el.data("animating")) {
         var _getValue = getValue(),
             _getValue2 = _slicedToArray(_getValue, 2),
@@ -948,25 +959,12 @@ input.register({
         ctHandle.set(keys);
         lastKnownKeys = keys;
       }
-    });
+    }
+    $el.on("change.crosstalkSliderInput", updateFilter);
 
-    // let $el = $(el);
-    // $el.on("change", "input[type="checkbox"]", function() {
-    //   let checked = $el.find("input[type="checkbox"]:checked");
-    //   if (checked.length === 0) {
-    //     ctHandle.clear();
-    //   } else {
-    //     let keys = {};
-    //     checked.each(function() {
-    //       data.map[this.value].forEach(function(key) {
-    //         keys[key] = true;
-    //       });
-    //     });
-    //     let keyArray = Object.keys(keys);
-    //     keyArray.sort();
-    //     ctHandle.set(keyArray);
-    //   }
-    // });
+    // Update filter now in case this code happens to execute
+    // after widget(s) are done rendering
+    updateFilter();
 
     return {
       suspend: function suspend() {

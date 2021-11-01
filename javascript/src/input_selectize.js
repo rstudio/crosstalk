@@ -18,6 +18,7 @@ input.register({
     let items = util.dataframeToD3(data.items);
     let opts = {
       options: first.concat(items),
+      items: data.selected,
       valueField: "value",
       labelField: "label",
       searchField: "label"
@@ -30,7 +31,7 @@ input.register({
     let ctHandle = new FilterHandle(data.group);
 
     let lastKnownKeys;
-    selectize.on("change", function() {
+    function updateFilter() {
       if (selectize.items.length === 0) {
         lastKnownKeys = null;
         ctHandle.clear();
@@ -46,7 +47,12 @@ input.register({
         lastKnownKeys = keyArray;
         ctHandle.set(keyArray);
       }
-    });
+    }
+    selectize.on("change", updateFilter);
+
+    // Update filter now in case this code happens to execute
+    // after widget(s) are done rendering
+    updateFilter();
 
     return {
       suspend: function() {

@@ -1,7 +1,7 @@
 Package: crosstalk
 Type: Package
 Title: Inter-Widget Interactivity for HTML Widgets
-Version: 1.1.1.9000
+Version: 1.2.0
 Authors@R: c(
     person("Joe", "Cheng", role = "aut", email = "joe@rstudio.com"),
     person("Carson", "Sievert", role = c("aut", "cre"),
@@ -47,5 +47,5 @@ Suggests:
     bslib
 URL: https://rstudio.github.io/crosstalk/
 BugReports: https://github.com/rstudio/crosstalk/issues
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 Encoding: UTF-8

@@ -90,6 +90,13 @@ ClientValue <- R6Class(
     #'   session.
     initialize = function(name, group = "default", session = shiny::getDefaultReactiveDomain()) {
       if (!missing(session) || shinyInstalled()) {
+        if (!is.null(session)) {
+          # The name and group should be interpreted as global to the session,
+          # i.e. SharedData in two module instances with the same group name
+          # should be linked. Use the rootScope(), or else get() will prepend
+          # the module ID.
+          session <- session$rootScope()
+        }
         private$.session <- session
       } else {
         # If session wasn't explicitly provided and Shiny isn't installed, we can't use
@@ -212,7 +219,7 @@ SharedData <- R6Class(
 
       domain <- getDefaultReactiveDomain()
       if (!is.null(domain)) {
-        observe({
+        shiny::observe({
           selection <- private$.selectionCV$get()
           if (!is.null(selection) && length(selection) > 0) {
             private$.updateSelection(self$key() %in% selection)

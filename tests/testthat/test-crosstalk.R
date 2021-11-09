@@ -74,3 +74,26 @@ test_that("SharedData basic scenarios with shiny 'uninstalled'", {
     }
   }
 })
+
+test_that("Shiny modules support SharedData", {
+  sess <- shiny::MockShinySession$new()
+  sd1 <- shiny::withReactiveDomain(sess, {
+    SharedData$new(cars, group = "foo")
+  })
+  sd2 <- shiny::withReactiveDomain(sess$makeScope("module1"), {
+    SharedData$new(cars, group = "foo")
+  })
+
+  sess$setInputs(".clientValue-foo-selection" = c("1", "2"))
+
+  res <- c(TRUE, TRUE, rep_len(FALSE, nrow(cars) - 2))
+  expect_identical(shiny::isolate(sd1$selection()), res)
+  expect_identical(shiny::isolate(sd2$selection()), res)
+
+  sess$setInputs(".clientValue-foo-selection" = c("49", "50"))
+
+  res2 <- c(rep_len(FALSE, nrow(cars) - 2), TRUE, TRUE)
+  expect_identical(shiny::isolate(sd1$selection()), res2)
+  expect_identical(shiny::isolate(sd2$selection()), res2)
+
+})

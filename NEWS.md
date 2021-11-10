@@ -1,5 +1,8 @@
 ## crosstalk 1.2.0.9000
 
+### Bug fixes
+
+* Some `SharedData` reactive accessors (e.g. `sd$selection()`) were broken when the `SharedData` instance was created in a Shiny module. (#114)
 
 ## crosstalk 1.2.0
 

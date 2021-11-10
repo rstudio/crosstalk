@@ -90,9 +90,9 @@ test_that("Shiny modules support SharedData", {
   expect_identical(shiny::isolate(sd1$selection()), res)
   expect_identical(shiny::isolate(sd2$selection()), res)
 
-  sess$setInputs(".clientValue-foo-selection" = c("49", "50"))
+  res2 <- rev(res)
+  sess$setInputs(".clientValue-foo-selection" = as.character(which(res2)))
 
-  res2 <- c(rep_len(FALSE, nrow(cars) - 2), TRUE, TRUE)
   expect_identical(shiny::isolate(sd1$selection()), res2)
   expect_identical(shiny::isolate(sd2$selection()), res2)
 

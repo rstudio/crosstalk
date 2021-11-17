@@ -48,7 +48,7 @@ ionRangeSliderLibs <- function() {
       src = "lib/strftime",
       script = "strftime-min.js"
     ),
-    if (is_available("bslib")) {
+    if (is_installed("bslib")) {
       bslib::bs_dependency_defer(ionRangeSliderDependencyCSS)
     } else {
       ionRangeSliderDependencyCSS()
@@ -57,7 +57,7 @@ ionRangeSliderLibs <- function() {
 }
 
 ionRangeSliderDependencyCSS <- function(theme = NULL) {
-  if (!is_bs_theme(theme)) {
+  if (!bslib::is_bs_theme(theme)) {
     return(htmlDependency(
       "ionrangeslider-css",
       ionRangeSliderVersion,
@@ -71,21 +71,17 @@ ionRangeSliderDependencyCSS <- function(theme = NULL) {
     input = list(
       list(accent = "$component-active-bg"),
       sass::sass_file(
-        system.file(package = "crosstalk", "lib/ionrangeslider/scss/shiny.scss")
+        system_file(package = "crosstalk", "lib/ionrangeslider/scss/shiny.scss")
       )
     ),
     theme = theme,
     name = "ionrangeslider-css",
     version = ionRangeSliderVersion,
-    cache_key_extra = fastPackageVersion("crosstalk")
+    cache_key_extra = get_package_version("crosstalk")
   )
 }
 
 ionRangeSliderVersion <- "2.3.1"
-
-is_bs_theme <- function(x) {
-  is_available("bslib") && bslib::is_bs_theme(x)
-}
 
 
 makeGroupOptions <- function(sharedData, group, allLevels) {
@@ -606,11 +602,3 @@ formatNoSci <- function(x) {
   format(x, scientific = FALSE, digits = 15)
 }
 
-
-is_available <- function(package, version = NULL) {
-  installed <- nzchar(system.file(package = package))
-  if (is.null(version)) {
-    return(installed)
-  }
-  installed && isTRUE(fastPackageVersion(package) >= version)
-}

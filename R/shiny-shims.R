@@ -12,7 +12,7 @@ shinyInstalled <- local({
     }
 
     # Test that Shiny is installed AND shiny::reactive hasn't been NULLed out
-    if (nzchar(system.file(package = "shiny"))) {
+    if (is_installed("shiny")) {
       detected <<- TRUE
       return(TRUE)
     }

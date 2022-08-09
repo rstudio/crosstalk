@@ -4,7 +4,7 @@ title: List of compatible HTML widgets
 
 This page lists some HTML widgets that are compatible with Crosstalk.
 
-(To add a widget, please submit a PR with modifications to [this page](https://github.com/rstudio/crosstalk/edit/master/docs/widgets.Rmd).)
+(To add a widget, please submit a PR with modifications to [this page](https://github.com/rstudio/crosstalk/blob/master/docs/widgets.Rmd).)
 
 <style type="text/css">
 img.widget-thumbnail {

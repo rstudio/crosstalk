@@ -44,6 +44,7 @@ test_that("SharedData basic scenarios", {
 })
 
 test_that("SharedData basic scenarios with shiny 'uninstalled'", {
+  skip_if_not_installed("shiny")
 
   # Force shinyIsInstalled() to return false
   op <- options(crosstalk.shiny.suppressed = TRUE)

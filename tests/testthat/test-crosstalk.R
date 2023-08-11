@@ -36,6 +36,7 @@ run_main_test <- function() {
 }
 
 test_that("SharedData basic scenarios", {
+  skip_if_not_installed("shiny")
   run_main_test()
 
   expect_error(SharedData$new(iris)$selection(), "reactive")
@@ -43,6 +44,7 @@ test_that("SharedData basic scenarios", {
 })
 
 test_that("SharedData basic scenarios with shiny 'uninstalled'", {
+  skip_if_not_installed("shiny")
 
   # Force shinyIsInstalled() to return false
   op <- options(crosstalk.shiny.suppressed = TRUE)

@@ -164,7 +164,9 @@ filter_select <- function(id, label, sharedData, group, allLevels = FALSE,
         ),
         tags$script(type = "application/json",
           `data-for` = id,
-          jsonlite::toJSON(options, dataframe = "columns", pretty = TRUE)
+          HTML(
+            jsonlite::toJSON(options, dataframe = "columns", pretty = TRUE)
+          )
         )
       )
     ),

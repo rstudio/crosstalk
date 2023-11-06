@@ -1,7 +1,7 @@
 Package: crosstalk
 Type: Package
 Title: Inter-Widget Interactivity for HTML Widgets
-Version: 1.2.0.9000
+Version: 1.2.1
 Authors@R: c(
     person("Joe", "Cheng", role = "aut", email = "joe@rstudio.com"),
     person("Carson", "Sievert", role = c("aut", "cre"),

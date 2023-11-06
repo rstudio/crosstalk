@@ -17,19 +17,19 @@ ggplot2 plots).
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-new}{\code{SharedData$new()}}
-\item \href{#method-origData}{\code{SharedData$origData()}}
-\item \href{#method-groupName}{\code{SharedData$groupName()}}
-\item \href{#method-key}{\code{SharedData$key()}}
-\item \href{#method-data}{\code{SharedData$data()}}
-\item \href{#method-selection}{\code{SharedData$selection()}}
-\item \href{#method-clearSelection}{\code{SharedData$clearSelection()}}
-\item \href{#method-clone}{\code{SharedData$clone()}}
+\item \href{#method-SharedData-new}{\code{SharedData$new()}}
+\item \href{#method-SharedData-origData}{\code{SharedData$origData()}}
+\item \href{#method-SharedData-groupName}{\code{SharedData$groupName()}}
+\item \href{#method-SharedData-key}{\code{SharedData$key()}}
+\item \href{#method-SharedData-data}{\code{SharedData$data()}}
+\item \href{#method-SharedData-selection}{\code{SharedData$selection()}}
+\item \href{#method-SharedData-clearSelection}{\code{SharedData$clearSelection()}}
+\item \href{#method-SharedData-clone}{\code{SharedData$clone()}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-SharedData-new"></a>}}
+\if{latex}{\out{\hypertarget{method-SharedData-new}{}}}
 \subsection{Method \code{new()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{SharedData$new(
@@ -66,8 +66,8 @@ they're intended to represent a single group.)}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-origData"></a>}}
-\if{latex}{\out{\hypertarget{method-origData}{}}}
+\if{html}{\out{<a id="method-SharedData-origData"></a>}}
+\if{latex}{\out{\hypertarget{method-SharedData-origData}{}}}
 \subsection{Method \code{origData()}}{
 Return the data frame that was used to create this
 \code{SharedData} instance. If a reactive expression, evaluate the
@@ -79,8 +79,8 @@ FALSE)}.
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-groupName"></a>}}
-\if{latex}{\out{\hypertarget{method-groupName}{}}}
+\if{html}{\out{<a id="method-SharedData-groupName"></a>}}
+\if{latex}{\out{\hypertarget{method-SharedData-groupName}{}}}
 \subsection{Method \code{groupName()}}{
 Returns the value of \code{group} that was used to create
 this instance.
@@ -90,8 +90,8 @@ this instance.
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-key"></a>}}
-\if{latex}{\out{\hypertarget{method-key}{}}}
+\if{html}{\out{<a id="method-SharedData-key"></a>}}
+\if{latex}{\out{\hypertarget{method-SharedData-key}{}}}
 \subsection{Method \code{key()}}{
 Returns the vector of key values. Filtering is not applied.
 \subsection{Usage}{
@@ -100,8 +100,8 @@ Returns the vector of key values. Filtering is not applied.
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-data"></a>}}
-\if{latex}{\out{\hypertarget{method-data}{}}}
+\if{html}{\out{<a id="method-SharedData-data"></a>}}
+\if{latex}{\out{\hypertarget{method-SharedData-data}{}}}
 \subsection{Method \code{data()}}{
 Return the data (or read and return the data if the data is a Shiny
 reactive expression).
@@ -132,8 +132,8 @@ columns or else just the row names).}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-selection"></a>}}
-\if{latex}{\out{\hypertarget{method-selection}{}}}
+\if{html}{\out{<a id="method-SharedData-selection"></a>}}
+\if{latex}{\out{\hypertarget{method-SharedData-selection}{}}}
 \subsection{Method \code{selection()}}{
 Get or set the current selection in the client.
 
@@ -166,8 +166,8 @@ selection based on a [shiny::plotOutput()] brush, then
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clearSelection"></a>}}
-\if{latex}{\out{\hypertarget{method-clearSelection}{}}}
+\if{html}{\out{<a id="method-SharedData-clearSelection"></a>}}
+\if{latex}{\out{\hypertarget{method-SharedData-clearSelection}{}}}
 \subsection{Method \code{clearSelection()}}{
 Clears the selection indirectly, by sending an instruction
 to the client that it should do so.
@@ -184,8 +184,8 @@ to the client that it should do so.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-SharedData-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-SharedData-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

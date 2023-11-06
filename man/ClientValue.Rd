@@ -4,7 +4,7 @@
 \alias{ClientValue}
 \title{ClientValue object}
 \description{
-An object that can be used in a \href{https://shiny.rstudio.com/}{Shiny} server
+An object that can be used in a \href{https://shiny.posit.co/}{Shiny} server
 function to get or set a crosstalk variable that exists on the client. The
 client copy of the variable is the canonical copy, so there is no direct
 "set" method that immediately changes the value; instead, there is a
@@ -36,15 +36,15 @@ server <- function(input, output, session) {
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-new}{\code{ClientValue$new()}}
-\item \href{#method-get}{\code{ClientValue$get()}}
-\item \href{#method-sendUpdate}{\code{ClientValue$sendUpdate()}}
-\item \href{#method-clone}{\code{ClientValue$clone()}}
+\item \href{#method-ClientValue-new}{\code{ClientValue$new()}}
+\item \href{#method-ClientValue-get}{\code{ClientValue$get()}}
+\item \href{#method-ClientValue-sendUpdate}{\code{ClientValue$sendUpdate()}}
+\item \href{#method-ClientValue-clone}{\code{ClientValue$clone()}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-ClientValue-new"></a>}}
+\if{latex}{\out{\hypertarget{method-ClientValue-new}{}}}
 \subsection{Method \code{new()}}{
 Creates a new ClientValue object to reflect the crosstalk variable
 specified by `group` and `name`.
@@ -70,8 +70,8 @@ session.}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-get"></a>}}
-\if{latex}{\out{\hypertarget{method-get}{}}}
+\if{html}{\out{<a id="method-ClientValue-get"></a>}}
+\if{latex}{\out{\hypertarget{method-ClientValue-get}{}}}
 \subsection{Method \code{get()}}{
 Read the value. This is a reactive operation akin to reading a reactive
 value, and so can only be done in a reactive context (e.g. in a
@@ -82,8 +82,8 @@ value, and so can only be done in a reactive context (e.g. in a
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-sendUpdate"></a>}}
-\if{latex}{\out{\hypertarget{method-sendUpdate}{}}}
+\if{html}{\out{<a id="method-ClientValue-sendUpdate"></a>}}
+\if{latex}{\out{\hypertarget{method-ClientValue-sendUpdate}{}}}
 \subsection{Method \code{sendUpdate()}}{
 Send a message to the browser asking it to update the crosstalk var to
 the given value. This update does not happen synchronously, that is, a
@@ -103,8 +103,8 @@ serializable as JSON using `jsonlite`.}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-ClientValue-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-ClientValue-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

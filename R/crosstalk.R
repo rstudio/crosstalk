@@ -33,7 +33,7 @@ crosstalkLibs <- function() {
 #' ClientValue object
 #'
 #' @description
-#' An object that can be used in a \href{https://shiny.rstudio.com/}{Shiny} server
+#' An object that can be used in a \href{https://shiny.posit.co/}{Shiny} server
 #' function to get or set a crosstalk variable that exists on the client. The
 #' client copy of the variable is the canonical copy, so there is no direct
 #' "set" method that immediately changes the value; instead, there is a

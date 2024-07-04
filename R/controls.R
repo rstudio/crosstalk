@@ -286,7 +286,8 @@ inlineCheckbox <- function(id, value, label) {
 #'   words, the min and max can be dragged together. If \code{FALSE}, the range
 #'   cannot be dragged.
 #' @param min The leftmost value of the slider. By default, set to the minimal
-#'   number in input data.
+#'   number in input data. If set to \code{NA}, the slider will have only one
+#'   handle for updating the \code{max}.
 #' @param max The rightmost value of the slider. By default, set to the maximal
 #'   number in input data.
 #' @examples
@@ -318,6 +319,11 @@ filter_slider <- function(id, label, sharedData, column, step = NULL,
   if (is.null(max))
     max <- max(values)
   value <- range(values)
+
+  if (isTRUE(is.na(min))) {
+    min <- min(values)
+    value <- max
+  }
 
   ord <- order(col)
   options <- list(

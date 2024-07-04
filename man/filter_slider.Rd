@@ -90,7 +90,8 @@ words, the min and max can be dragged together. If \code{FALSE}, the range
 cannot be dragged.}
 
 \item{min}{The leftmost value of the slider. By default, set to the minimal
-number in input data.}
+number in input data. If set to \code{NA}, the slider will have only one
+handle for updating the \code{max}.}
 
 \item{max}{The rightmost value of the slider. By default, set to the maximal
 number in input data.}

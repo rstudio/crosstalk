@@ -34,7 +34,7 @@ img.widget-thumbnail {
 Plotly is a general purpose plotting library that outputs interactive web graphics using [plotly.js](https://plot.ly/javascript/).
 
 ```r
-devtools::install_github("ropensci/plotly")
+devtools::install_github("plotly/plotly")
 ```
 
 

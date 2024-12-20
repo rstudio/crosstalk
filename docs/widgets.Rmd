@@ -99,7 +99,7 @@ to allow for interaction.  See the `?rgl::rglShared`
 help topic for details of `crosstalk` usage.
 
 ```r
-devtools::install_github("r-forge/rgl")
+devtools::install_github("dmurdoch/rgl")
 ```
 
 

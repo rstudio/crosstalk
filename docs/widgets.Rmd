@@ -86,9 +86,9 @@ devtools::install_github("kent37/summarywidget")
 
 ---
 
-[![rgl screenshot](thumbnails/rgl.png){.widget-thumbnail}](https://r-forge.r-project.org/projects/rgl/)
+[![rgl screenshot](thumbnails/rgl.png){.widget-thumbnail}](https://dmurdoch.github.io/rgl/)
 
-### [rgl](https://r-forge.r-project.org/projects/rgl/)
+### [rgl](https://dmurdoch.github.io/rgl/)
 
 **Author:** Duncan Murdoch and Daniel Adler
 

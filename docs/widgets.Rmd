@@ -104,7 +104,7 @@ devtools::install_github("dmurdoch/rgl")
 
 
 ---
-[![timevis screenshot](thumbnails/daattali-timevis.png.png){.widget-thumbnail}](https://github.com/daattali/timevis)
+[![timevis screenshot](thumbnails/daattali-timevis.png){.widget-thumbnail}](https://github.com/daattali/timevis)
 
 ### [timevis](https://github.com/daattali/timevis)
 
@@ -118,6 +118,22 @@ with `crosstalk` support has not yet been released to CRAN.
 
 ```r
 devtools::install_github("daattali/timevis")
+```
+
+
+---
+[![shinybody screenshot](thumbnails/shinybody.png){.widget-thumbnail}](https://github.com/robert-norberg/shinybody)
+
+### [shinybody](https://github.com/robert-norberg/shinybody)
+
+**Author:** [Robert Norberg](https://github.com/robert-norberg)
+
+`shinybody` is an `htmlwidget` of the human body that allows you to hide/show
+and assign colors to 79 different body parts.
+
+
+```r
+devtools::install_github("robert-norberg/shinybody")
 ```
 
 

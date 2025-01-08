@@ -8,7 +8,10 @@
   },
   "scripts": {
     "test": "grunt test",
-    "coverage": "./node_modules/.bin/babel-node node_modules/.bin/babel-istanbul cover node_modules/.bin/_mocha --report html --check-coverage -- --timeout 5000 -u tdd --recursive javascript/tests/"
+    "coverage": "./node_modules/.bin/babel-node node_modules/.bin/babel-istanbul cover node_modules/.bin/_mocha --report html --check-coverage -- --timeout 5000 -u tdd --recursive javascript/tests/",
+    "jsdoc2md": "npm run jsdoc:filter && npm run jsdoc:selection",
+    "jsdoc:filter": "jsdoc2md javascript/src/filter.js > docs/filter.Rmd",
+    "jsdoc:selection": "jsdoc2md javascript/src/selection.js > docs/selection.Rmd"
   },
   "repository": {
     "type": "git",
@@ -34,7 +37,7 @@
     "grunt-eslint": "^20.1.0",
     "grunt-exorcise": "^2.1.1",
     "grunt-mocha-test": "^0.13.3",
-    "jsdoc-to-markdown": "^4.0.1",
+    "jsdoc-to-markdown": "^9.0.0",
     "mocha": "^5.0.2",
     "source-map-support": "^0.5.3"
   },

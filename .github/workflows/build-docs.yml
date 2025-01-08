@@ -10,7 +10,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: build-site-${{ github.ref }}
+  group: build-site-${{ github.ref_name }}
   cancel-in-progress: true
 
 jobs:

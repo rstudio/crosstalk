@@ -132,7 +132,7 @@ and assign colors to 79 different body parts.
 
 
 ```r
-devtools::install_github("robert-norberg/shinybody")
+install.packages("shinybody")
 ```
 
 

@@ -102,8 +102,8 @@ help topic for details of `crosstalk` usage.
 install.packages("rgl")
 ```
 
-
 ---
+
 [![timevis screenshot](thumbnails/daattali-timevis.png){.widget-thumbnail}](https://github.com/daattali/timevis)
 
 ### [timevis](https://github.com/daattali/timevis)
@@ -119,8 +119,8 @@ Timeline JavaScript library.
 devtools::install_github("daattali/timevis")
 ```
 
-
 ---
+
 [![shinybody screenshot](thumbnails/shinybody.png){.widget-thumbnail}](https://github.com/robert-norberg/shinybody)
 
 ### [shinybody](https://github.com/robert-norberg/shinybody)
@@ -134,6 +134,5 @@ and assign colors to 79 different body parts.
 ```r
 install.packages("shinybody")
 ```
-
 
 ---

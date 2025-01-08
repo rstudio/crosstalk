@@ -16,7 +16,7 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    if: 
+    if: github.event_name != 'pull_request' || !startsWith(github.head_ref, 'docs')
     
     steps:
     - name: Checkout repository

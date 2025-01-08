@@ -45,11 +45,7 @@ Suggests:
     testthat (>= 2.1.0),
     sass,
     bslib
-Config/Needs/website:
-    d3scatter
-    DT
-    leaflet
-    rmarkdown
+Config/Needs/website: d3scatter, DT, leaflet, rmarkdown
 URL: https://rstudio.github.io/crosstalk/, https://github.com/rstudio/crosstalk
 BugReports: https://github.com/rstudio/crosstalk/issues
 RoxygenNote: 7.3.2

@@ -112,8 +112,7 @@ devtools::install_github("dmurdoch/rgl")
 
 `timevis` lets you create interactive timeline visualizations in R.
 This package is based on the [visjs](https://visjs.github.io/vis-timeline/docs/timeline/)
-Timeline JavaScript library. Note that as of late 2024, the version of `timevis`
-with `crosstalk` support has not yet been released to CRAN.
+Timeline JavaScript library.
 
 
 ```r

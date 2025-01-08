@@ -34,7 +34,7 @@ img.widget-thumbnail {
 Plotly is a general purpose plotting library that outputs interactive web graphics using [plotly.js](https://plot.ly/javascript/).
 
 ```r
-devtools::install_github("plotly/plotly")
+install.packages("plotly")
 ```
 
 
@@ -50,7 +50,7 @@ devtools::install_github("plotly/plotly")
 Leaflet lets you easily generate interactive maps using R. It is a wrapper for the very popular [Leaflet JavaScript library](http://leafletjs.com/) by [Vladamir Agafonkin](http://agafonkin.com/en/).
 
 ```r
-devtools::install_github("rstudio/leaflet")
+install.packages("leaflet")
 ```
 
 
@@ -66,7 +66,7 @@ devtools::install_github("rstudio/leaflet")
 DT is a highly customizable data table library. It wraps the [DataTables plug-in for jQuery](https://datatables.net/).
 
 ```r
-devtools::install_github("rstudio/DT")
+install.packages("DT")
 ```
 
 ---
@@ -99,7 +99,7 @@ to allow for interaction.  See the `?rgl::rglShared`
 help topic for details of `crosstalk` usage.
 
 ```r
-devtools::install_github("dmurdoch/rgl")
+install.packages("rgl")
 ```
 
 

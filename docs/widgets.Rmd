@@ -4,7 +4,7 @@ title: List of compatible HTML widgets
 
 This page lists some HTML widgets that are compatible with Crosstalk.
 
-(To add a widget, please submit a PR with modifications to [this page](https://github.com/rstudio/crosstalk/edit/master/docs/widgets.Rmd).)
+(To add a widget, please submit a PR with modifications to [this page](https://github.com/rstudio/crosstalk/edit/main/docs/widgets.Rmd).)
 
 <style type="text/css">
 img.widget-thumbnail {
@@ -34,7 +34,7 @@ img.widget-thumbnail {
 Plotly is a general purpose plotting library that outputs interactive web graphics using [plotly.js](https://plot.ly/javascript/).
 
 ```r
-devtools::install_github("ropensci/plotly")
+install.packages("plotly")
 ```
 
 
@@ -50,7 +50,7 @@ devtools::install_github("ropensci/plotly")
 Leaflet lets you easily generate interactive maps using R. It is a wrapper for the very popular [Leaflet JavaScript library](http://leafletjs.com/) by [Vladamir Agafonkin](http://agafonkin.com/en/).
 
 ```r
-devtools::install_github("rstudio/leaflet")
+install.packages("leaflet")
 ```
 
 
@@ -66,7 +66,7 @@ devtools::install_github("rstudio/leaflet")
 DT is a highly customizable data table library. It wraps the [DataTables plug-in for jQuery](https://datatables.net/).
 
 ```r
-devtools::install_github("rstudio/DT")
+install.packages("DT")
 ```
 
 ---
@@ -86,9 +86,9 @@ devtools::install_github("kent37/summarywidget")
 
 ---
 
-[![rgl screenshot](thumbnails/rgl.png){.widget-thumbnail}](https://r-forge.r-project.org/projects/rgl/)
+[![rgl screenshot](thumbnails/rgl.png){.widget-thumbnail}](https://dmurdoch.github.io/rgl/)
 
-### [rgl](https://r-forge.r-project.org/projects/rgl/)
+### [rgl](https://dmurdoch.github.io/rgl/)
 
 **Author:** Duncan Murdoch and Daniel Adler
 
@@ -99,7 +99,40 @@ to allow for interaction.  See the `?rgl::rglShared`
 help topic for details of `crosstalk` usage.
 
 ```r
-devtools::install_github("r-forge/rgl")
+install.packages("rgl")
+```
+
+
+---
+[![timevis screenshot](thumbnails/daattali-timevis.png){.widget-thumbnail}](https://github.com/daattali/timevis)
+
+### [timevis](https://github.com/daattali/timevis)
+
+**Author:** [Dean Attali](https://github.com/daattali)
+
+`timevis` lets you create interactive timeline visualizations in R.
+This package is based on the [visjs](https://visjs.github.io/vis-timeline/docs/timeline/)
+Timeline JavaScript library.
+
+
+```r
+devtools::install_github("daattali/timevis")
+```
+
+
+---
+[![shinybody screenshot](thumbnails/shinybody.png){.widget-thumbnail}](https://github.com/robert-norberg/shinybody)
+
+### [shinybody](https://github.com/robert-norberg/shinybody)
+
+**Author:** [Robert Norberg](https://github.com/robert-norberg)
+
+`shinybody` is an `htmlwidget` of the human body that allows you to hide/show
+and assign colors to 79 different body parts.
+
+
+```r
+install.packages("shinybody")
 ```
 
 

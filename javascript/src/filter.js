@@ -18,9 +18,6 @@ function nextId() {
   return id++;
 }
 
-/**
- * @module crosstalk
-*/
 
 /**
  * Use this class to contribute to, and listen for changes to, the filter set

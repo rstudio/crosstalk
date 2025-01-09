@@ -3,10 +3,6 @@ import grp from "./group";
 import * as util from "./util";
 
 /**
- * @module crosstalk
- */
-
-/**
  * Use this class to read and write (and listen for changes to) the selection
  * for a Crosstalk group. This is intended to be used for linked brushing.
  *

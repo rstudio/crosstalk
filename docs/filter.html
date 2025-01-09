@@ -301,11 +301,10 @@ $(document).ready(function () {
 <p>Use this class to contribute to, and listen for changes to, the
 filter set for the given group of widgets. Filter input controls should
 create one <code>FilterHandle</code> and only call <a
-href="module:crosstalk.FilterHandle#set">module:crosstalk.FilterHandle#set</a>.
-Output widgets that wish to displayed filtered data should create one
-<code>FilterHandle</code> and use the <a
-href="module:crosstalk.FilterHandle#filteredKeys">module:crosstalk.FilterHandle#filteredKeys</a>
-property and listen for change events.</p>
+href="#FilterHandle+set">set</a>. Output widgets that wish to displayed
+filtered data should create one <code>FilterHandle</code> and use the <a
+href="#FilterHandle+filteredKeys">filteredKeys</a> property and listen
+for change events.</p>
 <p>If two (or more) <code>FilterHandle</code> instances in the same
 webpage share the same group name, they will contribute to a single
 “filter set”. Each <code>FilterHandle</code> starts out with a

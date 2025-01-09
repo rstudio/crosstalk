@@ -1,38 +1,53 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <head>
 
 <meta charset="utf-8" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
 
 
 <title>Authoring Crosstalk widgets</title>
 
-<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
-<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
 
 <style type="text/css">code{white-space: pre;}</style>
-<style type="text/css">
-  pre:not([class]) {
-    background-color: white;
-  }
-</style>
 <script type="text/javascript">
 if (window.hljs) {
   hljs.configure({languages: []});
@@ -45,37 +60,11 @@ if (window.hljs) {
 
 
 
-<style type="text/css">
-h1 {
-  font-size: 34px;
-}
-h1.title {
-  font-size: 38px;
-}
-h2 {
-  font-size: 30px;
-}
-h3 {
-  font-size: 24px;
-}
-h4 {
-  font-size: 18px;
-}
-h5 {
-  font-size: 16px;
-}
-h6 {
-  font-size: 12px;
-}
-.table th:not([align]) {
-  text-align: left;
-}
-</style>
 
 
-</head>
 
-<body>
+
+
 
 <style type = "text/css">
 .main-container {
@@ -83,58 +72,71 @@ h6 {
   margin-left: auto;
   margin-right: auto;
 }
-code {
-  color: inherit;
-  background-color: rgba(0, 0, 0, 0.04);
-}
 img {
   max-width:100%;
-  height: auto;
 }
 .tabbed-pane {
   padding-top: 12px;
 }
+.html-widget {
+  margin-bottom: 20px;
+}
 button.code-folding-btn:focus {
   outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
 }
 </style>
 
 
 <style type="text/css">
-/* padding for bootstrap navbar */
-body {
-  padding-top: 51px;
-  padding-bottom: 40px;
+.dropdown-submenu {
+  position: relative;
 }
-/* offset scroll position for anchor links (for fixed navbar)  */
-.section h1 {
-  padding-top: 56px;
-  margin-top: -56px;
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
 }
-
-.section h2 {
-  padding-top: 56px;
-  margin-top: -56px;
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
 }
-.section h3 {
-  padding-top: 56px;
-  margin-top: -56px;
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
 }
-.section h4 {
-  padding-top: 56px;
-  margin-top: -56px;
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
 }
-.section h5 {
-  padding-top: 56px;
-  margin-top: -56px;
+.dropdown-submenu.pull-left {
+  float: none;
 }
-.section h6 {
-  padding-top: 56px;
-  margin-top: -56px;
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
 }
 </style>
 
-<script>
+<script type="text/javascript">
 // manage active state of menu based on current page
 $(document).ready(function () {
   // active menu anchor
@@ -144,55 +146,83 @@ $(document).ready(function () {
     href = "index.html";
   var menuAnchor = $('a[href="' + href + '"]');
 
-  // mark it active
-  menuAnchor.parent().addClass('active');
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
 
-  // if it's got a parent navbar menu mark it active as well
-  menuAnchor.closest('li.dropdown').addClass('active');
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
 });
 </script>
-
-
-<div class="container-fluid main-container">
 
 <!-- tabsets -->
-<script>
-$(document).ready(function () {
-  window.buildTabsets("TOC");
-});
-</script>
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
 
 <!-- code folding -->
 
 
-
-
-<script>
-$(document).ready(function ()  {
-
-    // move toc-ignore selectors from section div to header
-    $('div.section.toc-ignore')
-        .removeClass('toc-ignore')
-        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
-
-    // establish options
-    var options = {
-      selectors: "h1,h2,h3",
-      theme: "bootstrap3",
-      context: '.toc-content',
-      hashGenerator: function (text) {
-        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
-      },
-      ignoreSelector: ".toc-ignore",
-      scrollTo: 0
-    };
-    options.showAndHide = true;
-    options.smoothScroll = true;
-
-    // tocify
-    var toc = $("#TOC").tocify(options).data("toc-tocify");
-});
-</script>
 
 <style type="text/css">
 
@@ -206,6 +236,12 @@ $(document).ready(function ()  {
 }
 }
 
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
 
 .toc-content {
   padding-left: 30px;
@@ -241,8 +277,6 @@ div.tocify {
 
 .tocify-subheader .tocify-item {
   font-size: 0.90em;
-  padding-left: 25px;
-  text-indent: 0;
 }
 
 .tocify .list-group-item {
@@ -252,8 +286,18 @@ div.tocify {
 
 </style>
 
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
 <!-- setup 3col/9col grid for toc_float and main content  -->
-<div class="row-fluid">
+<div class="row">
 <div class="col-xs-12 col-sm-4 col-md-3">
 <div id="TOC" class="tocify">
 </div>
@@ -267,7 +311,7 @@ div.tocify {
 <div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -292,7 +336,7 @@ div.tocify {
   <a href="widgets.html">Compatible widgets</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Reference (JS)
      
     <span class="caret"></span>
@@ -319,7 +363,7 @@ div.tocify {
   </div><!--/.container -->
 </div><!--/.navbar -->
 
-<div class="fluid-row" id="header">
+<div id="header">
 
 
 
@@ -328,39 +372,97 @@ div.tocify {
 </div>
 
 
-<p>If you’re the author of an <a href="http://htmlwidgets.org">htmlwidget</a> package and would like to add Crosstalk support to your widget, this document will help you get started.</p>
+<p>If you’re the author of an <a
+href="http://htmlwidgets.org">htmlwidget</a> package and would like to
+add Crosstalk support to your widget, this document will help you get
+started.</p>
 <div id="should-you-integrate-with-crosstalk" class="section level2">
 <h2>Should you integrate with Crosstalk?</h2>
-<p>Before you begin, know that not all HTML widgets are good candidates for integration with Crosstalk. The htmlwidgets framework itself makes minimal assumptions, so as to encourage a diverse ecosystem of widgets. Crosstalk, on the other hand, is highly opinionated; it is designed to operate on certain kinds of data, with certain kinds of interactivity. Some widgets will be difficult or impossible to integrate with Crosstalk; other widgets might be easy to integrate but offer a poor overall user experience.</p>
+<p>Before you begin, know that not all HTML widgets are good candidates
+for integration with Crosstalk. The htmlwidgets framework itself makes
+minimal assumptions, so as to encourage a diverse ecosystem of widgets.
+Crosstalk, on the other hand, is highly opinionated; it is designed to
+operate on certain kinds of data, with certain kinds of interactivity.
+Some widgets will be difficult or impossible to integrate with
+Crosstalk; other widgets might be easy to integrate but offer a poor
+overall user experience.</p>
 <p>A widget is a good candidate for Crosstalk if it:</p>
-<div id="operates-on-data-frames-or-data-frame-like-objects" class="section level4">
+<div id="operates-on-data-frames-or-data-frame-like-objects"
+class="section level4">
 <h4>Operates on data frames, or data frame-like objects</h4>
-<p>Crosstalk works on a row-by-row basis. When you select a bunch of data points in Crosstalk, each data point is considered a row (or observation), and row IDs are broadcast to the rest of the Crosstalk group. If your data isn’t inherently tabular in nature, or at the very least a flat list of values, you’re going to suffer from impedance mismatch. (That doesn’t mean your widget’s <em>visualization</em> needs to be tabular, just that the <em>underlying data</em> should have a by-row structure to it.)</p>
-<p>Examples of appropriate data: data frame, data.table, spatial objects (e.g. <code>SpatialPolygonsDataFrame</code>).</p>
-<p>Examples of inappropriate data: raster images, text corpora, hierarchy/trees (lists of lists).</p>
+<p>Crosstalk works on a row-by-row basis. When you select a bunch of
+data points in Crosstalk, each data point is considered a row (or
+observation), and row IDs are broadcast to the rest of the Crosstalk
+group. If your data isn’t inherently tabular in nature, or at the very
+least a flat list of values, you’re going to suffer from impedance
+mismatch. (That doesn’t mean your widget’s <em>visualization</em> needs
+to be tabular, just that the <em>underlying data</em> should have a
+by-row structure to it.)</p>
+<p>Examples of appropriate data: data frame, data.table, spatial objects
+(e.g. <code>SpatialPolygonsDataFrame</code>).</p>
+<p>Examples of inappropriate data: raster images, text corpora,
+hierarchy/trees (lists of lists).</p>
 </div>
-<div id="displays-individual-rowsobservationsdata-points" class="section level4">
+<div id="displays-individual-rowsobservationsdata-points"
+class="section level4">
 <h4>Displays individual rows/observations/data points</h4>
-<p>Crosstalk works best when each data point is displayed independently in a visualization. This makes it straightforward to highlight/fade or filter out arbitrary sets of points.</p>
-<p>Visualizations that aggregate or summarize rows—for example, grouping rows by a categorical variable and showing the averages in a bar chart—will have a harder time. There’s no hope of this working correctly unless all of the row-level data is passed to the widget’s JavaScript binding, plus all of the parameters of how the aggregation was performed, plus the actual logic to perform said aggregation. Without all that information, there’s no way to partially highlight a bar based on a set of points that were brushed in a linked scatter plot, for example.</p>
-<p>It’s not impossible, but I haven’t explored this area enough to make recommendations for how such operations should be expressed, and therefore suggest you steer clear for now. If you have an urgent scenario, feel free to contact me (<a href="mailto:joe@rstudio.com">joe@rstudio.com</a>).</p>
+<p>Crosstalk works best when each data point is displayed independently
+in a visualization. This makes it straightforward to highlight/fade or
+filter out arbitrary sets of points.</p>
+<p>Visualizations that aggregate or summarize rows—for example, grouping
+rows by a categorical variable and showing the averages in a bar
+chart—will have a harder time. There’s no hope of this working correctly
+unless all of the row-level data is passed to the widget’s JavaScript
+binding, plus all of the parameters of how the aggregation was
+performed, plus the actual logic to perform said aggregation. Without
+all that information, there’s no way to partially highlight a bar based
+on a set of points that were brushed in a linked scatter plot, for
+example.</p>
+<p>It’s not impossible, but I haven’t explored this area enough to make
+recommendations for how such operations should be expressed, and
+therefore suggest you steer clear for now. If you have an urgent
+scenario, feel free to contact me (<a href="mailto:joe@rstudio.com"
+class="email">joe@rstudio.com</a>).</p>
 </div>
-<div id="supports-highlightingfading-and-hidingshowing-of-data-points" class="section level4">
+<div id="supports-highlightingfading-and-hidingshowing-of-data-points"
+class="section level4">
 <h4>Supports highlighting/fading and hiding/showing of data points</h4>
-<p>Crosstalk widgets need to support highlighting/fading (or emphasizing/de-emphasizing through other means) of data points to support linked brushing, and they need to support hiding/showing to support filtering. Ideally, this will happen quickly, without disturbing other aspects of the widget (e.g. if the user has zoomed in on one part of the widget, or repositioned some nodes in a network graph, those aspects should not be affected by selecting or filtering).</p>
+<p>Crosstalk widgets need to support highlighting/fading (or
+emphasizing/de-emphasizing through other means) of data points to
+support linked brushing, and they need to support hiding/showing to
+support filtering. Ideally, this will happen quickly, without disturbing
+other aspects of the widget (e.g. if the user has zoomed in on one part
+of the widget, or repositioned some nodes in a network graph, those
+aspects should not be affected by selecting or filtering).</p>
 </div>
-<div id="provides-a-gesture-for-selecting-data-points-and-api-for-dismissing-selection" class="section level4">
-<h4>Provides a gesture for selecting data points, and API for dismissing selection</h4>
-<p>Ideally, each Crosstalk widget would not only highlight/fade to reflect selections made on linked widgets, but also allow you to make a selection directly on the widget itself. Further, after a selection is made on your widget, Crosstalk may alert you to a selection made on linked widget, at which time you must programatically remove the selection box (or whatever your brush looks like) from your widget.</p>
-<p>This is easy if the underlying JavaScript library has already provided these facilities for you, but if not, it can be quite tricky to implement. Unfortunately, doing the JavaScript UI programming necessary to support a nice selection experience is outside the scope of this article.</p>
+<div
+id="provides-a-gesture-for-selecting-data-points-and-api-for-dismissing-selection"
+class="section level4">
+<h4>Provides a gesture for selecting data points, and API for dismissing
+selection</h4>
+<p>Ideally, each Crosstalk widget would not only highlight/fade to
+reflect selections made on linked widgets, but also allow you to make a
+selection directly on the widget itself. Further, after a selection is
+made on your widget, Crosstalk may alert you to a selection made on
+linked widget, at which time you must programatically remove the
+selection box (or whatever your brush looks like) from your widget.</p>
+<p>This is easy if the underlying JavaScript library has already
+provided these facilities for you, but if not, it can be quite tricky to
+implement. Unfortunately, doing the JavaScript UI programming necessary
+to support a nice selection experience is outside the scope of this
+article.</p>
 </div>
 </div>
 <div id="modify-your-package" class="section level2">
 <h2>Modify your package</h2>
-<p>If you’ve read those criteria and are still with us, it’s time to modify your package to support Crosstalk!</p>
+<p>If you’ve read those criteria and are still with us, it’s time to
+modify your package to support Crosstalk!</p>
 <ol style="list-style-type: decimal">
-<li>Modify your <code>DESCRIPTION</code> file’s Imports field to include <code>crosstalk</code> and <code>htmltools</code>.</li>
-<li>In your widget’s R function, modify the call to <code>createWidget</code> to include the argument <code>dependencies = crosstalk::crosstalkLibs()</code>.</li>
+<li>Modify your <code>DESCRIPTION</code> file’s Imports field to include
+<code>crosstalk</code> and <code>htmltools</code>.</li>
+<li>In your widget’s R function, modify the call to
+<code>createWidget</code> to include the argument
+<code>dependencies = crosstalk::crosstalkLibs()</code>.</li>
 </ol>
 <pre class="r"><code># Before
 
@@ -380,13 +482,18 @@ myWidget &lt;- function(data, width = NULL, height = NULL) {
     dependencies = crosstalk::crosstalkLibs()
   )
 }</code></pre>
-<p>This ensures that Crosstalk’s JavaScript runtime dependencies are loaded at the appropriate time.</p>
-<p>Now we’re ready to begin customizing your widget-specific logic to work with Crosstalk.</p>
+<p>This ensures that Crosstalk’s JavaScript runtime dependencies are
+loaded at the appropriate time.</p>
+<p>Now we’re ready to begin customizing your widget-specific logic to
+work with Crosstalk.</p>
 </div>
 <div id="modify-the-r-binding" class="section level2">
 <h2>Modify the R binding</h2>
-<p>The R binding is the R function that constructs an instance of your widget (usually it is named after your widget). I’ll assume you already take a data frame as an argument.</p>
-<p>Users signal their intention to use Crosstalk by passing your widget a <code>SharedData</code> instance instead of a regular data frame.</p>
+<p>The R binding is the R function that constructs an instance of your
+widget (usually it is named after your widget). I’ll assume you already
+take a data frame as an argument.</p>
+<p>Users signal their intention to use Crosstalk by passing your widget
+a <code>SharedData</code> instance instead of a regular data frame.</p>
 <pre class="r"><code>df &lt;- read.csv(&quot;mydata.csv&quot;, stringsAsFactors=FALSE)
 sd &lt;- SharedData$new(df)
 
@@ -395,7 +502,10 @@ myWidget(df)
 
 # Crosstalk enabled
 myWidget(sd)</code></pre>
-<p>When your R binding detects a <code>SharedData</code> instance, it will extract the data frame, key vector, and group name, and include them in the widget payload that is passed to <code>createWidget</code>.</p>
+<p>When your R binding detects a <code>SharedData</code> instance, it
+will extract the data frame, key vector, and group name, and include
+them in the widget payload that is passed to
+<code>createWidget</code>.</p>
 <p>Before:</p>
 <pre class="r"><code>myWidget &lt;- function(data, width = NULL, height = NULL) {
   x &lt;- list(
@@ -429,46 +539,104 @@ myWidget(sd)</code></pre>
     dependencies = crosstalk::crosstalkLibs()
   )
 }</code></pre>
-<p>Now in your JavaScript binding’s <code>renderValue</code> method, you can access <code>x.settings.crosstalk_key</code> and <code>x.settings.crosstalk_group</code>. To tell if Crosstalk is enabled for the current <code>renderValue</code> invocation, test one of these values for truthiness.</p>
-<p>This example happens to pass the entire data frame to <code>createWidget</code>. That’s not necessary and in fact is probably not that common. Usually a subset of columns, possibly transformed, is all that’s included in the payload. That’s fine, as far as Crosstalk is concerned. All that matters is that you keep your data in sync with the key vector; if you subset or reorder the data, you must do the same to the key vector.</p>
+<p>Now in your JavaScript binding’s <code>renderValue</code> method, you
+can access <code>x.settings.crosstalk_key</code> and
+<code>x.settings.crosstalk_group</code>. To tell if Crosstalk is enabled
+for the current <code>renderValue</code> invocation, test one of these
+values for truthiness.</p>
+<p>This example happens to pass the entire data frame to
+<code>createWidget</code>. That’s not necessary and in fact is probably
+not that common. Usually a subset of columns, possibly transformed, is
+all that’s included in the payload. That’s fine, as far as Crosstalk is
+concerned. All that matters is that you keep your data in sync with the
+key vector; if you subset or reorder the data, you must do the same to
+the key vector.</p>
 </div>
 <div id="modify-the-javascript-binding" class="section level2">
 <h2>Modify the JavaScript binding</h2>
-<p>Now the more difficult part: actually implementing the linked interactions on the JavaScript side.</p>
-<p>Currently, Crosstalk supports two types of inter-widget interaction: linked brushing, and filtering. By “supports” I mean that Crosstalk will help visualizations and filter controls <em>communicate intentions</em> to each other. But actually implementing the selection, highlighting, and filtering behaviors for each widget type is the job of the widget author.</p>
-<p>The sections below will discuss the types of interactions that are expected from each Crosstalk-compatible widget, and how to use Crosstalk’s JavaScript APIs to communicate.</p>
+<p>Now the more difficult part: actually implementing the linked
+interactions on the JavaScript side.</p>
+<p>Currently, Crosstalk supports two types of inter-widget interaction:
+linked brushing, and filtering. By “supports” I mean that Crosstalk will
+help visualizations and filter controls <em>communicate intentions</em>
+to each other. But actually implementing the selection, highlighting,
+and filtering behaviors for each widget type is the job of the widget
+author.</p>
+<p>The sections below will discuss the types of interactions that are
+expected from each Crosstalk-compatible widget, and how to use
+Crosstalk’s JavaScript APIs to communicate.</p>
 <div id="linked-brushing" class="section level3">
 <h3>Linked brushing</h3>
-<p>Linked brushing lets the end user select data points in any visualization, to highlight the corresponding data points in all linked visualization.</p>
-<p>At any given moment, only one visualization may have a selection; for example, if widget A has an active selection, and then the user begins making a selection on widget B, then widget A should immediately clear its selection.</p>
+<p>Linked brushing lets the end user select data points in any
+visualization, to highlight the corresponding data points in all linked
+visualization.</p>
+<p>At any given moment, only one visualization may have a selection; for
+example, if widget A has an active selection, and then the user begins
+making a selection on widget B, then widget A should immediately clear
+its selection.</p>
 <p>Ideally, each visualization should be capable of the following:</p>
 <ol style="list-style-type: decimal">
-<li>Allow the user to <u>make a selection</u>, usually through clicking on data points, or better, making a rectangular or lasso-shaped selection. (The result of the selection must be a subset of the rows in the dataset—that’s the only type of selection that is useful in Crosstalk.)</li>
-<li><u>Clear a selection interactively</u> in response to a user gesture (i.e. clicking on an inert, unselected area of the visualization).</li>
-<li><u>Clear a selection programmatically</u>, in response to another visualization (in the same Crosstalk group) starting a selection operation.</li>
-<li><u>Highlight points</u> selected by another visualization. A common way to do this is to lower the opacity of data points that are not selected (and use the maximum opacity value for all data points when no selection is active in the group).</li>
+<li>Allow the user to <u>make a selection</u>, usually through clicking
+on data points, or better, making a rectangular or lasso-shaped
+selection. (The result of the selection must be a subset of the rows in
+the dataset—that’s the only type of selection that is useful in
+Crosstalk.)</li>
+<li><u>Clear a selection interactively</u> in response to a user gesture
+(i.e. clicking on an inert, unselected area of the visualization).</li>
+<li><u>Clear a selection programmatically</u>, in response to another
+visualization (in the same Crosstalk group) starting a selection
+operation.</li>
+<li><u>Highlight points</u> selected by another visualization. A common
+way to do this is to lower the opacity of data points that are not
+selected (and use the maximum opacity value for all data points when no
+selection is active in the group).</li>
 </ol>
-<p>In my experience so far, I’ve found 4 to be reasonably straightforward to achieve. But 1-3 can be difficult if you’re building on top of a JavaScript visualization library that isn’t designed to accomodate interactively selecting data points. Though it’s far preferable to support all four of these features, it’s possible to only support 4 to create what is essentially a “listen-only” Crosstalk participant.</p>
+<p>In my experience so far, I’ve found 4 to be reasonably
+straightforward to achieve. But 1-3 can be difficult if you’re building
+on top of a JavaScript visualization library that isn’t designed to
+accomodate interactively selecting data points. Though it’s far
+preferable to support all four of these features, it’s possible to only
+support 4 to create what is essentially a “listen-only” Crosstalk
+participant.</p>
 <div id="selection-javascript-api" class="section level4">
 <h4>Selection JavaScript API</h4>
-<p>Each Crosstalk-enabled visualization instance (i.e. each call to <code>renderValue</code>) should create a new <code>crosstalk.SelectionHandle</code> instance. Use <code>SelectionHandle</code> to read and write (and listen for changes to) the selection state for a Crosstalk group.</p>
+<p>Each Crosstalk-enabled visualization instance (i.e. each call to
+<code>renderValue</code>) should create a new
+<code>crosstalk.SelectionHandle</code> instance. Use
+<code>SelectionHandle</code> to read and write (and listen for changes
+to) the selection state for a Crosstalk group.</p>
 <div id="construction" class="section level5">
 <h5>Construction</h5>
 <pre class="javascript"><code>var ct_sel = new crosstalk.SelectionHandle();</code></pre>
-<p>If you know the Crosstalk group name at construction time, you can pass it as an argument to the constructor. If not, you can set it (and re-set it) later:</p>
+<p>If you know the Crosstalk group name at construction time, you can
+pass it as an argument to the constructor. If not, you can set it (and
+re-set it) later:</p>
 <pre class="javascript"><code>ct_sel.setGroup(x.settings.crosstalk_group);</code></pre>
 </div>
 <div id="events" class="section level5">
 <h5>Events</h5>
-<p>Listen on the <code>&quot;change&quot;</code> event to be notified whenever the selection changes.</p>
+<p>Listen on the <code>"change"</code> event to be notified whenever the
+selection changes.</p>
 <pre class="javascript"><code>ct_sel.on(&quot;change&quot;, function(e) { ... });</code></pre>
-<p>The event handler will be called back with an object argument (<code>e</code> in the above example) that contains these properties:</p>
+<p>The event handler will be called back with an object argument
+(<code>e</code> in the above example) that contains these
+properties:</p>
 <ul>
-<li><code>value</code> - Either falsy (meaning no selection is active) or a string array, where each element is the key of a selected data point/row. Any data point whose key does not appear in the string array should be considered deselected.</li>
-<li><code>oldValue</code> - The previous value of the selection. A convenience for widgets that care to calculate the difference between the old and new values.</li>
-<li><code>sender</code> - The <code>SelectionHandle</code> instance that made this change. Use <code>===</code> to compare to your own <code>SelectionHandle</code> to determine if the change is in response to an action you yourself took.</li>
+<li><code>value</code> - Either falsy (meaning no selection is active)
+or a string array, where each element is the key of a selected data
+point/row. Any data point whose key does not appear in the string array
+should be considered deselected.</li>
+<li><code>oldValue</code> - The previous value of the selection. A
+convenience for widgets that care to calculate the difference between
+the old and new values.</li>
+<li><code>sender</code> - The <code>SelectionHandle</code> instance that
+made this change. Use <code>===</code> to compare to your own
+<code>SelectionHandle</code> to determine if the change is in response
+to an action you yourself took.</li>
 </ul>
-<p>You can unregister a previously registered event handler using either the return value of <code>on</code>, or with the function/closure itself.</p>
+<p>You can unregister a previously registered event handler using either
+the return value of <code>on</code>, or with the function/closure
+itself.</p>
 <pre class="javascript"><code>function myEventListener(e) { ... }
 var subscription = ct_sel.on(&quot;change&quot;, myEventListener);
 
@@ -478,31 +646,51 @@ ct_sel.off(&quot;change&quot;, myEventListener);</code></pre>
 </div>
 <div id="getting-the-selection" class="section level5">
 <h5>Getting the selection</h5>
-<p>It may also be useful to get the selection value from places other than the change event handler. You can do this using the <code>value</code> property.</p>
+<p>It may also be useful to get the selection value from places other
+than the change event handler. You can do this using the
+<code>value</code> property.</p>
 <pre class="javascript"><code>var selected_keys = ct_sel.value;</code></pre>
 </div>
 <div id="setting-the-selection" class="section level5">
 <h5>Setting the selection</h5>
-<p>And of course, we need the ability to modify the selection. The <code>set</code> method changes the value and automatically triggers any change event listeners.</p>
+<p>And of course, we need the ability to modify the selection. The
+<code>set</code> method changes the value and automatically triggers any
+change event listeners.</p>
 <pre class="javascript"><code>ct_sel.set([&quot;Alaska&quot;, &quot;Rhode Island&quot;, &quot;Wyoming&quot;]);</code></pre>
 <p>You can also easily clear the selection.</p>
 <pre class="javascript"><code>ct_sel.clear();</code></pre>
 </div>
 <div id="cleaning-up" class="section level5">
 <h5>Cleaning up</h5>
-<p>Close the handle to remove all event handlers and remove the handle from the current group.</p>
+<p>Close the handle to remove all event handlers and remove the handle
+from the current group.</p>
 <pre class="javascript"><code>ct_sel.close();</code></pre>
 </div>
 </div>
 </div>
 <div id="filtering" class="section level3">
 <h3>Filtering</h3>
-<p>Filtering causes a subset of data points to be shown, while all others are hidden.</p>
-<p>With Crosstalk’s filtering API, multiple widgets simultaneously contribute to the current “filter set”. Crosstalk will determine which data points are permitted by all of the actively filtering widgets.</p>
-<p>Earlier, we said that visualizations would ideally support both reading and writing of linked brushing state; that is, each plot should allow users to set the selection via direct manipulation, and also highlight points based on selections on other linked plots. While it’s possible to envision such functionality for filtering as well (see <a href="https://dc-js.github.io/dc.js/">dc.js</a>), it’s not currently recommended to do so with Crosstalk. Instead, the current design is geared toward distinct “filter controls” for input and “filtered visualizations” for output. Both types of controls will use the same <code>crosstalk.FilterHandle</code> class, but they will interact with it in different ways.</p>
+<p>Filtering causes a subset of data points to be shown, while all
+others are hidden.</p>
+<p>With Crosstalk’s filtering API, multiple widgets simultaneously
+contribute to the current “filter set”. Crosstalk will determine which
+data points are permitted by all of the actively filtering widgets.</p>
+<p>Earlier, we said that visualizations would ideally support both
+reading and writing of linked brushing state; that is, each plot should
+allow users to set the selection via direct manipulation, and also
+highlight points based on selections on other linked plots. While it’s
+possible to envision such functionality for filtering as well (see <a
+href="https://dc-js.github.io/dc.js/">dc.js</a>), it’s not currently
+recommended to do so with Crosstalk. Instead, the current design is
+geared toward distinct “filter controls” for input and “filtered
+visualizations” for output. Both types of controls will use the same
+<code>crosstalk.FilterHandle</code> class, but they will interact with
+it in different ways.</p>
 <div id="filter-javascript-api" class="section level4">
 <h4>Filter JavaScript API</h4>
-<p>Construction, event handling, and setting of <code>crosstalk.FilterHandle</code> are almost identical to <code>SelectionHandle</code>:</p>
+<p>Construction, event handling, and setting of
+<code>crosstalk.FilterHandle</code> are almost identical to
+<code>SelectionHandle</code>:</p>
 <pre class="javascript"><code>// Make instance
 var ct_filter = new crosstalk.FilterHandle();
 
@@ -519,7 +707,12 @@ ct_filter.set([&quot;Washington&quot;, &quot;Oregon&quot;, &quot;Idaho&quot;]);
 
 // Clear this handle&#39;s filter
 ct_filter.clear();</code></pre>
-<p><code>FilterHandle</code> doesn’t have a <code>value</code> property. Instead, it has a <code>filteredKeys</code> property. This property doesn’t simply return the most recently set filter value in the group; rather, each filter handle maintains its own set of keys (or none) and <code>filteredKeys</code> returns the <em>intersection</em> of them all.</p>
+<p><code>FilterHandle</code> doesn’t have a <code>value</code> property.
+Instead, it has a <code>filteredKeys</code> property. This property
+doesn’t simply return the most recently set filter value in the group;
+rather, each filter handle maintains its own set of keys (or none) and
+<code>filteredKeys</code> returns the <em>intersection</em> of them
+all.</p>
 <p>For example:</p>
 <pre class="javascript"><code>var filter1 = new crosstalk.FilterHandle(&quot;groupA&quot;);
 var filter2 = new crosstalk.FilterHandle(&quot;groupA&quot;);
@@ -536,12 +729,16 @@ filter3.filteredKeys // []
 
 filter2.clear();
 filter1.filteredKeys // [&quot;New Jersey&quot;]</code></pre>
-<p>Note that it doesn’t matter which handle you call <code>filteredKeys</code> on. All filter handles that belong to the same group will return the same value for <code>filteredKeys</code>.</p>
+<p>Note that it doesn’t matter which handle you call
+<code>filteredKeys</code> on. All filter handles that belong to the same
+group will return the same value for <code>filteredKeys</code>.</p>
 </div>
 </div>
 <div id="putting-it-together" class="section level3">
 <h3>Putting it together</h3>
-<p>Here’s what the htmlwidget binding code for <a href="https://github.com/jcheng5/d3scatter">d3scatter</a> looks like, without Crosstalk support:</p>
+<p>Here’s what the htmlwidget binding code for <a
+href="https://github.com/jcheng5/d3scatter">d3scatter</a> looks like,
+without Crosstalk support:</p>
 <pre class="javascript"><code>HTMLWidgets.widget({
 
   name: &#39;d3scatter&#39;,
@@ -575,11 +772,23 @@ filter1.filteredKeys // [&quot;New Jersey&quot;]</code></pre>
     };
   }
 });</code></pre>
-<p>The d3scatter object is created at the scope of the <code>factory</code> function. Then, during <code>renderValue</code>, it’s updated with the <code>value</code> object.</p>
-<p>The first step is to create a <code>crosstalk.SelectionHandle</code> object at the <code>factory</code> function level.</p>
+<p>The d3scatter object is created at the scope of the
+<code>factory</code> function. Then, during <code>renderValue</code>,
+it’s updated with the <code>value</code> object.</p>
+<p>The first step is to create a <code>crosstalk.SelectionHandle</code>
+object at the <code>factory</code> function level.</p>
 <pre class="javascript"><code>var sel_handle = new crosstalk.SelectionHandle();</code></pre>
-<p>We haven’t yet specified what group this handle should belong to. In fact, we won’t know the group until we receive a value via <code>renderValue</code> (and in some circumstances, <code>renderValue</code> might be called multiple times with different groups).</p>
-<p>But we do have both <code>scatter</code> and <code>sel_handle</code> objects at this point, so we can wire them together. The d3scatter object has a <code>&quot;brush&quot;</code> event that we can use to update the Crosstalk selection handle, and the Crosstalk selection handle has a <code>&quot;change&quot;</code> event we can use to highlight the d3scatter data points appropriately.</p>
+<p>We haven’t yet specified what group this handle should belong to. In
+fact, we won’t know the group until we receive a value via
+<code>renderValue</code> (and in some circumstances,
+<code>renderValue</code> might be called multiple times with different
+groups).</p>
+<p>But we do have both <code>scatter</code> and <code>sel_handle</code>
+objects at this point, so we can wire them together. The d3scatter
+object has a <code>"brush"</code> event that we can use to update the
+Crosstalk selection handle, and the Crosstalk selection handle has a
+<code>"change"</code> event we can use to highlight the d3scatter data
+points appropriately.</p>
 <pre class="javascript"><code>scatter.on(&quot;brush&quot;, function(keys) {
   sel_handle.set(keys);
 });
@@ -590,9 +799,18 @@ sel_handle.on(&quot;change&quot;, function(e) {
   }
   scatter.selection(e.value);
 });</code></pre>
-<p>With these relationships established inside of <code>factory</code>, we can now move on to <code>renderValue</code>. The only modifications we need are to pass the key data to the d3scatter object, and update the group of the <code>sel_handle</code> object.</p>
-<p>The <code>SelectionHandle</code> change event provides a <code>value</code> property that indicates the currently selected keys as a string array; or, <code>value</code> can be <code>null</code> to indicate that no selection is active.</p>
-<p>Notice the comparison <code>e.sender !== sel_handle</code>; this lets us distinguish between selection operations initiated by this widget instance versus by other instances, and to clear any active selection boundaries in the latter case.</p>
+<p>With these relationships established inside of <code>factory</code>,
+we can now move on to <code>renderValue</code>. The only modifications
+we need are to pass the key data to the d3scatter object, and update the
+group of the <code>sel_handle</code> object.</p>
+<p>The <code>SelectionHandle</code> change event provides a
+<code>value</code> property that indicates the currently selected keys
+as a string array; or, <code>value</code> can be <code>null</code> to
+indicate that no selection is active.</p>
+<p>Notice the comparison <code>e.sender !== sel_handle</code>; this lets
+us distinguish between selection operations initiated by this widget
+instance versus by other instances, and to clear any active selection
+boundaries in the latter case.</p>
 <p>The fully selection-enabled binding code is here:</p>
 <pre class="javascript"><code>HTMLWidgets.widget({
 
@@ -664,13 +882,59 @@ sel_handle.on(&quot;change&quot;, function(e) {
 
 // add bootstrap table styles to pandoc tables
 function bootstrapStylePandocTables() {
-  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
 }
 $(document).ready(function () {
   bootstrapStylePandocTables();
 });
 
 
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
 </script>
 
 <!-- dynamically load mathjax for compatibility with self-contained -->

@@ -45,7 +45,8 @@ Suggests:
     testthat (>= 2.1.0),
     sass,
     bslib
+Config/Needs/website: jcheng5/d3scatter, DT, leaflet, rmarkdown
 URL: https://rstudio.github.io/crosstalk/, https://github.com/rstudio/crosstalk
 BugReports: https://github.com/rstudio/crosstalk/issues
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.2
 Encoding: UTF-8

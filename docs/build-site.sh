@@ -1,8 +1,24 @@
 #!/bin/bash
 
-set -e
+set -eu -o pipefail
 
-(cd .. && node node_modules/.bin/jsdoc2md javascript/src/filter.js | sed -e 's/ --- / ------------- /g' | sed -e 's/exports.FilterHandle/crosstalk.FilterHandle/' > docs/filter.Rmd)
-(cd .. && node node_modules/.bin/jsdoc2md javascript/src/selection.js | sed -e 's/ --- / ------------- /g' | sed -e 's/exports.SelectionHandle/crosstalk.SelectionHandle/' > docs/selection.Rmd)
+(cd .. && npm run jsdoc2md)
 
-RSTUDIO_PANDOC=/Applications/RStudio.app/Contents/MacOS/pandoc R --slave -e 'set.seed(100); rmarkdown::clean_site("."); rmarkdown::render_site(".")'
+cat filter.Rmd \
+  | sed -e 's/ --- / ------------- /g' \
+  | sed -e 's/exports.FilterHandle/crosstalk.FilterHandle/' \
+  > filter.out.Rmd
+
+cat selection.Rmd \
+  | sed -e 's/ --- / ------------- /g' \
+  | sed -e 's/exports.SelectionHandle/crosstalk.SelectionHandle/' \
+  > selection.out.Rmd
+
+mv filter.out.Rmd filter.Rmd
+mv selection.out.Rmd selection.Rmd
+
+R --vanilla --no-echo << 'EOF'
+set.seed(100)
+rmarkdown::clean_site(".", preview = FALSE)
+rmarkdown::render_site(".")
+EOF

@@ -96,7 +96,7 @@ filter.
 
 | Param | Type | Description |
 | ------------- | ------------- | ------------- |
-| keys | <code>Array.&lt;string&gt;</code> | Empty array, or array of keys. To clear the   filter, don't pass an empty array; instead, use the   [clear](#FilterHandle+clear) method. |
+| keys | <code>[ &#x27;Array&#x27; ].&lt;string&gt;</code> | Empty array, or array of keys. To clear the   filter, don't pass an empty array; instead, use the   [clear](#FilterHandle+clear) method. |
 | [extraInfo] | <code>Object</code> | Extra properties to be included on the event   object that's passed to listeners (in addition to any options that were   passed into the `FilterHandle` constructor). |
 
 <a name="FilterHandle+on"></a>

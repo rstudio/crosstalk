@@ -8,7 +8,10 @@
   },
   "scripts": {
     "test": "grunt test",
-    "coverage": "./node_modules/.bin/babel-node node_modules/.bin/babel-istanbul cover node_modules/.bin/_mocha --report html --check-coverage -- --timeout 5000 -u tdd --recursive javascript/tests/"
+    "coverage": "./node_modules/.bin/babel-node node_modules/.bin/babel-istanbul cover node_modules/.bin/_mocha --report html --check-coverage -- --timeout 5000 -u tdd --recursive javascript/tests/",
+    "jsdoc2md": "npm run jsdoc:filter && npm run jsdoc:selection",
+    "jsdoc:filter": "jsdoc2md javascript/src/filter.js > docs/filter.Rmd",
+    "jsdoc:selection": "jsdoc2md javascript/src/selection.js > docs/selection.Rmd"
   },
   "repository": {
     "type": "git",
@@ -40,6 +43,9 @@
   },
   "dependencies": {
     "babel-core": "^6.26.0"
+  },
+  "engine": {
+    "node": "^22.0.0"
   },
   "files": []
 }

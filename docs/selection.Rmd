@@ -78,7 +78,7 @@ this one).
 
 | Param | Type | Description |
 | ------------- | ------------- | ------------- |
-| selectedKeys | <code>Array.&lt;string&gt;</code> | Falsy, empty array, or array of keys (see   [value](#SelectionHandle+value)). |
+| selectedKeys | <code>[ &#x27;Array&#x27; ].&lt;string&gt;</code> | Falsy, empty array, or array of keys (see   [value](#SelectionHandle+value)). |
 | [extraInfo] | <code>Object</code> | Extra properties to be included on the event   object that's passed to listeners (in addition to any options that were   passed into the `SelectionHandle` constructor). |
 
 <a name="SelectionHandle+clear"></a>

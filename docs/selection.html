@@ -1,35 +1,50 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <head>
 
 <meta charset="utf-8" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
 
 
-<title></title>
+<title>selection.knit</title>
 
-<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
 
 <style type="text/css">code{white-space: pre;}</style>
-<style type="text/css">
-  pre:not([class]) {
-    background-color: white;
-  }
-</style>
 <script type="text/javascript">
 if (window.hljs) {
   hljs.configure({languages: []});
@@ -42,37 +57,11 @@ if (window.hljs) {
 
 
 
-<style type="text/css">
-h1 {
-  font-size: 34px;
-}
-h1.title {
-  font-size: 38px;
-}
-h2 {
-  font-size: 30px;
-}
-h3 {
-  font-size: 24px;
-}
-h4 {
-  font-size: 18px;
-}
-h5 {
-  font-size: 16px;
-}
-h6 {
-  font-size: 12px;
-}
-.table th:not([align]) {
-  text-align: left;
-}
-</style>
 
 
-</head>
 
-<body>
+
+
 
 <style type = "text/css">
 .main-container {
@@ -80,58 +69,71 @@ h6 {
   margin-left: auto;
   margin-right: auto;
 }
-code {
-  color: inherit;
-  background-color: rgba(0, 0, 0, 0.04);
-}
 img {
   max-width:100%;
-  height: auto;
 }
 .tabbed-pane {
   padding-top: 12px;
 }
+.html-widget {
+  margin-bottom: 20px;
+}
 button.code-folding-btn:focus {
   outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
 }
 </style>
 
 
 <style type="text/css">
-/* padding for bootstrap navbar */
-body {
-  padding-top: 51px;
-  padding-bottom: 40px;
+.dropdown-submenu {
+  position: relative;
 }
-/* offset scroll position for anchor links (for fixed navbar)  */
-.section h1 {
-  padding-top: 56px;
-  margin-top: -56px;
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
 }
-
-.section h2 {
-  padding-top: 56px;
-  margin-top: -56px;
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
 }
-.section h3 {
-  padding-top: 56px;
-  margin-top: -56px;
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
 }
-.section h4 {
-  padding-top: 56px;
-  margin-top: -56px;
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
 }
-.section h5 {
-  padding-top: 56px;
-  margin-top: -56px;
+.dropdown-submenu.pull-left {
+  float: none;
 }
-.section h6 {
-  padding-top: 56px;
-  margin-top: -56px;
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
 }
 </style>
 
-<script>
+<script type="text/javascript">
 // manage active state of menu based on current page
 $(document).ready(function () {
   // active menu anchor
@@ -141,27 +143,91 @@ $(document).ready(function () {
     href = "index.html";
   var menuAnchor = $('a[href="' + href + '"]');
 
-  // mark it active
-  menuAnchor.parent().addClass('active');
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
 
-  // if it's got a parent navbar menu mark it active as well
-  menuAnchor.closest('li.dropdown').addClass('active');
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
 });
 </script>
-
-
-<div class="container-fluid main-container">
 
 <!-- tabsets -->
-<script>
-$(document).ready(function () {
-  window.buildTabsets("TOC");
-});
-</script>
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
 
 <!-- code folding -->
 
 
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
 
 
 
@@ -169,7 +235,7 @@ $(document).ready(function () {
 <div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -194,7 +260,7 @@ $(document).ready(function () {
   <a href="widgets.html">Compatible widgets</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Reference (JS)
      
     <span class="caret"></span>
@@ -221,7 +287,7 @@ $(document).ready(function () {
   </div><!--/.container -->
 </div><!--/.navbar -->
 
-<div class="fluid-row" id="header">
+<div id="header">
 
 
 
@@ -232,38 +298,50 @@ $(document).ready(function () {
 <p><a name="SelectionHandle"></a></p>
 <div id="selectionhandle" class="section level2">
 <h2>SelectionHandle</h2>
-<p>Use this class to read and write (and listen for changes to) the selection for a Crosstalk group. This is intended to be used for linked brushing.</p>
-<p>If two (or more) <code>SelectionHandle</code> instances in the same webpage share the same group name, they will share the same state. Setting the selection using one <code>SelectionHandle</code> instance will result in the <code>value</code> property instantly changing across the others, and <code>&quot;change&quot;</code> event listeners on all instances (including the one that initiated the sending) will fire.</p>
+<p>Use this class to read and write (and listen for changes to) the
+selection for a Crosstalk group. This is intended to be used for linked
+brushing.</p>
+<p>If two (or more) <code>SelectionHandle</code> instances in the same
+webpage share the same group name, they will share the same state.
+Setting the selection using one <code>SelectionHandle</code> instance
+will result in the <code>value</code> property instantly changing across
+the others, and <code>"change"</code> event listeners on all instances
+(including the one that initiated the sending) will fire.</p>
 <p><strong>Kind</strong>: global class</p>
 <ul>
 <li><a href="#SelectionHandle">SelectionHandle</a>
 <ul>
-<li><a href="#new_SelectionHandle_new">new crosstalk.SelectionHandle([group], [extraInfo])</a></li>
+<li><a href="#new_SelectionHandle_new">new
+crosstalk.SelectionHandle([group], [extraInfo])</a></li>
 <li><em>instance</em>
 <ul>
 <li><a href="#SelectionHandle+value">.value</a></li>
 <li><a href="#SelectionHandle+setGroup">.setGroup(group)</a></li>
-<li><a href="#SelectionHandle+set">.set(selectedKeys, [extraInfo])</a></li>
+<li><a href="#SelectionHandle+set">.set(selectedKeys,
+[extraInfo])</a></li>
 <li><a href="#SelectionHandle+clear">.clear([extraInfo])</a></li>
-<li><a href="#SelectionHandle+on">.on(eventType, listener)</a> ⇒ <code>string</code></li>
+<li><a href="#SelectionHandle+on">.on(eventType, listener)</a> ⇒
+<code>string</code></li>
 <li><a href="#SelectionHandle+off">.off(eventType, listener)</a></li>
 <li><a href="#SelectionHandle+close">.close()</a></li>
 <li><a href="#SelectionHandle+event_change">“change”</a></li>
 </ul></li>
 <li><em>inner</em>
 <ul>
-<li><a href="#SelectionHandle..listener">~listener</a> : <code>function</code></li>
+<li><a href="#SelectionHandle..listener">~listener</a> :
+<code>function</code></li>
 </ul></li>
 </ul></li>
 </ul>
 <p><a name="new_SelectionHandle_new"></a></p>
-<div id="new-crosstalk.selectionhandlegroup-extrainfo" class="section level3">
+<div id="new-crosstalk.selectionhandlegroup-extrainfo"
+class="section level3">
 <h3>new crosstalk.SelectionHandle([group], [extraInfo])</h3>
-<table style="width:58%;">
+<table>
 <colgroup>
-<col width="19%" />
-<col width="19%" />
-<col width="19%" />
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -276,12 +354,15 @@ $(document).ready(function () {
 <tr class="odd">
 <td>[group]</td>
 <td><code>string</code></td>
-<td>The name of the Crosstalk group, or if none, null or undefined (or any other falsy value). This can be changed later via the <a href="#setGroup">SelectionHandle#setGroup</a> method.</td>
+<td>The name of the Crosstalk group, or if none, null or undefined (or
+any other falsy value). This can be changed later via the <a
+href="#setGroup">SelectionHandle#setGroup</a> method.</td>
 </tr>
 <tr class="even">
 <td>[extraInfo]</td>
 <td><code>Object</code></td>
-<td>An object whose properties will be copied to the event object whenever an event is emitted.</td>
+<td>An object whose properties will be copied to the event object
+whenever an event is emitted.</td>
 </tr>
 </tbody>
 </table>
@@ -289,25 +370,37 @@ $(document).ready(function () {
 </div>
 <div id="selectionhandle.value" class="section level3">
 <h3>selectionHandle.value</h3>
-<p>Retrieves the current selection for the group represented by this <code>SelectionHandle</code>.</p>
+<p>Retrieves the current selection for the group represented by this
+<code>SelectionHandle</code>.</p>
 <ul>
 <li>If no selection is active, then this value will be falsy.</li>
-<li>If a selection is active, but no data points are selected, then this value will be an empty array.</li>
-<li>If a selection is active, and data points are selected, then the keys of the selected data points will be present in the array.</li>
+<li>If a selection is active, but no data points are selected, then this
+value will be an empty array.</li>
+<li>If a selection is active, and data points are selected, then the
+keys of the selected data points will be present in the array.</li>
 </ul>
-<p><strong>Kind</strong>: instance property of <a href="#SelectionHandle"><code>SelectionHandle</code></a><br />
+<p><strong>Kind</strong>: instance property of <a
+href="#SelectionHandle"><code>SelectionHandle</code></a><br />
 <a name="SelectionHandle+setGroup"></a></p>
 </div>
 <div id="selectionhandle.setgroupgroup" class="section level3">
 <h3>selectionHandle.setGroup(group)</h3>
-<p>Changes the Crosstalk group membership of this SelectionHandle. The group being switched away from (if any) will not have its selection value modified as a result of calling <code>setGroup</code>, even if this handle was the most recent handle to set the selection of the group.</p>
-<p>The group being switched to (if any) will also not have its selection value modified as a result of calling <code>setGroup</code>. If you want to set the selection value of the new group, call <code>set</code> explicitly.</p>
-<p><strong>Kind</strong>: instance method of <a href="#SelectionHandle"><code>SelectionHandle</code></a></p>
-<table style="width:58%;">
+<p>Changes the Crosstalk group membership of this SelectionHandle. The
+group being switched away from (if any) will not have its selection
+value modified as a result of calling <code>setGroup</code>, even if
+this handle was the most recent handle to set the selection of the
+group.</p>
+<p>The group being switched to (if any) will also not have its selection
+value modified as a result of calling <code>setGroup</code>. If you want
+to set the selection value of the new group, call <code>set</code>
+explicitly.</p>
+<p><strong>Kind</strong>: instance method of <a
+href="#SelectionHandle"><code>SelectionHandle</code></a></p>
+<table>
 <colgroup>
-<col width="19%" />
-<col width="19%" />
-<col width="19%" />
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -320,22 +413,28 @@ $(document).ready(function () {
 <tr class="odd">
 <td>group</td>
 <td><code>string</code></td>
-<td>The name of the Crosstalk group, or null (or undefined) to clear the group.</td>
+<td>The name of the Crosstalk group, or null (or undefined) to clear the
+group.</td>
 </tr>
 </tbody>
 </table>
 <p><a name="SelectionHandle+set"></a></p>
 </div>
-<div id="selectionhandle.setselectedkeys-extrainfo" class="section level3">
+<div id="selectionhandle.setselectedkeys-extrainfo"
+class="section level3">
 <h3>selectionHandle.set(selectedKeys, [extraInfo])</h3>
-<p>Overwrites the current selection for the group, and raises the <code>&quot;change&quot;</code> event among all of the group’s ’<code>SelectionHandle</code> instances (including this one).</p>
-<p><strong>Kind</strong>: instance method of <a href="#SelectionHandle"><code>SelectionHandle</code></a><br />
-<strong>Emits</strong>: <a href="#SelectionHandle+event_change"><code>change</code></a></p>
-<table style="width:58%;">
+<p>Overwrites the current selection for the group, and raises the
+<code>"change"</code> event among all of the group’s
+’<code>SelectionHandle</code> instances (including this one).</p>
+<p><strong>Kind</strong>: instance method of <a
+href="#SelectionHandle"><code>SelectionHandle</code></a><br />
+<strong>Emits</strong>: <a
+href="#SelectionHandle+event_change"><code>change</code></a></p>
+<table>
 <colgroup>
-<col width="19%" />
-<col width="19%" />
-<col width="19%" />
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -347,13 +446,16 @@ $(document).ready(function () {
 <tbody>
 <tr class="odd">
 <td>selectedKeys</td>
-<td><code>Array.&lt;string&gt;</code></td>
-<td>Falsy, empty array, or array of keys (see <a href="#SelectionHandle+value">value</a>).</td>
+<td><code>[ 'Array' ].&lt;string&gt;</code></td>
+<td>Falsy, empty array, or array of keys (see <a
+href="#SelectionHandle+value">value</a>).</td>
 </tr>
 <tr class="even">
 <td>[extraInfo]</td>
 <td><code>Object</code></td>
-<td>Extra properties to be included on the event object that’s passed to listeners (in addition to any options that were passed into the <code>SelectionHandle</code> constructor).</td>
+<td>Extra properties to be included on the event object that’s passed to
+listeners (in addition to any options that were passed into the
+<code>SelectionHandle</code> constructor).</td>
 </tr>
 </tbody>
 </table>
@@ -361,14 +463,18 @@ $(document).ready(function () {
 </div>
 <div id="selectionhandle.clearextrainfo" class="section level3">
 <h3>selectionHandle.clear([extraInfo])</h3>
-<p>Overwrites the current selection for the group, and raises the <code>&quot;change&quot;</code> event among all of the group’s ’<code>SelectionHandle</code> instances (including this one).</p>
-<p><strong>Kind</strong>: instance method of <a href="#SelectionHandle"><code>SelectionHandle</code></a><br />
-<strong>Emits</strong>: <a href="#SelectionHandle+event_change"><code>change</code></a></p>
-<table style="width:58%;">
+<p>Overwrites the current selection for the group, and raises the
+<code>"change"</code> event among all of the group’s
+’<code>SelectionHandle</code> instances (including this one).</p>
+<p><strong>Kind</strong>: instance method of <a
+href="#SelectionHandle"><code>SelectionHandle</code></a><br />
+<strong>Emits</strong>: <a
+href="#SelectionHandle+event_change"><code>change</code></a></p>
+<table>
 <colgroup>
-<col width="19%" />
-<col width="19%" />
-<col width="19%" />
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -381,22 +487,27 @@ $(document).ready(function () {
 <tr class="odd">
 <td>[extraInfo]</td>
 <td><code>Object</code></td>
-<td>Extra properties to be included on the event object that’s passed to listeners (in addition to any that were passed into the <code>SelectionHandle</code> constructor).</td>
+<td>Extra properties to be included on the event object that’s passed to
+listeners (in addition to any that were passed into the
+<code>SelectionHandle</code> constructor).</td>
 </tr>
 </tbody>
 </table>
 <p><a name="SelectionHandle+on"></a></p>
 </div>
-<div id="selectionhandle.oneventtype-listener-string" class="section level3">
+<div id="selectionhandle.oneventtype-listener-string"
+class="section level3">
 <h3>selectionHandle.on(eventType, listener) ⇒ <code>string</code></h3>
 <p>Subscribes to events on this <code>SelectionHandle</code>.</p>
-<p><strong>Kind</strong>: instance method of <a href="#SelectionHandle"><code>SelectionHandle</code></a><br />
-<strong>Returns</strong>: <code>string</code> - - A token to pass to <a href="#SelectionHandle+off">off</a> to cancel this subscription.</p>
-<table style="width:58%;">
+<p><strong>Kind</strong>: instance method of <a
+href="#SelectionHandle"><code>SelectionHandle</code></a><br />
+<strong>Returns</strong>: <code>string</code> - - A token to pass to <a
+href="#SelectionHandle+off">off</a> to cancel this subscription.</p>
+<table>
 <colgroup>
-<col width="19%" />
-<col width="19%" />
-<col width="19%" />
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -409,12 +520,14 @@ $(document).ready(function () {
 <tr class="odd">
 <td>eventType</td>
 <td><code>string</code></td>
-<td>Indicates the type of events to listen to. Currently, only <code>&quot;change&quot;</code> is supported.</td>
+<td>Indicates the type of events to listen to. Currently, only
+<code>"change"</code> is supported.</td>
 </tr>
 <tr class="even">
 <td>listener</td>
 <td><a href="#SelectionHandle..listener"><code>listener</code></a></td>
-<td>The callback function that will be invoked when the event occurs.</td>
+<td>The callback function that will be invoked when the event
+occurs.</td>
 </tr>
 </tbody>
 </table>
@@ -422,13 +535,15 @@ $(document).ready(function () {
 </div>
 <div id="selectionhandle.offeventtype-listener" class="section level3">
 <h3>selectionHandle.off(eventType, listener)</h3>
-<p>Cancels event subscriptions created by <a href="#SelectionHandle+on">on</a>.</p>
-<p><strong>Kind</strong>: instance method of <a href="#SelectionHandle"><code>SelectionHandle</code></a></p>
-<table style="width:58%;">
+<p>Cancels event subscriptions created by <a
+href="#SelectionHandle+on">on</a>.</p>
+<p><strong>Kind</strong>: instance method of <a
+href="#SelectionHandle"><code>SelectionHandle</code></a></p>
+<table>
 <colgroup>
-<col width="19%" />
-<col width="19%" />
-<col width="19%" />
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -445,8 +560,11 @@ $(document).ready(function () {
 </tr>
 <tr class="even">
 <td>listener</td>
-<td><code>string</code> | <a href="#SelectionHandle..listener"><code>listener</code></a></td>
-<td>Either the callback function previously passed into <a href="#SelectionHandle+on">on</a>, or the string that was returned from <a href="#SelectionHandle+on">on</a>.</td>
+<td><code>string</code> | <a
+href="#SelectionHandle..listener"><code>listener</code></a></td>
+<td>Either the callback function previously passed into <a
+href="#SelectionHandle+on">on</a>, or the string that was returned from
+<a href="#SelectionHandle+on">on</a>.</td>
 </tr>
 </tbody>
 </table>
@@ -456,18 +574,20 @@ $(document).ready(function () {
 <h3>selectionHandle.close()</h3>
 <p>Shuts down the <code>SelectionHandle</code> object.</p>
 <p>Removes all event listeners that were added through this handle.</p>
-<p><strong>Kind</strong>: instance method of <a href="#SelectionHandle"><code>SelectionHandle</code></a><br />
+<p><strong>Kind</strong>: instance method of <a
+href="#SelectionHandle"><code>SelectionHandle</code></a><br />
 <a name="SelectionHandle+event_change"></a></p>
 </div>
 <div id="change" class="section level3">
 <h3>“change”</h3>
-<p><strong>Kind</strong>: event emitted by <a href="#SelectionHandle"><code>SelectionHandle</code></a><br />
+<p><strong>Kind</strong>: event emitted by <a
+href="#SelectionHandle"><code>SelectionHandle</code></a><br />
 <strong>Properties</strong></p>
-<table style="width:58%;">
+<table>
 <colgroup>
-<col width="19%" />
-<col width="19%" />
-<col width="19%" />
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -480,7 +600,8 @@ $(document).ready(function () {
 <tr class="odd">
 <td>value</td>
 <td><code>object</code></td>
-<td>The new value of the selection, or <code>undefined</code> if no selection is active.</td>
+<td>The new value of the selection, or <code>undefined</code> if no
+selection is active.</td>
 </tr>
 <tr class="even">
 <td>oldValue</td>
@@ -490,7 +611,8 @@ $(document).ready(function () {
 <tr class="odd">
 <td>sender</td>
 <td><a href="#SelectionHandle"><code>SelectionHandle</code></a></td>
-<td>The <code>SelectionHandle</code> instance that changed the value.</td>
+<td>The <code>SelectionHandle</code> instance that changed the
+value.</td>
 </tr>
 </tbody>
 </table>
@@ -498,12 +620,13 @@ $(document).ready(function () {
 </div>
 <div id="selectionhandlelistener-function" class="section level3">
 <h3>SelectionHandle~listener : <code>function</code></h3>
-<p><strong>Kind</strong>: inner typedef of <a href="#SelectionHandle"><code>SelectionHandle</code></a></p>
-<table style="width:58%;">
+<p><strong>Kind</strong>: inner typedef of <a
+href="#SelectionHandle"><code>SelectionHandle</code></a></p>
+<table>
 <colgroup>
-<col width="19%" />
-<col width="19%" />
-<col width="19%" />
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -516,7 +639,12 @@ $(document).ready(function () {
 <tr class="odd">
 <td>event</td>
 <td><code>Object</code></td>
-<td>An object containing details of the event. For <code>&quot;change&quot;</code> events, this includes the properties <code>value</code> (the new value of the selection, or <code>undefined</code> if no selection is active), <code>oldValue</code> (the previous value of the selection), and <code>sender</code> (the <code>SelectionHandle</code> instance that made the change).</td>
+<td>An object containing details of the event. For <code>"change"</code>
+events, this includes the properties <code>value</code> (the new value
+of the selection, or <code>undefined</code> if no selection is active),
+<code>oldValue</code> (the previous value of the selection), and
+<code>sender</code> (the <code>SelectionHandle</code> instance that made
+the change).</td>
 </tr>
 </tbody>
 </table>
@@ -539,7 +667,7 @@ $(document).ready(function () {
 
 // add bootstrap table styles to pandoc tables
 function bootstrapStylePandocTables() {
-  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
 }
 $(document).ready(function () {
   bootstrapStylePandocTables();
@@ -547,6 +675,23 @@ $(document).ready(function () {
 
 
 </script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script>

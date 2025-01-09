@@ -3,10 +3,10 @@
 ## FilterHandle
 Use this class to contribute to, and listen for changes to, the filter set
 for the given group of widgets. Filter input controls should create one
-`FilterHandle` and only call [set](#FilterHandle+set). Output widgets that
-wish to displayed filtered data should create one `FilterHandle` and use
-the [filteredKeys](#FilterHandle+filteredKeys) property and listen for change
-events.
+`FilterHandle` and only call [module:crosstalk.FilterHandle#set](module:crosstalk.FilterHandle#set).
+Output widgets that wish to displayed filtered data should create one
+`FilterHandle` and use the [module:crosstalk.FilterHandle#filteredKeys](module:crosstalk.FilterHandle#filteredKeys)
+property and listen for change events.
 
 If two (or more) `FilterHandle` instances in the same webpage share the
 same group name, they will contribute to a single "filter set". Each
@@ -96,7 +96,7 @@ filter.
 
 | Param | Type | Description |
 | ------------- | ------------- | ------------- |
-| keys | <code>Array.&lt;string&gt;</code> | Empty array, or array of keys. To clear the   filter, don't pass an empty array; instead, use the   [clear](#FilterHandle+clear) method. |
+| keys | <code>[ &#x27;Array&#x27; ].&lt;string&gt;</code> | Empty array, or array of keys. To clear the   filter, don't pass an empty array; instead, use the   [clear](#FilterHandle+clear) method. |
 | [extraInfo] | <code>Object</code> | Extra properties to be included on the event   object that's passed to listeners (in addition to any options that were   passed into the `FilterHandle` constructor). |
 
 <a name="FilterHandle+on"></a>

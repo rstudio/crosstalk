@@ -1,35 +1,50 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <head>
 
 <meta charset="utf-8" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
 
 
 <title>List of compatible HTML widgets</title>
 
-<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
 
 <style type="text/css">code{white-space: pre;}</style>
-<style type="text/css">
-  pre:not([class]) {
-    background-color: white;
-  }
-</style>
 <script type="text/javascript">
 if (window.hljs) {
   hljs.configure({languages: []});
@@ -42,37 +57,11 @@ if (window.hljs) {
 
 
 
-<style type="text/css">
-h1 {
-  font-size: 34px;
-}
-h1.title {
-  font-size: 38px;
-}
-h2 {
-  font-size: 30px;
-}
-h3 {
-  font-size: 24px;
-}
-h4 {
-  font-size: 18px;
-}
-h5 {
-  font-size: 16px;
-}
-h6 {
-  font-size: 12px;
-}
-.table th:not([align]) {
-  text-align: left;
-}
-</style>
 
 
-</head>
 
-<body>
+
+
 
 <style type = "text/css">
 .main-container {
@@ -80,58 +69,71 @@ h6 {
   margin-left: auto;
   margin-right: auto;
 }
-code {
-  color: inherit;
-  background-color: rgba(0, 0, 0, 0.04);
-}
 img {
   max-width:100%;
-  height: auto;
 }
 .tabbed-pane {
   padding-top: 12px;
 }
+.html-widget {
+  margin-bottom: 20px;
+}
 button.code-folding-btn:focus {
   outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
 }
 </style>
 
 
 <style type="text/css">
-/* padding for bootstrap navbar */
-body {
-  padding-top: 51px;
-  padding-bottom: 40px;
+.dropdown-submenu {
+  position: relative;
 }
-/* offset scroll position for anchor links (for fixed navbar)  */
-.section h1 {
-  padding-top: 56px;
-  margin-top: -56px;
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
 }
-
-.section h2 {
-  padding-top: 56px;
-  margin-top: -56px;
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
 }
-.section h3 {
-  padding-top: 56px;
-  margin-top: -56px;
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
 }
-.section h4 {
-  padding-top: 56px;
-  margin-top: -56px;
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
 }
-.section h5 {
-  padding-top: 56px;
-  margin-top: -56px;
+.dropdown-submenu.pull-left {
+  float: none;
 }
-.section h6 {
-  padding-top: 56px;
-  margin-top: -56px;
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
 }
 </style>
 
-<script>
+<script type="text/javascript">
 // manage active state of menu based on current page
 $(document).ready(function () {
   // active menu anchor
@@ -141,27 +143,91 @@ $(document).ready(function () {
     href = "index.html";
   var menuAnchor = $('a[href="' + href + '"]');
 
-  // mark it active
-  menuAnchor.parent().addClass('active');
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
 
-  // if it's got a parent navbar menu mark it active as well
-  menuAnchor.closest('li.dropdown').addClass('active');
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
 });
 </script>
-
-
-<div class="container-fluid main-container">
 
 <!-- tabsets -->
-<script>
-$(document).ready(function () {
-  window.buildTabsets("TOC");
-});
-</script>
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
 
 <!-- code folding -->
 
 
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
 
 
 
@@ -169,7 +235,7 @@ $(document).ready(function () {
 <div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -194,7 +260,7 @@ $(document).ready(function () {
   <a href="widgets.html">Compatible widgets</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Reference (JS)
      
     <span class="caret"></span>
@@ -221,7 +287,7 @@ $(document).ready(function () {
   </div><!--/.container -->
 </div><!--/.navbar -->
 
-<div class="fluid-row" id="header">
+<div id="header">
 
 
 
@@ -230,8 +296,11 @@ $(document).ready(function () {
 </div>
 
 
-<p>This page lists some HTML widgets that are compatible with Crosstalk.</p>
-<p>(To add a widget, please submit a PR with modifications to <a href="https://github.com/rstudio/crosstalk/edit/master/docs/widgets.Rmd">this page</a>.)</p>
+<p>This page lists some HTML widgets that are compatible with
+Crosstalk.</p>
+<p>(To add a widget, please submit a PR with modifications to <a
+href="https://github.com/rstudio/crosstalk/edit/main/docs/widgets.Rmd">this
+page</a>.)</p>
 <style type="text/css">
 img.widget-thumbnail {
   width: 225px;
@@ -247,44 +316,99 @@ img.widget-thumbnail {
 }
 </style>
 <hr />
-<p><a href="https://cpsievert.github.io/plotly_book/"><img src="thumbnails/ropensci-plotly.png" alt="Plotly screenshot" class="widget-thumbnail" /></a></p>
+<p><a href="https://cpsievert.github.io/plotly_book/"><img
+src="thumbnails/ropensci-plotly.png" class="widget-thumbnail"
+alt="Plotly screenshot" /></a></p>
 <div id="plotly" class="section level3">
 <h3><a href="https://cpsievert.github.io/plotly_book/">Plotly</a></h3>
-<p><strong>Author:</strong> <a href="https://github.com/cpsievert">Carson Sievert</a></p>
-<p>Plotly is a general purpose plotting library that outputs interactive web graphics using <a href="https://plot.ly/javascript/">plotly.js</a>.</p>
-<pre class="r"><code>devtools::install_github(&quot;ropensci/plotly&quot;)</code></pre>
+<p><strong>Author:</strong> <a
+href="https://github.com/cpsievert">Carson Sievert</a></p>
+<p>Plotly is a general purpose plotting library that outputs interactive
+web graphics using <a
+href="https://plot.ly/javascript/">plotly.js</a>.</p>
+<pre class="r"><code>install.packages(&quot;plotly&quot;)</code></pre>
 <hr />
-<p><a href="https://rstudio.github.io/leaflet/"><img src="thumbnails/rstudio-leaflet.png" alt="Leaflet screenshot" class="widget-thumbnail" /></a></p>
+<p><a href="https://rstudio.github.io/leaflet/"><img
+src="thumbnails/rstudio-leaflet.png" class="widget-thumbnail"
+alt="Leaflet screenshot" /></a></p>
 </div>
 <div id="leaflet" class="section level3">
 <h3><a href="https://rstudio.github.io/leaflet/">Leaflet</a></h3>
-<p><strong>Author:</strong> <a href="https://github.com/rstudio">RStudio</a></p>
-<p>Leaflet lets you easily generate interactive maps using R. It is a wrapper for the very popular <a href="http://leafletjs.com/">Leaflet JavaScript library</a> by <a href="http://agafonkin.com/en/">Vladamir Agafonkin</a>.</p>
-<pre class="r"><code>devtools::install_github(&quot;rstudio/leaflet&quot;)</code></pre>
+<p><strong>Author:</strong> <a
+href="https://github.com/rstudio">RStudio</a></p>
+<p>Leaflet lets you easily generate interactive maps using R. It is a
+wrapper for the very popular <a href="http://leafletjs.com/">Leaflet
+JavaScript library</a> by <a href="http://agafonkin.com/en/">Vladamir
+Agafonkin</a>.</p>
+<pre class="r"><code>install.packages(&quot;leaflet&quot;)</code></pre>
 <hr />
-<p><a href="https://rstudio.github.io/DT/"><img src="thumbnails/rstudio-DT.png" alt="DT screenshot" class="widget-thumbnail" /></a></p>
+<p><a href="https://rstudio.github.io/DT/"><img
+src="thumbnails/rstudio-DT.png" class="widget-thumbnail"
+alt="DT screenshot" /></a></p>
 </div>
 <div id="dt" class="section level3">
 <h3><a href="https://rstudio.github.io/DT/">DT</a></h3>
-<p><strong>Author:</strong> <a href="https://github.com/rstudio">RStudio</a></p>
-<p>DT is a highly customizable data table library. It wraps the <a href="https://datatables.net/">DataTables plug-in for jQuery</a>.</p>
-<pre class="r"><code>devtools::install_github(&quot;rstudio/DT&quot;)</code></pre>
+<p><strong>Author:</strong> <a
+href="https://github.com/rstudio">RStudio</a></p>
+<p>DT is a highly customizable data table library. It wraps the <a
+href="https://datatables.net/">DataTables plug-in for jQuery</a>.</p>
+<pre class="r"><code>install.packages(&quot;DT&quot;)</code></pre>
 <hr />
-<p><a href="https://kent37.github.io/summarywidget/"><img src="thumbnails/summarywidget.png" alt="SummaryWidget screenshot" class="widget-thumbnail" /></a></p>
+<p><a href="https://kent37.github.io/summarywidget/"><img
+src="thumbnails/summarywidget.png" class="widget-thumbnail"
+alt="SummaryWidget screenshot" /></a></p>
 </div>
 <div id="summarywidget" class="section level3">
-<h3><a href="https://kent37.github.io/summarywidget/">SummaryWidget</a></h3>
-<p><strong>Author:</strong> <a href="https://github.com/kent37">Kent Johnson</a></p>
-<p>A SummaryWidget displays a single summary statistic that updates when the Crosstalk selection changes. A SummaryWidget displays the count, sum or mean of one column of selected data.</p>
+<h3><a
+href="https://kent37.github.io/summarywidget/">SummaryWidget</a></h3>
+<p><strong>Author:</strong> <a href="https://github.com/kent37">Kent
+Johnson</a></p>
+<p>A SummaryWidget displays a single summary statistic that updates when
+the Crosstalk selection changes. A SummaryWidget displays the count, sum
+or mean of one column of selected data.</p>
 <pre class="r"><code>devtools::install_github(&quot;kent37/summarywidget&quot;)</code></pre>
 <hr />
-<p><a href="https://r-forge.r-project.org/projects/rgl/"><img src="thumbnails/rgl.png" alt="rgl screenshot" class="widget-thumbnail" /></a></p>
+<p><a href="https://dmurdoch.github.io/rgl/"><img
+src="thumbnails/rgl.png" class="widget-thumbnail"
+alt="rgl screenshot" /></a></p>
 </div>
 <div id="rgl" class="section level3">
-<h3><a href="https://r-forge.r-project.org/projects/rgl/">rgl</a></h3>
+<h3><a href="https://dmurdoch.github.io/rgl/">rgl</a></h3>
 <p><strong>Author:</strong> Duncan Murdoch and Daniel Adler</p>
-<p>rgl is a 3D visualization system based on OpenGL. It provides a medium to high level interface for use in R, currently modelled on classic R graphics, with extensions to allow for interaction. See the <code>?rgl::rglShared</code> help topic for details of <code>crosstalk</code> usage.</p>
-<pre class="r"><code>devtools::install_github(&quot;r-forge/rgl&quot;)</code></pre>
+<p>rgl is a 3D visualization system based on OpenGL. It provides a
+medium to high level interface for use in R, currently modelled on
+classic R graphics, with extensions to allow for interaction. See the
+<code>?rgl::rglShared</code> help topic for details of
+<code>crosstalk</code> usage.</p>
+<pre class="r"><code>install.packages(&quot;rgl&quot;)</code></pre>
+<hr />
+<p><a href="https://github.com/daattali/timevis"><img
+src="thumbnails/daattali-timevis.png" class="widget-thumbnail"
+alt="timevis screenshot" /></a></p>
+</div>
+<div id="timevis" class="section level3">
+<h3><a href="https://github.com/daattali/timevis">timevis</a></h3>
+<p><strong>Author:</strong> <a href="https://github.com/daattali">Dean
+Attali</a></p>
+<p><code>timevis</code> lets you create interactive timeline
+visualizations in R. This package is based on the <a
+href="https://visjs.github.io/vis-timeline/docs/timeline/">visjs</a>
+Timeline JavaScript library.</p>
+<pre class="r"><code>devtools::install_github(&quot;daattali/timevis&quot;)</code></pre>
+<hr />
+<p><a href="https://github.com/robert-norberg/shinybody"><img
+src="thumbnails/shinybody.png" class="widget-thumbnail"
+alt="shinybody screenshot" /></a></p>
+</div>
+<div id="shinybody" class="section level3">
+<h3><a
+href="https://github.com/robert-norberg/shinybody">shinybody</a></h3>
+<p><strong>Author:</strong> <a
+href="https://github.com/robert-norberg">Robert Norberg</a></p>
+<p><code>shinybody</code> is an <code>htmlwidget</code> of the human
+body that allows you to hide/show and assign colors to 79 different body
+parts.</p>
+<pre class="r"><code>install.packages(&quot;shinybody&quot;)</code></pre>
 <hr />
 </div>
 
@@ -304,7 +428,7 @@ img.widget-thumbnail {
 
 // add bootstrap table styles to pandoc tables
 function bootstrapStylePandocTables() {
-  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
 }
 $(document).ready(function () {
   bootstrapStylePandocTables();
@@ -312,6 +436,23 @@ $(document).ready(function () {
 
 
 </script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script>

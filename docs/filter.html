@@ -1,35 +1,50 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <head>
 
 <meta charset="utf-8" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
 
 
-<title></title>
+<title>filter.knit</title>
 
-<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
 
 <style type="text/css">code{white-space: pre;}</style>
-<style type="text/css">
-  pre:not([class]) {
-    background-color: white;
-  }
-</style>
 <script type="text/javascript">
 if (window.hljs) {
   hljs.configure({languages: []});
@@ -42,37 +57,11 @@ if (window.hljs) {
 
 
 
-<style type="text/css">
-h1 {
-  font-size: 34px;
-}
-h1.title {
-  font-size: 38px;
-}
-h2 {
-  font-size: 30px;
-}
-h3 {
-  font-size: 24px;
-}
-h4 {
-  font-size: 18px;
-}
-h5 {
-  font-size: 16px;
-}
-h6 {
-  font-size: 12px;
-}
-.table th:not([align]) {
-  text-align: left;
-}
-</style>
 
 
-</head>
 
-<body>
+
+
 
 <style type = "text/css">
 .main-container {
@@ -80,58 +69,71 @@ h6 {
   margin-left: auto;
   margin-right: auto;
 }
-code {
-  color: inherit;
-  background-color: rgba(0, 0, 0, 0.04);
-}
 img {
   max-width:100%;
-  height: auto;
 }
 .tabbed-pane {
   padding-top: 12px;
 }
+.html-widget {
+  margin-bottom: 20px;
+}
 button.code-folding-btn:focus {
   outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
 }
 </style>
 
 
 <style type="text/css">
-/* padding for bootstrap navbar */
-body {
-  padding-top: 51px;
-  padding-bottom: 40px;
+.dropdown-submenu {
+  position: relative;
 }
-/* offset scroll position for anchor links (for fixed navbar)  */
-.section h1 {
-  padding-top: 56px;
-  margin-top: -56px;
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
 }
-
-.section h2 {
-  padding-top: 56px;
-  margin-top: -56px;
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
 }
-.section h3 {
-  padding-top: 56px;
-  margin-top: -56px;
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
 }
-.section h4 {
-  padding-top: 56px;
-  margin-top: -56px;
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
 }
-.section h5 {
-  padding-top: 56px;
-  margin-top: -56px;
+.dropdown-submenu.pull-left {
+  float: none;
 }
-.section h6 {
-  padding-top: 56px;
-  margin-top: -56px;
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
 }
 </style>
 
-<script>
+<script type="text/javascript">
 // manage active state of menu based on current page
 $(document).ready(function () {
   // active menu anchor
@@ -141,27 +143,91 @@ $(document).ready(function () {
     href = "index.html";
   var menuAnchor = $('a[href="' + href + '"]');
 
-  // mark it active
-  menuAnchor.parent().addClass('active');
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
 
-  // if it's got a parent navbar menu mark it active as well
-  menuAnchor.closest('li.dropdown').addClass('active');
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
 });
 </script>
-
-
-<div class="container-fluid main-container">
 
 <!-- tabsets -->
-<script>
-$(document).ready(function () {
-  window.buildTabsets("TOC");
-});
-</script>
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
 
 <!-- code folding -->
 
 
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
 
 
 
@@ -169,7 +235,7 @@ $(document).ready(function () {
 <div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -194,7 +260,7 @@ $(document).ready(function () {
   <a href="widgets.html">Compatible widgets</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Reference (JS)
      
     <span class="caret"></span>
@@ -221,7 +287,7 @@ $(document).ready(function () {
   </div><!--/.container -->
 </div><!--/.navbar -->
 
-<div class="fluid-row" id="header">
+<div id="header">
 
 
 
@@ -232,31 +298,50 @@ $(document).ready(function () {
 <p><a name="FilterHandle"></a></p>
 <div id="filterhandle" class="section level2">
 <h2>FilterHandle</h2>
-<p>Use this class to contribute to, and listen for changes to, the filter set for the given group of widgets. Filter input controls should create one <code>FilterHandle</code> and only call <a href="#FilterHandle+set">set</a>. Output widgets that wish to displayed filtered data should create one <code>FilterHandle</code> and use the <a href="#FilterHandle+filteredKeys">filteredKeys</a> property and listen for change events.</p>
-<p>If two (or more) <code>FilterHandle</code> instances in the same webpage share the same group name, they will contribute to a single “filter set”. Each <code>FilterHandle</code> starts out with a <code>null</code> value, which means they take nothing away from the set of data that should be shown. To make a <code>FilterHandle</code> actually remove data from the filter set, set its value to an array of keys which should be displayed. Crosstalk will aggregate the various key arrays by finding their intersection; only keys that are present in all non-null filter handles are considered part of the filter set.</p>
+<p>Use this class to contribute to, and listen for changes to, the
+filter set for the given group of widgets. Filter input controls should
+create one <code>FilterHandle</code> and only call <a
+href="module:crosstalk.FilterHandle#set">module:crosstalk.FilterHandle#set</a>.
+Output widgets that wish to displayed filtered data should create one
+<code>FilterHandle</code> and use the <a
+href="module:crosstalk.FilterHandle#filteredKeys">module:crosstalk.FilterHandle#filteredKeys</a>
+property and listen for change events.</p>
+<p>If two (or more) <code>FilterHandle</code> instances in the same
+webpage share the same group name, they will contribute to a single
+“filter set”. Each <code>FilterHandle</code> starts out with a
+<code>null</code> value, which means they take nothing away from the set
+of data that should be shown. To make a <code>FilterHandle</code>
+actually remove data from the filter set, set its value to an array of
+keys which should be displayed. Crosstalk will aggregate the various key
+arrays by finding their intersection; only keys that are present in all
+non-null filter handles are considered part of the filter set.</p>
 <p><strong>Kind</strong>: global class</p>
 <ul>
 <li><a href="#FilterHandle">FilterHandle</a>
 <ul>
-<li><a href="#new_FilterHandle_new">new crosstalk.FilterHandle([group], [extraInfo])</a></li>
-<li><a href="#FilterHandle+filteredKeys">.filteredKeys</a> ⇒ <code>Array.&lt;string&gt;</code> | <code>null</code></li>
+<li><a href="#new_FilterHandle_new">new crosstalk.FilterHandle([group],
+[extraInfo])</a></li>
+<li><a href="#FilterHandle+filteredKeys">.filteredKeys</a> ⇒
+<code>Array.&lt;string&gt;</code> | <code>null</code></li>
 <li><a href="#FilterHandle+setGroup">.setGroup(group)</a></li>
 <li><a href="#FilterHandle+close">.close()</a></li>
 <li><a href="#FilterHandle+clear">.clear([extraInfo])</a></li>
 <li><a href="#FilterHandle+set">.set(keys, [extraInfo])</a></li>
-<li><a href="#FilterHandle+on">.on(eventType, listener)</a> ⇒ <code>string</code></li>
+<li><a href="#FilterHandle+on">.on(eventType, listener)</a> ⇒
+<code>string</code></li>
 <li><a href="#FilterHandle+off">.off(eventType, listener)</a></li>
 <li><a href="#FilterHandle+event_change">“change”</a></li>
 </ul></li>
 </ul>
 <p><a name="new_FilterHandle_new"></a></p>
-<div id="new-crosstalk.filterhandlegroup-extrainfo" class="section level3">
+<div id="new-crosstalk.filterhandlegroup-extrainfo"
+class="section level3">
 <h3>new crosstalk.FilterHandle([group], [extraInfo])</h3>
-<table style="width:58%;">
+<table>
 <colgroup>
-<col width="19%" />
-<col width="19%" />
-<col width="19%" />
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -269,32 +354,48 @@ $(document).ready(function () {
 <tr class="odd">
 <td>[group]</td>
 <td><code>string</code></td>
-<td>The name of the Crosstalk group, or if none, null or undefined (or any other falsy value). This can be changed later via the <a href="#FilterHandle+setGroup">setGroup</a> method.</td>
+<td>The name of the Crosstalk group, or if none, null or undefined (or
+any other falsy value). This can be changed later via the <a
+href="#FilterHandle+setGroup">setGroup</a> method.</td>
 </tr>
 <tr class="even">
 <td>[extraInfo]</td>
 <td><code>Object</code></td>
-<td>An object whose properties will be copied to the event object whenever an event is emitted.</td>
+<td>An object whose properties will be copied to the event object
+whenever an event is emitted.</td>
 </tr>
 </tbody>
 </table>
 <p><a name="FilterHandle+filteredKeys"></a></p>
 </div>
-<div id="filterhandle.filteredkeys-array.string-null" class="section level3">
-<h3>filterHandle.filteredKeys ⇒ <code>Array.&lt;string&gt;</code> | <code>null</code></h3>
-<p><strong>Kind</strong>: instance property of <a href="#FilterHandle"><code>FilterHandle</code></a><br />
-<strong>Returns</strong>: <code>Array.&lt;string&gt;</code> | <code>null</code> - - Either: 1) an array of keys that made it through all of the <code>FilterHandle</code> instances, or, 2) <code>null</code>, which means no filter is being applied (all data should be displayed).<br />
+<div id="filterhandle.filteredkeys-array.string-null"
+class="section level3">
+<h3>filterHandle.filteredKeys ⇒ <code>Array.&lt;string&gt;</code> |
+<code>null</code></h3>
+<p><strong>Kind</strong>: instance property of <a
+href="#FilterHandle"><code>FilterHandle</code></a><br />
+<strong>Returns</strong>: <code>Array.&lt;string&gt;</code> |
+<code>null</code> - - Either: 1) an array of keys that made it through
+all of the <code>FilterHandle</code> instances, or, 2)
+<code>null</code>, which means no filter is being applied (all data
+should be displayed).<br />
 <a name="FilterHandle+setGroup"></a></p>
 </div>
 <div id="filterhandle.setgroupgroup" class="section level3">
 <h3>filterHandle.setGroup(group)</h3>
-<p>Changes the Crosstalk group membership of this FilterHandle. If <code>set()</code> was previously called on this handle, switching groups will clear those keys from the old group’s filter set. These keys will not be applied to the new group’s filter set either. In other words, <code>setGroup()</code> effectively calls <code>clear()</code> before switching groups.</p>
-<p><strong>Kind</strong>: instance method of <a href="#FilterHandle"><code>FilterHandle</code></a></p>
-<table style="width:58%;">
+<p>Changes the Crosstalk group membership of this FilterHandle. If
+<code>set()</code> was previously called on this handle, switching
+groups will clear those keys from the old group’s filter set. These keys
+will not be applied to the new group’s filter set either. In other
+words, <code>setGroup()</code> effectively calls <code>clear()</code>
+before switching groups.</p>
+<p><strong>Kind</strong>: instance method of <a
+href="#FilterHandle"><code>FilterHandle</code></a></p>
+<table>
 <colgroup>
-<col width="19%" />
-<col width="19%" />
-<col width="19%" />
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -307,7 +408,8 @@ $(document).ready(function () {
 <tr class="odd">
 <td>group</td>
 <td><code>string</code></td>
-<td>The name of the Crosstalk group, or null (or undefined) to clear the group.</td>
+<td>The name of the Crosstalk group, or null (or undefined) to clear the
+group.</td>
 </tr>
 </tbody>
 </table>
@@ -315,20 +417,24 @@ $(document).ready(function () {
 </div>
 <div id="filterhandle.close" class="section level3">
 <h3>filterHandle.close()</h3>
-<p>Close the handle. This clears this handle’s contribution to the filter set, and unsubscribes all event listeners.</p>
-<p><strong>Kind</strong>: instance method of <a href="#FilterHandle"><code>FilterHandle</code></a><br />
+<p>Close the handle. This clears this handle’s contribution to the
+filter set, and unsubscribes all event listeners.</p>
+<p><strong>Kind</strong>: instance method of <a
+href="#FilterHandle"><code>FilterHandle</code></a><br />
 <a name="FilterHandle+clear"></a></p>
 </div>
 <div id="filterhandle.clearextrainfo" class="section level3">
 <h3>filterHandle.clear([extraInfo])</h3>
 <p>Clear this handle’s contribution to the filter set.</p>
-<p><strong>Kind</strong>: instance method of <a href="#FilterHandle"><code>FilterHandle</code></a><br />
-<strong>Emits</strong>: <a href="#FilterHandle+event_change"><code>change</code></a></p>
-<table style="width:58%;">
+<p><strong>Kind</strong>: instance method of <a
+href="#FilterHandle"><code>FilterHandle</code></a><br />
+<strong>Emits</strong>: <a
+href="#FilterHandle+event_change"><code>change</code></a></p>
+<table>
 <colgroup>
-<col width="19%" />
-<col width="19%" />
-<col width="19%" />
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -341,7 +447,9 @@ $(document).ready(function () {
 <tr class="odd">
 <td>[extraInfo]</td>
 <td><code>Object</code></td>
-<td>Extra properties to be included on the event object that’s passed to listeners (in addition to any options that were passed into the <code>FilterHandle</code> constructor).</td>
+<td>Extra properties to be included on the event object that’s passed to
+listeners (in addition to any options that were passed into the
+<code>FilterHandle</code> constructor).</td>
 </tr>
 </tbody>
 </table>
@@ -349,14 +457,21 @@ $(document).ready(function () {
 </div>
 <div id="filterhandle.setkeys-extrainfo" class="section level3">
 <h3>filterHandle.set(keys, [extraInfo])</h3>
-<p>Set this handle’s contribution to the filter set. This array should consist of the keys of the rows that <em>should</em> be displayed; any keys that are not present in the array will be considered <em>filtered out</em>. Note that multiple <code>FilterHandle</code> instances in the group may each contribute an array of keys, and only those keys that appear in <em>all</em> of the arrays make it through the filter.</p>
-<p><strong>Kind</strong>: instance method of <a href="#FilterHandle"><code>FilterHandle</code></a><br />
-<strong>Emits</strong>: <a href="#FilterHandle+event_change"><code>change</code></a></p>
-<table style="width:58%;">
+<p>Set this handle’s contribution to the filter set. This array should
+consist of the keys of the rows that <em>should</em> be displayed; any
+keys that are not present in the array will be considered <em>filtered
+out</em>. Note that multiple <code>FilterHandle</code> instances in the
+group may each contribute an array of keys, and only those keys that
+appear in <em>all</em> of the arrays make it through the filter.</p>
+<p><strong>Kind</strong>: instance method of <a
+href="#FilterHandle"><code>FilterHandle</code></a><br />
+<strong>Emits</strong>: <a
+href="#FilterHandle+event_change"><code>change</code></a></p>
+<table>
 <colgroup>
-<col width="19%" />
-<col width="19%" />
-<col width="19%" />
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -368,28 +483,35 @@ $(document).ready(function () {
 <tbody>
 <tr class="odd">
 <td>keys</td>
-<td><code>Array.&lt;string&gt;</code></td>
-<td>Empty array, or array of keys. To clear the filter, don’t pass an empty array; instead, use the <a href="#FilterHandle+clear">clear</a> method.</td>
+<td><code>[ 'Array' ].&lt;string&gt;</code></td>
+<td>Empty array, or array of keys. To clear the filter, don’t pass an
+empty array; instead, use the <a href="#FilterHandle+clear">clear</a>
+method.</td>
 </tr>
 <tr class="even">
 <td>[extraInfo]</td>
 <td><code>Object</code></td>
-<td>Extra properties to be included on the event object that’s passed to listeners (in addition to any options that were passed into the <code>FilterHandle</code> constructor).</td>
+<td>Extra properties to be included on the event object that’s passed to
+listeners (in addition to any options that were passed into the
+<code>FilterHandle</code> constructor).</td>
 </tr>
 </tbody>
 </table>
 <p><a name="FilterHandle+on"></a></p>
 </div>
-<div id="filterhandle.oneventtype-listener-string" class="section level3">
+<div id="filterhandle.oneventtype-listener-string"
+class="section level3">
 <h3>filterHandle.on(eventType, listener) ⇒ <code>string</code></h3>
 <p>Subscribe to events on this <code>FilterHandle</code>.</p>
-<p><strong>Kind</strong>: instance method of <a href="#FilterHandle"><code>FilterHandle</code></a><br />
-<strong>Returns</strong>: <code>string</code> - - A token to pass to <a href="#FilterHandle+off">off</a> to cancel this subscription.</p>
-<table style="width:58%;">
+<p><strong>Kind</strong>: instance method of <a
+href="#FilterHandle"><code>FilterHandle</code></a><br />
+<strong>Returns</strong>: <code>string</code> - - A token to pass to <a
+href="#FilterHandle+off">off</a> to cancel this subscription.</p>
+<table>
 <colgroup>
-<col width="19%" />
-<col width="19%" />
-<col width="19%" />
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -402,12 +524,14 @@ $(document).ready(function () {
 <tr class="odd">
 <td>eventType</td>
 <td><code>string</code></td>
-<td>Indicates the type of events to listen to. Currently, only <code>&quot;change&quot;</code> is supported.</td>
+<td>Indicates the type of events to listen to. Currently, only
+<code>"change"</code> is supported.</td>
 </tr>
 <tr class="even">
 <td>listener</td>
 <td><code>FilterHandle~listener</code></td>
-<td>The callback function that will be invoked when the event occurs.</td>
+<td>The callback function that will be invoked when the event
+occurs.</td>
 </tr>
 </tbody>
 </table>
@@ -415,13 +539,15 @@ $(document).ready(function () {
 </div>
 <div id="filterhandle.offeventtype-listener" class="section level3">
 <h3>filterHandle.off(eventType, listener)</h3>
-<p>Cancel event subscriptions created by <a href="#FilterHandle+on">on</a>.</p>
-<p><strong>Kind</strong>: instance method of <a href="#FilterHandle"><code>FilterHandle</code></a></p>
-<table style="width:58%;">
+<p>Cancel event subscriptions created by <a
+href="#FilterHandle+on">on</a>.</p>
+<p><strong>Kind</strong>: instance method of <a
+href="#FilterHandle"><code>FilterHandle</code></a></p>
+<table>
 <colgroup>
-<col width="19%" />
-<col width="19%" />
-<col width="19%" />
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -439,7 +565,9 @@ $(document).ready(function () {
 <tr class="even">
 <td>listener</td>
 <td><code>string</code> | <code>FilterHandle~listener</code></td>
-<td>Either the callback function previously passed into <a href="#FilterHandle+on">on</a>, or the string that was returned from <a href="#FilterHandle+on">on</a>.</td>
+<td>Either the callback function previously passed into <a
+href="#FilterHandle+on">on</a>, or the string that was returned from <a
+href="#FilterHandle+on">on</a>.</td>
 </tr>
 </tbody>
 </table>
@@ -447,13 +575,14 @@ $(document).ready(function () {
 </div>
 <div id="change" class="section level3">
 <h3>“change”</h3>
-<p><strong>Kind</strong>: event emitted by <a href="#FilterHandle"><code>FilterHandle</code></a><br />
+<p><strong>Kind</strong>: event emitted by <a
+href="#FilterHandle"><code>FilterHandle</code></a><br />
 <strong>Properties</strong></p>
-<table style="width:58%;">
+<table>
 <colgroup>
-<col width="19%" />
-<col width="19%" />
-<col width="19%" />
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -466,7 +595,8 @@ $(document).ready(function () {
 <tr class="odd">
 <td>value</td>
 <td><code>object</code></td>
-<td>The new value of the filter set, or <code>null</code> if no filter set is active.</td>
+<td>The new value of the filter set, or <code>null</code> if no filter
+set is active.</td>
 </tr>
 <tr class="even">
 <td>oldValue</td>
@@ -499,7 +629,7 @@ $(document).ready(function () {
 
 // add bootstrap table styles to pandoc tables
 function bootstrapStylePandocTables() {
-  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
 }
 $(document).ready(function () {
   bootstrapStylePandocTables();
@@ -507,6 +637,23 @@ $(document).ready(function () {
 
 
 </script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script>

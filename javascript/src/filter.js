@@ -18,14 +18,13 @@ function nextId() {
   return id++;
 }
 
-
 /**
  * Use this class to contribute to, and listen for changes to, the filter set
  * for the given group of widgets. Filter input controls should create one
- * `FilterHandle` and only call {@link module:crosstalk.FilterHandle#set}.
- * Output widgets that wish to displayed filtered data should create one
- * `FilterHandle` and use the {@link module:crosstalk.FilterHandle#filteredKeys}
- * property and listen for change events.
+ * `FilterHandle` and only call {@link FilterHandle#set}. Output widgets that
+ * wish to displayed filtered data should create one `FilterHandle` and use
+ * the {@link FilterHandle#filteredKeys} property and listen for change
+ * events.
  *
  * If two (or more) `FilterHandle` instances in the same webpage share the
  * same group name, they will contribute to a single "filter set". Each
@@ -130,7 +129,7 @@ export class FilterHandle {
    * @param {Object} [extraInfo] - Extra properties to be included on the event
    *   object that's passed to listeners (in addition to any options that were
    *   passed into the `FilterHandle` constructor).
-   *
+   * 
    * @fires FilterHandle#change
    */
   clear(extraInfo) {
@@ -154,7 +153,7 @@ export class FilterHandle {
    * @param {Object} [extraInfo] - Extra properties to be included on the event
    *   object that's passed to listeners (in addition to any options that were
    *   passed into the `FilterHandle` constructor).
-   *
+   * 
    * @fires FilterHandle#change
    */
   set(keys, extraInfo) {

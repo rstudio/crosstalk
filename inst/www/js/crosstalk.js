@@ -924,7 +924,7 @@ input.register({
       if ($el.data("ionRangeSlider").options.type === "double") {
         return [convert(result.from), convert(result.to)];
       } else {
-        return convert(result.from);
+        return [-Infinity, convert(result.from)];
       }
     }
 

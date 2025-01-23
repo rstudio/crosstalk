@@ -69,6 +69,23 @@ DT is a highly customizable data table library. It wraps the [DataTables plug-in
 install.packages("DT")
 ```
 
+
+---
+
+[![lineup screenshot](thumbnails/lineup.png){.widget-thumbnail}](https://lineup.js.org)
+
+### [LineUp](https://lineup.js.org)
+
+**Author:** [Samuel Gratzl](https://www.sgratzl.com), [Datavisyn](https://www.datavisyn.io) and the [Caleydo Team](http://caleydo.org)
+
+[LineUp](https://lineup.js.org) is an interactive technique designed to create, visualize and explore rankings of items based on a set of heterogeneous attributes.
+
+
+```r
+devtools::install_github("lineupjs/lineup_htmlwidget")
+```
+
+
 ---
 
 [![SummaryWidget screenshot](thumbnails/summarywidget.png){.widget-thumbnail}](https://kent37.github.io/summarywidget/)

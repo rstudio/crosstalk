@@ -134,5 +134,19 @@ and assign colors to 79 different body parts.
 ```r
 install.packages("shinybody")
 ```
+---
 
+[![kpiwidget screenshot](thumbnails/kpiwidget.png){.widget-thumbnail}](https://arnold-kakas.github.io/kpiwidget/)
+
+### [kpiwidget](https://arnold-kakas.github.io/kpiwidget/)
+
+**Author:** [Arnold Kakas](https://github.com/Arnold-Kakas)
+
+A kpiwidget displays a selected kpi metric. 
+It offers wide range of KPIs ("count", "distinctCount", "duplicates", "sum", "mean", "min", "max") as well as comparison modes ("ratio" and "share").
+User has an option to use multiple formatting options including prefix, suffix, thousands separator and more.
+
+```r
+install.packages("kpiwidget")
+```
 ---

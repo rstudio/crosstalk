@@ -102,8 +102,8 @@ reaches the end.}
 
 \item{playButton}{Specifies the appearance of the play button. Valid values
 are a one-element character vector (for a simple text label), an HTML tag
-or list of tags (using \code{\link{tag}} and friends), or raw HTML (using
-\code{\link{HTML}}).}
+or list of tags (using \link[htmltools:builder]{htmltools::tag} and friends), or raw HTML (using
+\code{\link[htmltools:HTML]{htmltools::HTML()}}).}
 
 \item{pauseButton}{Similar to \code{playButton}, but for the pause button.}
 }

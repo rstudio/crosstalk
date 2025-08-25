@@ -482,15 +482,16 @@ hasDecimals <- function(value) {
 #' @rdname filter_slider
 #'
 #' @param interval The interval, in milliseconds, between each animation step.
-#' @param loop \code{TRUE} to automatically restart the animation when it
+#' @param loop `TRUE` to automatically restart the animation when it
 #'   reaches the end.
 #' @param playButton Specifies the appearance of the play button. Valid values
 #'   are a one-element character vector (for a simple text label), an HTML tag
-#'   or list of tags (using \code{\link{tag}} and friends), or raw HTML (using
-#'   \code{\link{HTML}}).
-#' @param pauseButton Similar to \code{playButton}, but for the pause button.
+#'   or list of tags (using [htmltools::tag] and friends), or raw HTML (using
+#'   [htmltools::HTML()]).
+#' @param pauseButton Similar to `playButton`, but for the pause button.
 #'
 #' @export
+#' @md
 animation_options <- function(interval=1000,
   loop=FALSE,
   playButton=NULL,
@@ -603,4 +604,3 @@ formatNoSci <- function(x) {
   if (is.null(x)) return(NULL)
   format(x, scientific = FALSE, digits = 15)
 }
-

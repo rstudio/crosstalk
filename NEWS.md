@@ -1,3 +1,5 @@
+# crosstalk (development version)
+
 # crosstalk 1.2.2
 
 Address a new R CMD check NOTE about Rd \link{} targets missing package anchors. (#163)
